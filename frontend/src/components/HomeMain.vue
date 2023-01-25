@@ -34,7 +34,7 @@
 
 <script>
 import { Check } from '@element-plus/icons-vue'
-import { mapState, mapActions } from 'vuex'
+import { mapActions } from 'vuex'
 
 export default {
   name: 'HomeMain',
@@ -49,7 +49,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['myUserName']),
+
   },
   methods: {
     ...mapActions(['setMyUserName']),

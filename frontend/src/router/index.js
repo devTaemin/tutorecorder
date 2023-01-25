@@ -15,9 +15,30 @@ const routes = [
   {
     path: '/mode',
     name: 'mode',
-    component: () => import(/* webpackChunkName: "test" */ '../views/ModeView.vue')
+    component: () => import(/* webpackChunkName: "mode" */ '../views/ModeView.vue')
+  },
+  {
+    path: '/solo',
+    name: 'solo',
+    component: () => import(/* webpackChunkName: "solo" */ '../views/SoloView.vue')
+  },
+  {
+    path: '/solo/sound',
+    name: 'soloSound',
+    component: () => import(/* webpackChunkName: "solo" */ '../views/SoloSoundView.vue')
+  },
+  {
+    path: '/solo/fingering',
+    name: 'soloFingering',
+    component: () => import(/* webpackChunkName: "solo" */ '../views/SoloFingeringView.vue')
+  },
+  {
+    path: '/solo/song',
+    name: 'soloSong',
+    component: () => import(/* webpackChunkName: "solo" */ '../views/SoloSongView.vue')
   }
 ]
+
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
