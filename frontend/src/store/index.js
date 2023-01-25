@@ -1,24 +1,14 @@
-import { createStore } from "vuex";
-import accountStore from "./accountStore";
-import menuStore from "./menuStore";
-import platformInfoStore from "./platformInfoStore";
-import loadingEffect from "./loadingEffect";
-import createPersistedState from "vuex-persistedstate";
-
-
-
-
+import { createStore } from 'vuex'
 
 export default createStore({
-  modules: {
-    accountStore,
-    menuStore,
-    platformInfoStore,
-    loadingEffect,
+  state: {
   },
-  plugins: [
-    createPersistedState({
-      paths: ["accountStore",],
-    })
-  ]
-});
+  getters: {
+  },
+  mutations: {
+  },
+  actions: {
+  },
+  modules: {
+  }
+})
