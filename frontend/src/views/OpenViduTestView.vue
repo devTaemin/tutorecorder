@@ -158,7 +158,6 @@ export default {
       return response.data;
     },
 
-
     async createToken(sessionId) {
       const response = await axios.post(APPLICATION_SERVER_URL + 'api/sessions/' + sessionId + '/connections', {}, {
         headers: { 'Content-Type': 'application/json' }

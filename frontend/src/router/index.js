@@ -36,6 +36,11 @@ const routes = [
     path: '/solo/song',
     name: 'soloSong',
     component: () => import(/* webpackChunkName: "solo" */ '../views/SoloSongView.vue')
+  },
+  {
+    path: '/playroom',
+    name: 'playRoom',
+    component: () => import(/* webpackChunkName: "solo" */ '../views/PlayRoomView.vue')
   }
 ]
 
