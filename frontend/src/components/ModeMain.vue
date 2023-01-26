@@ -75,7 +75,8 @@ export default {
         }
     },
     computed: {
-
+   
+        
     },
     methods: {
         ...mapActions(['initMySessionId', 'setMySessionId']),
