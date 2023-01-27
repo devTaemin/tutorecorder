@@ -93,6 +93,8 @@ export default {
             this.roomEnterVisible=false;
 
             // DEBUG
+
+            this.$router.push({ name: 'test' })
         },
         createRoom: function() {
             // 방 생성
@@ -103,6 +105,9 @@ export default {
             this.roomMakeVisible=false;
 
             // DEBUG
+
+
+            this.$router.push({ name: 'test' })
         }
 
     }
