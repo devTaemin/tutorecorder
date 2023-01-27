@@ -1,6 +1,6 @@
 <template>
-  <div id="main-container" class="container">
-    <div id="join" v-if="!session">
+  <!-- <div id="main-container" class="container">
+    <div id="join" v-if="!isSession">
       <div>입장 화면</div>
       <div id="join-dialog" class="jumbotron vertical-center">
         <h1>비디오 세션 생성</h1>
@@ -19,20 +19,20 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
 
-  <div id="session" v-if="session">
+  <div id="session">
     <div id="session-header">
-      <h1 id="session-title">{{ mySessionId }}</h1>
+      <h1 id="session-title">{{ isSession }}</h1>
       <input type="button" id="buttonLeaveSession" @click="leaveSession" value="Leave session" />
     </div>
-    <div id="main-video">
+    <span id="main-video">
       <user-video :stream-manager="mainStreamManager"/>
-    </div>
-    <div id="video-container">
+    </span>
+    <span id="video-container">
       <user-video :stream-manager="publisher" @click="updateMainVideoStreamManager(publisher)"/>
       <user-video v-for="sub in subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click="updateMainVideoStreamManager(sub)"/>
-    </div>
+    </span>
   </div>
 </template>
 
@@ -40,6 +40,7 @@
 import { OpenVidu } from "openvidu-browser";
 import axios from "axios";
 import UserVideo from "@/components/video/UserVideo.vue"
+import { mapActions } from 'vuex'
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
 
@@ -50,6 +51,16 @@ export default {
 
   components: {
     UserVideo,
+  },
+
+  computed: {
+    isSession() {
+      if (this.$store.state.mySessionId !== '') {
+        return this.$store.state.mySessionId
+      } else {
+        return 'SessionA'
+      }
+    }
   },
 
   data() {
@@ -66,8 +77,13 @@ export default {
       myUserName: "Participant" + Math.floor(Math.random() * 100),
     }
   },
+  mounted() {
+    this.joinSession()
+  },
 
   methods: {
+    ...mapActions(['initMyUserName']),
+
     joinSession() {
       // 1. OpenVidu 객체 가져오기
       this.OV = new OpenVidu();
@@ -96,8 +112,8 @@ export default {
       })
 
       // 4. 유효한 사용자 토큰과 세션에 접속하기
-      this.getToken(this.mySessionId).then((token) => {
-        this.session.connect(token, { clientData: this.myUserName })
+      this.getToken(this.$store.state.mySessionId).then((token) => {
+        this.session.connect(token, { clientData: this.$store.state.myUserName })
           .then(() => {
 
             // 5. 카메라 설정
@@ -106,7 +122,7 @@ export default {
               videoSource: undefined,
               publishAudio: true,
               publishVideo: true,
-              resolution: "640x480",
+              resolution: "360x240",
               framerate: 30,
               insertMode: "Append",
               mirror: false,
@@ -137,6 +153,7 @@ export default {
       this.subscribers = [];
       this.OV = undefined;
 
+      this.initMyUserName();
       window.removeEventListener("beforeunload", this.leaveSession);
     },
 
