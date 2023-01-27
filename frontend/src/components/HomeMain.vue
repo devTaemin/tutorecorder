@@ -55,9 +55,11 @@ export default {
     ...mapActions(['setMyUserName']),
 
     setName: function() {
-      this.nameSetVisible=false
-      this.setMyUserName(this.userName)
-      this.$router.push({ name: 'mode' })
+      if (this.userName !== '') {
+        this.nameSetVisible=false
+        this.setMyUserName(this.userName)
+        this.$router.push({ name: 'mode' })
+      }
     }
   },
 
