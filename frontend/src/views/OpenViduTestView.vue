@@ -1,38 +1,72 @@
 <template>
-  <!-- <div id="main-container" class="container">
-    <div id="join" v-if="!isSession">
-      <div>입장 화면</div>
-      <div id="join-dialog" class="jumbotron vertical-center">
-        <h1>비디오 세션 생성</h1>
-        <div class="form-group">
-          <p>
-            <label>Participant</label>
-            <input v-model="myUserName" class="form-control" type="text" required />
-          </p>
-          <p>
-            <label>Session</label>
-            <input v-model="mySessionId" class="form-control" type="text" required />
-          </p>
-          <p>
-            <button @click="joinSession()">Join</button>
-          </p>
-        </div>
+  <div>
+
+
+    <el-row :gutter="20">
+      <el-col :span="2"><div class="grid-content ep-bg-purple"  id="ColCheck"/>1</el-col>
+      <el-col :span="2"><div class="grid-content ep-bg-purple"  id="ColCheck"/>1</el-col>
+      <el-col :span="2"><div class="grid-content ep-bg-purple"  id="ColCheck"/>1</el-col>
+      <el-col :span="2"><div class="grid-content ep-bg-purple"  id="ColCheck"/>1</el-col>
+      <el-col :span="2"><div class="grid-content ep-bg-purple"  id="ColCheck"/>1</el-col>
+      <el-col :span="2"><div class="grid-content ep-bg-purple"  id="ColCheck"/>1</el-col>
+      <el-col :span="2"><div class="grid-content ep-bg-purple"  id="ColCheck"/>1</el-col>
+      <el-col :span="2"><div class="grid-content ep-bg-purple"  id="ColCheck"/>1</el-col>
+      <el-col :span="2"><div class="grid-content ep-bg-purple"  id="ColCheck"/>1</el-col>
+      <el-col :span="2"><div class="grid-content ep-bg-purple"  id="ColCheck"/>1</el-col>
+      <el-col :span="2"><div class="grid-content ep-bg-purple"  id="ColCheck"/>1</el-col>
+      <el-col :span="2"><div class="grid-content ep-bg-purple"  id="ColCheck"/>1</el-col>
+
+    </el-row>
+    
+    <div id="session">
+      <div id="session-header">        
+        <span id="ConfSetting">
+          <img src="../assets/confsetting.png" alt="">
+        </span>
+        <h1 id="session-title">{{ isSession }}</h1>
+        <input type="button" id="buttonLeaveSession" @click="leaveSession" value="Leave session" />
       </div>
     </div>
-  </div> -->
 
-  <div id="session">
-    <div id="session-header">
-      <h1 id="session-title">{{ isSession }}</h1>
-      <input type="button" id="buttonLeaveSession" @click="leaveSession" value="Leave session" />
+  
+  
+    <div id="BlackBoxLargestBox">
+
+      <div>
+        <div id="YellowBoxVideo">
+          <span id="main-video">
+            <user-video :stream-manager="mainStreamManager"/>
+          </span>
+          <span id="video-container">
+            <user-video :stream-manager="publisher" @click="updateMainVideoStreamManager(publisher)"/>
+            <user-video v-for="sub in subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click="updateMainVideoStreamManager(sub)"/>
+          </span>
+        </div>
+
+        <div id="GreenBoxChat">
+          <p> chat box</p>  
+        </div>
+
+        <div id="OrangeBoxStart"> 
+          <p> start box</p>
+        </div>
+
+        
+      </div>
+
+
+
+
+        
+      <div>
+        <div id="GameSettingBox">
+          <img src="../assets/gamesetting.png" alt="">
+        </div>
+        <div id="UserList">user list</div>
+      </div>
     </div>
-    <span id="main-video">
-      <user-video :stream-manager="mainStreamManager"/>
-    </span>
-    <span id="video-container">
-      <user-video :stream-manager="publisher" @click="updateMainVideoStreamManager(publisher)"/>
-      <user-video v-for="sub in subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click="updateMainVideoStreamManager(sub)"/>
-    </span>
+      
+  
   </div>
 </template>
 
@@ -82,7 +116,7 @@ export default {
   },
 
   methods: {
-    ...mapActions(['initMyUserName']),
+    ...mapActions(['initMySessionId']),
 
     joinSession() {
       // 1. OpenVidu 객체 가져오기
@@ -122,11 +156,14 @@ export default {
               videoSource: undefined,
               publishAudio: true,
               publishVideo: true,
-              resolution: "360x240",
+              // ratio: 16/9,
+              resolution: "240x160",
               framerate: 30,
               insertMode: "Append",
               mirror: false,
             });
+
+            
 
             this.mainStreamManager = publisher;
             this.publisher = publisher;
@@ -153,8 +190,11 @@ export default {
       this.subscribers = [];
       this.OV = undefined;
 
-      this.initMyUserName();
+      this.initMySessionId(); // 세션 초기화, 닉네임은 유지
       window.removeEventListener("beforeunload", this.leaveSession);
+      this.$router.push({ name: 'mode' }) // 모드 선택으로 이동
+
+
     },
 
     updateMainVideoStreamManager(stream) {
@@ -186,3 +226,69 @@ export default {
   }
 }
 </script>
+
+
+<style scoped>
+#ColCheck{
+  border : 5px solid red
+}
+  #ConfSetting{
+    border: 5px solid red;
+    /* position: relative;  */
+    /* float: left;   */
+
+  }
+
+  #BlackBoxLargestBox{
+    display: flex;
+    flex-direction: row;
+    border: 5px solid black;
+    margin: 0;
+    padding: 0;
+  }
+
+  
+  #YellowBoxVideo{
+    border: 5px solid yellow;
+    display: inline-block;
+    width: 90%;
+  }
+
+  #GreenBoxChat{
+    border: 5px solid green;
+    display: inline-block;
+    width: 75%; 
+    margin: 0;
+    padding: 0;
+  }
+
+  #OrangeBoxStart{
+    border: 5px solid orange;
+    display: inline-block;
+    width: 15%;
+    margin: 0;
+    padding: 0;
+  }
+
+  #GameSettingBox{
+    top: 45px;
+    right: 0px;
+    
+    border : 5px solid purple;
+  }
+
+  #session-title{
+    margin: 0;
+    padding: 0;
+    display: inline-block;
+  }
+
+  #UserList{
+    margin: 0;
+    padding: 0;
+    border: 5px solid blue;
+    
+  }
+
+
+</style>
