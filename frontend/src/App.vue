@@ -1,5 +1,7 @@
 <template>
-  <router-view id="background-image"/>
+    <div id="background-image">
+      <router-view/>
+    </div>
 </template>
 
 <style>
@@ -9,24 +11,13 @@
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-}
-
-nav {
-  padding: 30px;
-}
-
-nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-nav a.router-link-exact-active {
-  color: #42b983;
+  height: 100vh;
 }
 
 #background-image{
   background-image: url("./assets/BackgroundImage.png");
-  background-size: cover;
+  height: 100vh;
+  background-size: 100vw 100vh;
 }
 
 </style>

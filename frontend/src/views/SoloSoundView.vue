@@ -1,6 +1,6 @@
 <template>
-    <div>
-        <SoloSoundMain msg="소리내기 모드" />
+    <div class="pink-container">
+        <SoloSoundMain/>
     </div>
 </template>
 
@@ -16,5 +16,10 @@ export default {
 </script>
 
 <style>
-
+.pink-container{
+    width: 95vw;
+    height: 95vh;
+    background-color: pink;
+    margin: auto;
+}
 </style>
