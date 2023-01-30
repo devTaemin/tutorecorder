@@ -1,6 +1,6 @@
 <template>
-    <div>
-        <SoloSongMain msg="기본곡 모드" />
+    <div class="pink-container">
+        <SoloSongMain/>
     </div>
 </template>
 
@@ -16,5 +16,10 @@ export default {
 </script>
 
 <style>
-
+.pink-container{
+    width: 95vw;
+    height: 95vh;
+    background-color: #F2E6E6;
+    margin: auto;
+}
 </style>
