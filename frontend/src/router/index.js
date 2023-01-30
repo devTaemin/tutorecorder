@@ -40,7 +40,7 @@ const routes = [
   {
     path: '/playroom',
     name: 'playRoom',
-    component: () => import(/* webpackChunkName: "solo" */ '../views/PlayRoomView.vue')
+    component: () => import(/* webpackChunkName: "play" */ '../views/PlayRoomView.vue')
   }
 ]
 

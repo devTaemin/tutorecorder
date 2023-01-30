@@ -99,5 +99,8 @@ export default createStore({
     setMySessionId: ({ commit }, payload) => {
       commit('SET_MY_SESSION_ID', payload)
     }
+  },
+  modules: {
+    
   }
 })
