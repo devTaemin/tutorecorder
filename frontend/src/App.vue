@@ -2,9 +2,9 @@
   <div>
     <div id="background-image">
       <router-view/>
-      <div class="char1 shake"></div>
+      <div class="char1 enlarge"></div>
       <div class="char2 shake"></div>
-      <div class="char3 shake"></div>
+      <div class="char3 enlarge"></div>
       <div class="char4 shake"></div>
     </div>
   </div>
@@ -25,9 +25,6 @@
   height: 100vh;
   background-size: 100vw 100vh;
 }
-/* div {
-  border: 1px solid red;
-} */
 .char1{
   background-image: url("./assets/Background/char1.png");
   background-size:contain;
@@ -35,7 +32,7 @@
   position: absolute;
   z-index: 1;
   height: 20vh;
-  width:20vw;
+  width:11.2vw;
   left: 6%;
   top: 45%;
 }
@@ -46,7 +43,7 @@
   position: absolute;
   z-index: 1;
   height: 20vh;
-  width: 20vh;
+  width: 19vh;
   left: 38%;
   top: 55%;
 }
@@ -57,7 +54,7 @@
   position: absolute;
   z-index: 1;
   height: 15vh;
-  width: 20vh;
+  width: 12vh;
   left: 60%;
   top: 55%;
 }
@@ -67,10 +64,61 @@
   background-repeat:no-repeat;
   position: absolute;
   z-index: 1;
-  height: 20vh;
+  height: 13vh;
   width: 15vh;
   left: 85%;
   top: 65%;
 }
 
+.shake:hover {
+  animation-name: shaking;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-duration: 0.5s;
+}
+@keyframes shaking {
+  0% {
+    transform: rotate(0deg);
+  }
+  30% {
+    transform: rotate(10deg);
+  }
+  60% {
+    transform: rotate(-10deg);
+  }
+  90% {
+    transform: rotate(5deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+.enlarge:hover {
+  animation-name: enlarging;
+  animation-iteration-count: infinite;
+  animation-duration: 1s;
+}
+@keyframes enlarging {
+  0% {
+    transform: scale(1)
+  }
+  5% {
+    transform: scale(0.8)
+  }
+  60% {
+    transform: scale(1.2)
+  }
+  70% {
+    transform: scale(0.9)
+  }
+  80% {
+    transform: scale(1.1)
+  }
+  90% {
+    transform: scale(0.95)
+  }
+  100% {
+    transform: scale(1)
+  }
+}
 </style>
