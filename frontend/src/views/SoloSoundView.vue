@@ -19,7 +19,8 @@ export default {
 .pink-container{
     width: 95vw;
     height: 95vh;
-    background-color: pink;
+    background-color: #F2E6E6;
     margin: auto;
+    border-radius: 30px;
 }
 </style>
