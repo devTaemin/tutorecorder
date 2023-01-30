@@ -40,9 +40,10 @@
 
 
     <!-- 환경설정 모달 창 -->
-    <el-dialog v-model="SettingVisible" title="" width="20%">
+    <el-dialog v-model="SettingVisible" width="20%" 
+        style="border-radius: 10px; background-color: #DFE4F6;">
       <span>
-        <img src="../assets/confsetting.png" alt="configuration setting img in modal" >
+        <img src="../assets/confsetting.png" alt="configuration setting img in modal" style="width: 45px;">
         환경설정
       </span>
       <hr>
@@ -75,7 +76,7 @@
       <hr>
       
       <template #footer>
-        <el-button type="success" @click="SettingVisible=false">적용</el-button>
+        <el-button type="success" @click="SettingVisible=false">설정완료</el-button>
       </template>
     </el-dialog>
     <!-- 환경설정 모달 창 -->
@@ -113,12 +114,54 @@
       <div id="RightBox">
 
         <div id="PurpleBoxGameSetting">
-          <img src="../assets/gamesetting.png" alt="game setting img" style="width:100%;">
+          <img src="../assets/gamesetting.png" alt="game setting img" style="width:100%; cursor:pointer;" @click="SettingVisible2=true">
         </div>
 
         <div id="BlueBoxUserList">user list</div>
 
       </div>
+
+      <!-- border-radius -->
+
+      <!-- 게임설정 모달 창 -->
+      <el-dialog v-model="SettingVisible2" title="" width="20%" 
+        style="border-radius: 10px; background-color: #DFE4F6;">
+        <span>
+          <img src="../assets/gamesetting.png" alt="game setting img in modal" style="width: 25px;">
+          게임설정
+        </span>
+        <hr>
+
+
+        <h1 style="border:5px solid red">게임선택</h1>
+        <el-radio-group v-model="GameMode" class="ml-4">
+          <el-radio label="1" size="large">튜토리얼</el-radio>
+          <el-radio label="2" size="large">연주하기</el-radio>
+          <el-radio label="3" size="large">소리내기</el-radio>
+          <el-radio label="4" size="large">운지법</el-radio>
+        </el-radio-group>
+        <hr>
+    
+        <h1>곡 선택 - 곡 연주</h1>
+        <el-radio-group v-model="BasicSong" class="ml-4">
+          <el-radio label="1" size="large">비행기</el-radio>
+          <el-radio label="2" size="large">애국가</el-radio>
+        </el-radio-group>
+        <hr>
+
+        <h1>난이도 선택 - 소리내기, 운지법</h1>
+        <el-radio-group v-model="Difficulty" class="ml-4">
+          <el-radio label="1" size="large">1단계(5초)</el-radio>
+          <el-radio label="2" size="large">2단계(3초)</el-radio>
+          <el-radio label="3" size="large">3단계(2초)</el-radio>
+        </el-radio-group>
+        <hr>
+        
+        <template #footer>
+          <el-button type="success" @click="SettingVisible=false">적용</el-button>
+        </template>
+      </el-dialog>
+      <!-- 환경설정 모달 창 -->
 
     </div>
   </div>
@@ -176,8 +219,11 @@ export default {
       EffectVolume: ref(0),
       Cam: false,
       MiC: false,
-
-
+      
+      SettingVisible2: false,
+      GameMode: ref(0),
+      BasicSong: ref(0),
+      Difficulty: ref(0),
     }
   },
   mounted() {
@@ -301,9 +347,14 @@ export default {
 
 <style scoped>
 
+  /* el-dialog {
+    border: 15px solid red;
+    color: #ffffff;
+  } */
+
 
   #ColCheck{
-    border : 5px solid red
+    border: 5px solid red;
   }
 
 
@@ -384,4 +435,5 @@ export default {
     margin-left: 12px;
   }
   /* volume slider */
+  
 </style>
