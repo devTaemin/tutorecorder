@@ -2,14 +2,40 @@
   <div>
     <div id="background-image">
       <router-view/>
-      <div class="char1 enlarge"></div>
-      <div class="char2 shake"></div>
-      <div class="char3 enlarge"></div>
-      <div class="char4 shake"></div>
+      <div v-if="charVisible" class="char1 enlarge"></div>
+      <div v-if="charVisible" class="char2 shake"></div>
+      <div v-if="charVisible" class="char3 enlarge"></div>
+      <div v-if="charVisible" class="char4 shake"></div>
     </div>
   </div>
 </template>
 
+<script>
+
+export default {
+    name: 'App',
+    components: {
+
+    },
+    computed: {
+      charVisible() {
+        return true
+      }
+    },
+    data() {
+      return {
+      }
+    },
+    methods: {
+      sendCharVisble: () => {
+        
+      }
+    },
+    created() {
+      this.sendCharVisble()
+    }
+}
+</script>
 <style>
 
 @font-face { /* JUA 폰트 */
@@ -38,7 +64,6 @@
   background-size:contain;
   background-repeat:no-repeat;
   position: absolute;
-  z-index: 1;
   height: 20vh;
   width:11.2vw;
   left: 6%;
@@ -49,7 +74,6 @@
   background-size:contain;
   background-repeat:no-repeat;
   position: absolute;
-  z-index: 1;
   height: 20vh;
   width: 19vh;
   left: 38%;
@@ -60,7 +84,6 @@
   background-size:contain;
   background-repeat:no-repeat;
   position: absolute;
-  z-index: 1;
   height: 15vh;
   width: 12vh;
   left: 60%;
@@ -71,7 +94,6 @@
   background-size:contain;
   background-repeat:no-repeat;
   position: absolute;
-  z-index: 1;
   height: 13vh;
   width: 15vh;
   left: 85%;

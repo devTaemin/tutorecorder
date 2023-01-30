@@ -1,6 +1,6 @@
 <template>
     <div>
-        <ModeMain msg="모드 선택" />
+        <ModeMain/>
     </div>
 </template>
 <script>
@@ -10,7 +10,6 @@ export default {
     name: 'ModeView',
     components: {
         ModeMain,
-    }
-
+    },
 }
 </script>

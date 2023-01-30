@@ -1,7 +1,5 @@
 <template>
-    <div>
-        <h1>{{ msg }}</h1>
-
+    <div class="container">
         <el-row :gutter="18" justify="center">
             <el-col :span="6">
                 <el-card shadow="hover" @click="openSoloTutorial" class="hover-button">
@@ -31,9 +29,6 @@ export default {
     components: {
         SoloTutorialView,
     },
-    props: {
-        msg: String
-    },
     data() {
         return{
             opentutorial: false
@@ -44,6 +39,9 @@ export default {
             this.opentutorial = !this.opentutorial
         },
         moveSoloSound: function() {
+            if (localStorage.getItem('charVisible')) {
+                localStorage.removeItem('charVisible')
+            }
             this.$router.push({ name: 'soloSound' })
         },
         moveSoloSong: function() {
@@ -52,7 +50,7 @@ export default {
         closeTutorial() {
             this.opentutorial = false
         }
-    }
+    },
 
 }
 </script>
