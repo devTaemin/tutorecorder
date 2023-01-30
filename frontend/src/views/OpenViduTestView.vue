@@ -1,7 +1,7 @@
 <template>
   <div>
 
-
+<!-- 최상단 위치 참고용 블럭 -->
     <el-row :gutter="20">
       <el-col :span="2"><div class="grid-content ep-bg-purple"  id="ColCheck"/>1</el-col>
       <el-col :span="2"><div class="grid-content ep-bg-purple"  id="ColCheck"/>1</el-col>
@@ -15,9 +15,9 @@
       <el-col :span="2"><div class="grid-content ep-bg-purple"  id="ColCheck"/>1</el-col>
       <el-col :span="2"><div class="grid-content ep-bg-purple"  id="ColCheck"/>1</el-col>
       <el-col :span="2"><div class="grid-content ep-bg-purple"  id="ColCheck"/>1</el-col>
-
     </el-row>
-    
+
+<!-- 환경설정, 세션이름, 나가기 -->
     <div id="session">
       <div id="session-header">        
         <span id="ConfSetting">
@@ -28,11 +28,69 @@
       </div>
     </div>
 
+<!-- 환경설정 테스트 -->
+      <span id="ConfSetting" @click="SettingVisible=true">
+        <img src="../assets/confsetting.png" alt="">
+      </span>  
+
+        <el-dialog v-model="SettingVisible" title="" width="20%">
+          <span>
+            <img src="../assets/confsetting.png" alt="" >
+            환경설정
+          </span>
+          <hr>
+
+          <span>
+            <h1 style="border:5px solid red">노래</h1>
+          </span>
+          <el-radio-group v-model="SongSound" class="ml-4" style="border:5px solid blue">
+            <el-radio label="1" size="large">켜기</el-radio>
+            <el-radio label="2" size="large">끄기</el-radio>
+          </el-radio-group>
+          <hr>
+          
+
+          <h1>volume test</h1>
+          <div class="slider-demo-block">
+            <el-slider v-model="value" show-input />
+          </div>
+
+
+
+          <h1>효과음</h1>
+          <el-radio-group v-model="EffectSound" class="ml-4">
+            <el-radio label="1" size="large">켜기</el-radio>
+            <el-radio label="2" size="large">끄기</el-radio>
+          </el-radio-group>
+          <hr>
+          
+          <h1>카메라</h1>
+          <el-radio-group v-model="Cam" class="ml-4">
+            <el-radio label="1" size="large">켜기</el-radio>
+            <el-radio label="2" size="large">끄기</el-radio>
+          </el-radio-group>
+          <hr>
+          
+          <h1>마이크</h1>
+          <el-radio-group v-model="MiC" class="ml-4">
+            <el-radio label="1" size="large">켜기</el-radio>
+            <el-radio label="2" size="large">끄기</el-radio>
+          </el-radio-group>
+          <hr>
+          
+          <template #footer>
+            <el-button type="success" @click="SettingVisible=false"   >적용</el-button>
+          </template>
+        </el-dialog>
+
+<!-- 환경설정 테스트 -->
   
   
+<!-- 내용물 -->
     <div id="BlackBoxLargestBox">
 
       <div>
+
         <div id="YellowBoxVideo">
           <span id="main-video">
             <user-video :stream-manager="mainStreamManager"/>
@@ -51,7 +109,6 @@
           <p> start box</p>
         </div>
 
-        
       </div>
 
 
@@ -59,16 +116,19 @@
 
         
       <div>
+
         <div id="GameSettingBox">
           <img src="../assets/gamesetting.png" alt="">
         </div>
+
         <div id="UserList">user list</div>
+
       </div>
+
     </div>
-      
-  
   </div>
 </template>
+
 
 <script>
 import { OpenVidu } from "openvidu-browser";
@@ -76,9 +136,11 @@ import axios from "axios";
 import UserVideo from "@/components/video/UserVideo.vue"
 import { mapActions } from 'vuex'
 
+
 axios.defaults.headers.post["Content-Type"] = "application/json";
 
 const APPLICATION_SERVER_URL = "http://localhost:5000/";
+
 
 export default {
   name: 'OpenViduTestView',
@@ -109,6 +171,12 @@ export default {
       // Join form
       mySessionId: "SessionA",
       myUserName: "Participant" + Math.floor(Math.random() * 100),
+
+      SettingVisible: false,
+      SongSound: false,
+      EffectSound: false,
+      Cam: false,
+      MiC: false,
     }
   },
   mounted() {
@@ -223,7 +291,9 @@ export default {
       return response.data;
     }
 
-  }
+  },
+
+
 }
 </script>
 
@@ -234,9 +304,7 @@ export default {
 }
   #ConfSetting{
     border: 5px solid red;
-    /* position: relative;  */
-    /* float: left;   */
-
+    cursor:pointer;
   }
 
   #BlackBoxLargestBox{
@@ -289,6 +357,10 @@ export default {
     border: 5px solid blue;
     
   }
+
+
+
+
 
 
 </style>
