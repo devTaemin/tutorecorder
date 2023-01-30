@@ -24,7 +24,7 @@
           <img src="../assets/confsetting.png" alt="">
         </span>
         <h1 id="session-title">{{ isSession }}</h1>
-        <input type="button" id="buttonLeaveSession" @click="leaveSession" value="Leave session" />
+        <input type="button" id="buttonLeaveSession" @click="leaveSession" MusicVolume="Leave session" />
       </div>
     </div>
 
@@ -40,28 +40,18 @@
           </span>
           <hr>
 
-          <span>
-            <h1 style="border:5px solid red">노래</h1>
-          </span>
-          <el-radio-group v-model="SongSound" class="ml-4" style="border:5px solid blue">
-            <el-radio label="1" size="large">켜기</el-radio>
-            <el-radio label="2" size="large">끄기</el-radio>
-          </el-radio-group>
-          <hr>
-          
 
-          <h1>volume test</h1>
+
+          <h1 style="border:5px solid red">노래</h1>
           <div class="slider-demo-block">
-            <el-slider v-model="value" show-input />
+            <el-slider v-model="MusicVolume" />
           </div>
-
-
+          <hr>
 
           <h1>효과음</h1>
-          <el-radio-group v-model="EffectSound" class="ml-4">
-            <el-radio label="1" size="large">켜기</el-radio>
-            <el-radio label="2" size="large">끄기</el-radio>
-          </el-radio-group>
+          <div class="slider-demo-block">
+            <el-slider v-model="EffectVolume" />
+          </div>
           <hr>
           
           <h1>카메라</h1>
@@ -79,7 +69,7 @@
           <hr>
           
           <template #footer>
-            <el-button type="success" @click="SettingVisible=false"   >적용</el-button>
+            <el-button type="success" @click="SettingVisible=false">적용</el-button>
           </template>
         </el-dialog>
 
@@ -111,9 +101,6 @@
 
       </div>
 
-
-
-
         
       <div>
 
@@ -130,11 +117,15 @@
 </template>
 
 
+
+
 <script>
 import { OpenVidu } from "openvidu-browser";
 import axios from "axios";
 import UserVideo from "@/components/video/UserVideo.vue"
 import { mapActions } from 'vuex'
+import { ref } from 'vue'
+
 
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
@@ -173,10 +164,12 @@ export default {
       myUserName: "Participant" + Math.floor(Math.random() * 100),
 
       SettingVisible: false,
-      SongSound: false,
-      EffectSound: false,
+      MusicVolume: ref(0),
+      EffectVolume: ref(0),
       Cam: false,
       MiC: false,
+
+
     }
   },
   mounted() {
@@ -299,9 +292,11 @@ export default {
 
 
 <style scoped>
-#ColCheck{
-  border : 5px solid red
-}
+
+  #ColCheck{
+    border : 5px solid red
+  }
+
   #ConfSetting{
     border: 5px solid red;
     cursor:pointer;
@@ -341,7 +336,6 @@ export default {
   #GameSettingBox{
     top: 45px;
     right: 0px;
-    
     border : 5px solid purple;
   }
 
@@ -355,8 +349,19 @@ export default {
     margin: 0;
     padding: 0;
     border: 5px solid blue;
-    
   }
+
+  /* volume slider */
+  .slider-demo-block {
+    display: flex;
+    align-items: center;
+  }
+  .slider-demo-block .el-slider {
+    margin-top: 0;
+    margin-left: 12px;
+  }
+
+  /* volume slider */
 
 
 
