@@ -3,83 +3,91 @@
 
 <!-- 최상단 위치 참고용 블럭 -->
     <el-row :gutter="20">
-      <el-col :span="2"><div class="grid-content ep-bg-purple"  id="ColCheck"/>1</el-col>
-      <el-col :span="2"><div class="grid-content ep-bg-purple"  id="ColCheck"/>1</el-col>
-      <el-col :span="2"><div class="grid-content ep-bg-purple"  id="ColCheck"/>1</el-col>
-      <el-col :span="2"><div class="grid-content ep-bg-purple"  id="ColCheck"/>1</el-col>
-      <el-col :span="2"><div class="grid-content ep-bg-purple"  id="ColCheck"/>1</el-col>
-      <el-col :span="2"><div class="grid-content ep-bg-purple"  id="ColCheck"/>1</el-col>
-      <el-col :span="2"><div class="grid-content ep-bg-purple"  id="ColCheck"/>1</el-col>
-      <el-col :span="2"><div class="grid-content ep-bg-purple"  id="ColCheck"/>1</el-col>
-      <el-col :span="2"><div class="grid-content ep-bg-purple"  id="ColCheck"/>1</el-col>
-      <el-col :span="2"><div class="grid-content ep-bg-purple"  id="ColCheck"/>1</el-col>
-      <el-col :span="2"><div class="grid-content ep-bg-purple"  id="ColCheck"/>1</el-col>
-      <el-col :span="2"><div class="grid-content ep-bg-purple"  id="ColCheck"/>1</el-col>
+      <el-col :span="2"><div id="ColCheck"/>1</el-col>
+      <el-col :span="2"><div id="ColCheck"/>2</el-col>
+      <el-col :span="2"><div id="ColCheck"/>3</el-col>
+      <el-col :span="2"><div id="ColCheck"/>4</el-col>
+      <el-col :span="2"><div id="ColCheck"/>5</el-col>
+      <el-col :span="2"><div id="ColCheck"/>6</el-col>
+      <el-col :span="2"><div id="ColCheck"/>7</el-col>
+      <el-col :span="2"><div id="ColCheck"/>8</el-col>
+      <el-col :span="2"><div id="ColCheck"/>9</el-col>
+      <el-col :span="2"><div id="ColCheck"/>10</el-col>
+      <el-col :span="2"><div id="ColCheck"/>11</el-col>
+      <el-col :span="2"><div id="ColCheck"/>12</el-col>
     </el-row>
 
 <!-- 환경설정, 세션이름, 나가기 -->
     <div id="session">
-      <div id="session-header">        
-        <span id="ConfSetting">
-          <img src="../assets/confsetting.png" alt="">
-        </span>
+      <div id="session-header">
+
+        <img src="../assets/confsetting.png" alt="configuration setting img"
+          @click="SettingVisible=true" style="cursor:pointer; float:left; width: 45px; margin-left: 10px;"
+        >
+
         <h1 id="session-title">{{ isSession }}</h1>
-        <input type="button" id="buttonLeaveSession" @click="leaveSession" MusicVolume="Leave session" />
+        
+        <img src="../assets/goback.png" alt="game setting img" 
+          @click="leaveSession" style="cursor:pointer; float: right; width: 45px; margin-right: 10px;"
+        >
+        <!-- <span>나가기</span> -->
+        <!-- <span @click="leaveSession" style="cursor:pointer; display:flex; flex-direction: column;">
+          나가기
+        </span> -->
+
       </div>
     </div>
 
-<!-- 환경설정 테스트 -->
-      <span id="ConfSetting" @click="SettingVisible=true">
-        <img src="../assets/confsetting.png" alt="">
-      </span>  
 
-        <el-dialog v-model="SettingVisible" title="" width="20%">
-          <span>
-            <img src="../assets/confsetting.png" alt="" >
-            환경설정
-          </span>
-          <hr>
+    <!-- 환경설정 모달 창 -->
+    <el-dialog v-model="SettingVisible" title="" width="20%">
+      <span>
+        <img src="../assets/confsetting.png" alt="configuration setting img in modal" >
+        환경설정
+      </span>
+      <hr>
 
 
+      <h1 style="border:5px solid red">노래</h1>
+      <div class="slider-demo-block">
+        <el-slider v-model="MusicVolume" />
+      </div>
+      <hr>
 
-          <h1 style="border:5px solid red">노래</h1>
-          <div class="slider-demo-block">
-            <el-slider v-model="MusicVolume" />
-          </div>
-          <hr>
+      <h1>효과음</h1>
+      <div class="slider-demo-block">
+        <el-slider v-model="EffectVolume" />
+      </div>
+      <hr>
+    
+      <h1>카메라</h1>
+      <el-radio-group v-model="Cam" class="ml-4">
+        <el-radio label="1" size="large">켜기</el-radio>
+        <el-radio label="2" size="large">끄기</el-radio>
+      </el-radio-group>
+      <hr>
+  
+      <h1>마이크</h1>
+      <el-radio-group v-model="MiC" class="ml-4">
+        <el-radio label="1" size="large">켜기</el-radio>
+        <el-radio label="2" size="large">끄기</el-radio>
+      </el-radio-group>
+      <hr>
+      
+      <template #footer>
+        <el-button type="success" @click="SettingVisible=false">적용</el-button>
+      </template>
+    </el-dialog>
+    <!-- 환경설정 모달 창 -->
 
-          <h1>효과음</h1>
-          <div class="slider-demo-block">
-            <el-slider v-model="EffectVolume" />
-          </div>
-          <hr>
-          
-          <h1>카메라</h1>
-          <el-radio-group v-model="Cam" class="ml-4">
-            <el-radio label="1" size="large">켜기</el-radio>
-            <el-radio label="2" size="large">끄기</el-radio>
-          </el-radio-group>
-          <hr>
-          
-          <h1>마이크</h1>
-          <el-radio-group v-model="MiC" class="ml-4">
-            <el-radio label="1" size="large">켜기</el-radio>
-            <el-radio label="2" size="large">끄기</el-radio>
-          </el-radio-group>
-          <hr>
-          
-          <template #footer>
-            <el-button type="success" @click="SettingVisible=false">적용</el-button>
-          </template>
-        </el-dialog>
 
-<!-- 환경설정 테스트 -->
   
   
 <!-- 내용물 -->
     <div id="BlackBoxLargestBox">
 
-      <div>
+      <!-- 왼쪽 박스 -->
+      <div id="LeftBox">
 
         <div id="YellowBoxVideo">
           <span id="main-video">
@@ -101,14 +109,14 @@
 
       </div>
 
-        
-      <div>
+      <!-- 오른쪽 박스 -->
+      <div id="RightBox">
 
-        <div id="GameSettingBox">
-          <img src="../assets/gamesetting.png" alt="">
+        <div id="PurpleBoxGameSetting">
+          <img src="../assets/gamesetting.png" alt="game setting img" style="width:100%;">
         </div>
 
-        <div id="UserList">user list</div>
+        <div id="BlueBoxUserList">user list</div>
 
       </div>
 
@@ -293,14 +301,11 @@ export default {
 
 <style scoped>
 
+
   #ColCheck{
     border : 5px solid red
   }
 
-  #ConfSetting{
-    border: 5px solid red;
-    cursor:pointer;
-  }
 
   #BlackBoxLargestBox{
     display: flex;
@@ -308,13 +313,27 @@ export default {
     border: 5px solid black;
     margin: 0;
     padding: 0;
+    margin-top:5px;
   }
 
+  #LeftBox{
+    border: 5px solid gray;
+    margin: 0;
+    padding: 0;
+    width: 80%;
+  }
+  
+  #RightBox{
+    border: 5px solid hotpink;
+    margin: 0;
+    padding: 0;
+    width: 18%;
+  }
   
   #YellowBoxVideo{
     border: 5px solid yellow;
     display: inline-block;
-    width: 90%;
+    width:99%;
   }
 
   #GreenBoxChat{
@@ -333,10 +352,13 @@ export default {
     padding: 0;
   }
 
-  #GameSettingBox{
+  #PurpleBoxGameSetting{
     top: 45px;
     right: 0px;
     border : 5px solid purple;
+    padding: 0;
+    margin: 0;
+
   }
 
   #session-title{
@@ -345,10 +367,11 @@ export default {
     display: inline-block;
   }
 
-  #UserList{
+  #BlueBoxUserList{
     margin: 0;
     padding: 0;
     border: 5px solid blue;
+    width: 99%;
   }
 
   /* volume slider */
@@ -360,12 +383,5 @@ export default {
     margin-top: 0;
     margin-left: 12px;
   }
-
   /* volume slider */
-
-
-
-
-
-
 </style>
