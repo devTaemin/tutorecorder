@@ -1,7 +1,5 @@
 <template>
     <div>
-        <h1>{{ msg }}</h1>
-
         <el-row :gutter="18" justify="center">
             <el-col :span="6">
                 <el-card shadow="hover" @click="moveSoloPage">
