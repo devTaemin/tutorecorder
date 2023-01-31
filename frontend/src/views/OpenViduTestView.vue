@@ -24,6 +24,7 @@
   <div id="session" v-if="session">
     <div id="session-header">
       <h1 id="session-title">{{ mySessionId }}</h1>
+      <el-button type="sucess" plain @click="printSession">세션 정보</el-button>
       <input type="button" id="buttonLeaveSession" @click="leaveSession" value="Leave session" />
     </div>
     <div id="main-video">
@@ -68,6 +69,9 @@ export default {
   },
 
   methods: {
+    printSession() {
+      console.log(this.session);
+    }, 
     joinSession() {
       // 1. OpenVidu 객체 가져오기
       this.OV = new OpenVidu();
@@ -117,6 +121,9 @@ export default {
 
             // 6. 스트림 퍼블리시
             this.session.publish(this.publisher);
+
+            // 세션 디버스
+            this.printSession();
           })
           .catch((error) => {
             console.log("ERROR: ", error.code, error.message);

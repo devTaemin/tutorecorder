@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import Playroom from '../views/PlayRoomView.vue'
 
 const routes = [
   {
@@ -40,7 +41,8 @@ const routes = [
   {
     path: '/playroom',
     name: 'playRoom',
-    component: () => import(/* webpackChunkName: "play" */ '../views/PlayRoomView.vue')
+    component: Playroom,
+    // component: () => import(/* webpackChunkName: "play" */ '../views/PlayRoomView.vue')
   }
 ]
 
