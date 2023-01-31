@@ -1,6 +1,6 @@
 <template>
     <div>
-        <SoloMain msg="개인모드" />
+        <SoloMain/>
     </div>
 </template>
 <script>

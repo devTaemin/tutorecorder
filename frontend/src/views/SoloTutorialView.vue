@@ -1,6 +1,6 @@
 <template>
-    <div>
-        <SoloTutorialMain @click-complete-tutorial-Button="closeTutorial"/>
+    <div class="pink-container tutorial-container">
+        <SoloTutorialMain/>
     </div>
 </template>
 
@@ -13,14 +13,15 @@ export default {
         SoloTutorialMain
     },
     methods: {
-        closeTutorial() {
-            this.$emit('close-tutorial')
-        }
     }
 }
 </script>
 
 <style>
-
+.tutorial-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
 </style>
