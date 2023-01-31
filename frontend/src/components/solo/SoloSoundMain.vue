@@ -9,8 +9,8 @@
                 <img id="board-image" src="../../assets/board.png" alt="">
             </div>
             <div class="game-content-button">
-                <el-button class="solo-analyze-button">분석</el-button>
-                <el-button class="solo-out-button">나가기</el-button>
+                <el-button class="solo-analyze-button" @click="goSoloAnalize">분석</el-button>
+                <el-button class="solo-out-button" @click="goSolo">나가기</el-button>
             </div>
         </el-col>
     </el-row>
@@ -21,6 +21,14 @@ export default {
     name: 'SoloSoundMain',
     props: {
         msg: String
+    },
+    methods: {
+        goSoloAnalize() {
+            this.$router.push({ name: 'soloAnalize' })
+        },
+        goSolo() {
+            this.$router.push({ name: 'solo' })
+        }
     }
 }
 </script>

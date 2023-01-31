@@ -22,6 +22,7 @@
             v-model="roomEnterVisible"
             title=""
             width="40%"
+            class="tutorial-modal"
         >
             <el-form
                 label-width="100px"
@@ -108,3 +109,9 @@ export default {
     }
 }
 </script>
+
+<style>
+.tutorial-modal{
+    background-color: #F2E6E6;;
+}
+</style>
