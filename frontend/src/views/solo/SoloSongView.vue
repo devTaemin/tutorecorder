@@ -16,9 +16,6 @@ export default {
 </script>
 
 <style>
-<<<<<<< HEAD
-
-=======
 .pink-container{
     width: 95vw;
     height: 95vh;
@@ -28,5 +25,4 @@ export default {
     z-index: 2;
     border-radius: 30px;
 }
->>>>>>> f9ae546332c2dfbc3fdd2bc6e06a22e89800cc59
 </style>
