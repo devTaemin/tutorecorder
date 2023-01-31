@@ -31,10 +31,6 @@
           @click="leaveSession" style="cursor:pointer; float: right; width: 45px; margin-right: 10px;"
         >
         <!-- <span>나가기</span> -->
-        <!-- <span @click="leaveSession" style="cursor:pointer; display:flex; flex-direction: column;">
-          나가기
-        </span> -->
-
       </div>
     </div>
 
@@ -114,14 +110,26 @@
       <div id="RightBox">
 
         <div id="PurpleBoxGameSetting">
-          <img src="../assets/gamesetting.png" alt="game setting img" style="width:100%; cursor:pointer;" @click="SettingVisible2=true">
+          <img v-if="isOwner" src="../assets/gamesetting.png" alt="game setting img" style="width:100%; cursor:pointer;" @click="SettingVisible2=true">
+          <div v-if="!isOwner">
+            <h1> 게임 정보 </h1>
+            <li> {{ GameMode }} </li>
+            <li> {{ BasicSong }}</li>
+            <li> {{ Difficulty }}</li>
+          </div>
         </div>
 
-        <div id="BlueBoxUserList">user list</div>
+        <div id="BlueBoxUserList">
+          <button @click="isOwner=!isOwner">{{ isOwner }}</button>
+          <h1>User List</h1>
+          <li v-for="user in UserList" :key="user">
+            {{ user }}
+            <img v-if="isOwner" src="../assets/Xbox.png" alt="Xbox img" style="width:10px;">            
+          </li>
+        </div>
 
       </div>
 
-      <!-- border-radius -->
 
       <!-- 게임설정 모달 창 -->
       <el-dialog v-model="SettingVisible2" title="" width="20%" 
@@ -132,36 +140,35 @@
         </span>
         <hr>
 
-
         <h1 style="border:5px solid red">게임선택</h1>
         <el-radio-group v-model="GameMode" class="ml-4">
-          <el-radio label="1" size="large">튜토리얼</el-radio>
-          <el-radio label="2" size="large">연주하기</el-radio>
-          <el-radio label="3" size="large">소리내기</el-radio>
-          <el-radio label="4" size="large">운지법</el-radio>
+          <el-radio label="튜토리얼" size="large">튜토리얼</el-radio>
+          <el-radio label="연주하기" size="large">연주하기</el-radio>
+          <el-radio label="소리내기" size="large">소리내기</el-radio>
+          <el-radio label="운지법" size="large">운지법</el-radio>
         </el-radio-group>
         <hr>
     
         <h1>곡 선택 - 곡 연주</h1>
         <el-radio-group v-model="BasicSong" class="ml-4">
-          <el-radio label="1" size="large">비행기</el-radio>
-          <el-radio label="2" size="large">애국가</el-radio>
+          <el-radio label="비행기" size="large">비행기</el-radio>
+          <el-radio label="애국가" size="large">애국가</el-radio>
         </el-radio-group>
         <hr>
 
         <h1>난이도 선택 - 소리내기, 운지법</h1>
         <el-radio-group v-model="Difficulty" class="ml-4">
-          <el-radio label="1" size="large">1단계(5초)</el-radio>
-          <el-radio label="2" size="large">2단계(3초)</el-radio>
-          <el-radio label="3" size="large">3단계(2초)</el-radio>
+          <el-radio label="1단계(5초)" size="large">1단계(5초)</el-radio>
+          <el-radio label="2단계(3초)" size="large">2단계(3초)</el-radio>
+          <el-radio label="3단계(2초)" size="large">3단계(2초)</el-radio>
         </el-radio-group>
         <hr>
         
         <template #footer>
-          <el-button type="success" @click="SettingVisible=false">적용</el-button>
+          <el-button type="success" @click="SettingVisible2=false">설정완료</el-button>
         </template>
       </el-dialog>
-      <!-- 환경설정 모달 창 -->
+      <!-- 게임설정 모달 창 -->
 
     </div>
   </div>
@@ -214,16 +221,24 @@ export default {
       mySessionId: "SessionA",
       myUserName: "Participant" + Math.floor(Math.random() * 100),
 
+
+      // 환경설정 모달
       SettingVisible: false,
       MusicVolume: ref(0),
       EffectVolume: ref(0),
       Cam: false,
       MiC: false,
       
+      // 게임설정 모달
       SettingVisible2: false,
       GameMode: ref(0),
       BasicSong: ref(0),
       Difficulty: ref(0),
+
+
+      // 사용자 목록
+      isOwner: false,
+      UserList: ['user1','user2','user3'],
     }
   },
   mounted() {
@@ -347,10 +362,10 @@ export default {
 
 <style scoped>
 
-  /* el-dialog {
-    border: 15px solid red;
-    color: #ffffff;
-  } */
+  li {
+    text-align: left;;
+    margin-left: 5px;
+  }
 
 
   #ColCheck{
@@ -435,5 +450,5 @@ export default {
     margin-left: 12px;
   }
   /* volume slider */
-  
+
 </style>
