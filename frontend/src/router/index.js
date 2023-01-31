@@ -20,27 +20,32 @@ const routes = [
   {
     path: '/solo',
     name: 'solo',
-    component: () => import(/* webpackChunkName: "solo" */ '../views/SoloView.vue')
+    component: () => import(/* webpackChunkName: "solo" */ '../views/solo/SoloView.vue')
   },
   {
     path: '/solo/sound',
     name: 'soloSound',
-    component: () => import(/* webpackChunkName: "solo" */ '../views/SoloSoundView.vue')
+    component: () => import(/* webpackChunkName: "solo" */ '../views/solo/SoloSoundView.vue')
   },
   {
     path: '/solo/tutorial',
     name: 'soloTutorial',
-    component: () => import(/* webpackChunkName: "solo" */ '../views/SoloTutorialView.vue')
+    component: () => import(/* webpackChunkName: "solo" */ '../views/solo/SoloTutorialView.vue')
   },
   {
     path: '/solo/song',
     name: 'soloSong',
-    component: () => import(/* webpackChunkName: "solo" */ '../views/SoloSongView.vue')
+    component: () => import(/* webpackChunkName: "solo" */ '../views/solo/SoloSongView.vue')
   },
   {
     path: '/solo/analize',
     name: 'soloAnalize',
-    component: () => import(/* webpackChunkName: "solo" */ '../views/SoloAnalizeView.vue')
+    component: () => import(/* webpackChunkName: "solo" */ '../views/solo/SoloAnalizeView.vue')
+  },
+  {
+    path: '/multi/song',
+    name: 'multiSong',
+    component: () => import(/* webpackChunkName: "multi" */ '../views/multi/MultiSongView.vue')
   }
 ]
 

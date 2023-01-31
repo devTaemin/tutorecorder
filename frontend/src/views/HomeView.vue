@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <HomeMain msg="홈페이지"/>
+    <HomeMain/>
   </div>
 </template>
 
