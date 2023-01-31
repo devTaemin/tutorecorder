@@ -1,7 +1,5 @@
 <template>
   <div class="hello">
-    <h1>{{ msg }}</h1>
-
     <el-button 
       type="success" 
       :icon="Check" 

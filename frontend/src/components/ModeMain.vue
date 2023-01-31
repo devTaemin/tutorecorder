@@ -1,7 +1,5 @@
 <template>
     <div>
-        <h1>{{ msg }}</h1>
-
         <el-row :gutter="18" justify="center">
             <el-col :span="6">
                 <el-card shadow="hover" @click="moveSoloPage">
@@ -24,6 +22,7 @@
             v-model="roomEnterVisible"
             title=""
             width="40%"
+            class="tutorial-modal"
         >
             <el-form
                 label-width="100px"
@@ -113,3 +112,9 @@ export default {
     }
 }
 </script>
+
+<style>
+.tutorial-modal{
+    background-color: #F2E6E6;;
+}
+</style>

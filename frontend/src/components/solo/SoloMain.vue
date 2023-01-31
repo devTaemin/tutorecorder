@@ -1,10 +1,8 @@
 <template>
     <div>
-        <h1>{{ msg }}</h1>
-
         <el-row :gutter="18" justify="center">
             <el-col :span="6">
-                <el-card shadow="hover" @click="openSoloTutorial" class="hover-button">
+                <el-card shadow="hover" @click="moveSoloTutorial" class="hover-button">
                     <div>튜토리얼 모드</div>
                 </el-card>
             </el-col>
@@ -20,37 +18,21 @@
             </el-col>
         </el-row>
 
-        <el-dialog v-model="opentutorial" width="90%" id="dialog-tutorial"><SoloTutorialView @close-tutorial="closeTutorial"/></el-dialog>
     </div>
 </template>
 <script>
-import SoloTutorialView from '@/views/SoloTutorialView.vue'
 
 export default {
     name: 'SoloMain',
-    components: {
-        SoloTutorialView,
-    },
-    props: {
-        msg: String
-    },
-    data() {
-        return{
-            opentutorial: false
-        }
-    },
     methods: {
-        openSoloTutorial: function() {
-            this.opentutorial = !this.opentutorial
+        moveSoloTutorial: function() {
+            this.$router.push({ name: 'soloTutorial' })
         },
         moveSoloSound: function() {
             this.$router.push({ name: 'soloSound' })
         },
         moveSoloSong: function() {
             this.$router.push({ name: 'soloSong' })
-        },
-        closeTutorial() {
-            this.opentutorial = false
         }
     }
 
@@ -58,9 +40,6 @@ export default {
 </script>
 
 <style>
-#dialog-tutorial{
-    border-radius: 20px;
-}
 .hover-button{
     cursor: pointer;
 }
