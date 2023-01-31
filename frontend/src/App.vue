@@ -58,6 +58,8 @@ export default {
   width: 100vw;
   height: 100vh;
   background-size: 100vw 100vh;
+  display: flex;
+  justify-content: center;
 }
 .char1{
   background-image: url("./assets/Background/char1.png");

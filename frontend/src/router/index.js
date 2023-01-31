@@ -20,7 +20,7 @@ const routes = [
   {
     path: '/solo',
     name: 'solo',
-    component: () => import(/* webpackChunkName: "solo" */ '../views/solo/SoloView.vue'),
+    component: () => import(/* webpackChunkName: "solo" */ '../views/solo/SoloView.vue')
   },
   {
     path: '/solo/sound',

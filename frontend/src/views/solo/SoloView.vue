@@ -4,12 +4,17 @@
     </div>
 </template>
 <script>
+<<<<<<< HEAD
 import SoloMain from '@/components/solo/SoloMain.vue';
+=======
+import SoloMain from '@/components/solo/SoloMain.vue'
+>>>>>>> f9ae546332c2dfbc3fdd2bc6e06a22e89800cc59
 
 export default {
     name: 'SoloView',
     components: {
         SoloMain,
+<<<<<<< HEAD
     },
 
 }
@@ -36,3 +41,9 @@ export default {
     height: 6vh;
 }
 </style>
+=======
+    }
+
+}
+</script>
+>>>>>>> f9ae546332c2dfbc3fdd2bc6e06a22e89800cc59
