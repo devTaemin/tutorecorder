@@ -1,40 +1,35 @@
 <template>
     <div>
-        <h1>{{ msg }}</h1>
-
         <el-row :gutter="18" justify="center">
             <el-col :span="6">
-                <el-card shadow="hover" @click="moveSoloSound">
+                <el-card shadow="hover" @click="moveSoloTutorial" class="hover-button">
+                    <div>튜토리얼 모드</div>
+                </el-card>
+            </el-col>
+            <el-col :span="6">
+                <el-card shadow="hover" @click="moveSoloSound" class="hover-button">
                     <div>소리내기 모드</div>
                 </el-card>
             </el-col>
             <el-col :span="6">
-                <el-card shadow="hover" @click="moveSoloFingering">
-                    <div>운지법 모드</div>
-                </el-card>
-            </el-col>
-            <el-col :span="6">
-                <el-card shadow="hover" @click="moveSoloSong">
+                <el-card shadow="hover" @click="moveSoloSong" class="hover-button">
                     <div>기본곡 모드</div>
                 </el-card>
             </el-col>
         </el-row>
+
     </div>
 </template>
 <script>
 
-
 export default {
     name: 'SoloMain',
-    props: {
-        msg: String
-    },
     methods: {
+        moveSoloTutorial: function() {
+            this.$router.push({ name: 'soloTutorial' })
+        },
         moveSoloSound: function() {
             this.$router.push({ name: 'soloSound' })
-        },
-        moveSoloFingering: function() {
-            this.$router.push({ name: 'soloFingering' })
         },
         moveSoloSong: function() {
             this.$router.push({ name: 'soloSong' })
@@ -43,3 +38,9 @@ export default {
 
 }
 </script>
+
+<style>
+.hover-button{
+    cursor: pointer;
+}
+</style>

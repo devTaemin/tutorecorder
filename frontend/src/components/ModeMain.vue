@@ -1,6 +1,5 @@
 <template>
     <div>
-        <h1>{{ msg }}</h1>
         <div>
             <el-row :gutter="18" justify="center">
                 <el-col :span="6">
@@ -19,11 +18,11 @@
                     </el-card>
                 </el-col>
             </el-row>
-
             <el-dialog
                 v-model="roomEnterVisible"
                 title=""
                 width="40%"
+                class="tutorial-modal"
             >
                 <el-form
                     label-width="100px"
@@ -45,9 +44,6 @@
 
 export default {
     name: 'ModeMain',
-    props: {
-        msg: String,
-    },
     components: {
 
     },
@@ -55,7 +51,6 @@ export default {
         return {
             roomEnterVisible: false,
             roomCode: '',
-
         }
     },
     computed: {
@@ -75,7 +70,13 @@ export default {
         },
         createRoom: function() {
             this.$router.push({ name: 'playRoom' });
-        }
+        },
     }
 }
 </script>
+
+<style>
+.tutorial-modal{
+    background-color: #F2E6E6;;
+}
+</style>

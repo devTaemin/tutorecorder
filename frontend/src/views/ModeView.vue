@@ -1,6 +1,6 @@
 <template>
     <div>
-        <ModeMain msg="모드 선택" />
+        <ModeMain/>
     </div>
 </template>
 <script>
