@@ -26,6 +26,8 @@
   background-image: url("./assets/BackgroundImage.png");
   height: 100vh;
   background-size: 100vw 100vh;
+  display: flex;
+  justify-content: center;
 }
 
 
