@@ -3,19 +3,10 @@
         <el-col :span="15" class="game-content-cam-section">
             <el-col :span="6" class="game-content-others-cam">
                 <el-button class="carousel-button" :icon="ArrowUpBold" @click="goPrev"></el-button>
-                <el-carousel height="500px" indicator-position="none" direction="vertical" :autoplay="false" ref="myCarousel">
-                    <el-carousel-item v-for="item in 4" :key="item">
-                        <div class="others-cam">
-                            상대방 캠
-                        </div>
-                        <div class="others-cam">
-                            상대방 캠
-                        </div>
-                        <div class="others-cam">
-                            상대방 캠
-                        </div>
-                        <div class="others-cam">
-                            상대방 캠
+                <el-carousel height="610px" indicator-position="none" direction="vertical" :autoplay="false" ref="myCarousel">
+                    <el-carousel-item v-for="item in others.length" :key="item">
+                        <div class="others-cam" v-for="cam in others[item-1].length" :key="cam">
+                            {{ others[item-1][cam-1] }}
                         </div>
                     </el-carousel-item>
                 </el-carousel>
@@ -52,6 +43,7 @@ export default {
         return {
             ArrowUpBold: ArrowUpBold,
             ArrowDownBold: ArrowDownBold,
+            others: [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 16], [17, 18, 19, 20]]
         }
     },
     methods: {
@@ -67,7 +59,6 @@ export default {
         goPrev() {
             this.$refs.myCarousel.prev();
         }
-        
     }
 }
 </script>
@@ -82,7 +73,7 @@ div{
 
 .game-content-cam-section{
     margin: auto;
-    height: 90%;
+    height: 95%;
     border: 1px solid blue;
     border-radius: 20px;
 }
@@ -158,22 +149,19 @@ div{
 }
 .el-carousel {
     width: 90%;
+    overflow: hidden;
 }
-.el-carousel > .el-carousel-item{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-.el-carousel__item:nth-child(2n) {
-  background-color: #99a9bf;
+.el-carousel__item{
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
 }
 
-.el-carousel__item:nth-child(2n + 1) {
-  background-color: #d3dce6;
-}
 .others-cam {
     height: 20%;
+    width: 100%;
     margin: 10px;
     background-color: #9fa1a4;
 }
