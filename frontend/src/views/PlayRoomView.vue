@@ -2,21 +2,39 @@
     <div>
         플레이룸
         <el-button type="danger" plain @click="leaveSession">Leave a Session</el-button>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
 
         <div v-if="isOwner">관리자입니다.</div>
         <div v-if="!isOwner">참여자입니다.</div>
         <el-button type="success" plain @click="printSession">세션 정보 프린트</el-button>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
 
-        <div id="players" v-for="sub in subscribers" :key="sub.stream.connection.connectionId" @click="outUser(sub)">
-        {{ jsonNameRendering(sub.stream.connection.data) }}
-        </div>
-
-
-
-        <div id="session" v-if="session">
-            <div id="main-video">
-                <user-video :stream-manager="mainStreamManager"/>
+        <div>참가자 목록입니다</div>
+        <div>{{ this.myUserName }}</div>
+        <div v-if="this.isOwner">
+            <div id="players" v-for="sub in subscribers" :key="sub.stream.connection.connectionId" @click="outUser(sub)">
+                {{ jsonNameRendering(sub.stream.connection.data) }}
             </div>
+        </div>
+        <div v-if="!this.isOwner">
+            <div id="players" v-for="sub in subscribers" :key="sub.stream.connection.connectionId">
+                {{ jsonNameRendering(sub.stream.connection.data) }}
+            </div>
+        </div>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+
+
+        <div>비디오 입니다</div>
+        <div id="session" v-if="session">
             <div id="video-container">
                 <user-video :stream-manager="publisher"/>
                 <user-video v-for="sub in subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" />
@@ -130,11 +148,9 @@ export default {
 
             // 1) Get an OpenVidu Object
             this.OV = new OpenVidu();
-            console.log("1");
 
             // 2) Init a Session
             this.session = this.OV.initSession();
-            console.log("2");
 
             // 3) Spcify the actions when events take place in the session
             // 3-1) streamCreated
@@ -145,6 +161,13 @@ export default {
 
             // 3-2) streamDestroyed
             this.session.on('streamDestroyed', ({ stream }) => {
+                const { isOwner } = JSON.parse(stream.connection.data);
+                if (isOwner) {
+                    this.leaveSession();
+                    alert("세션이 종료되었습니다.");
+                    return;
+                }
+
                 const index = this.subscribers.indexOf(stream.streamManager, 0);
                 if (index >= 0) {
                     this.subscribers.splice(index, 1);
@@ -153,14 +176,12 @@ export default {
 
             // 3-3) stream kicked out
             this.session.on("signal:out", async (event) => {
-                console.log("out으로 전달된 event");
-                console.log(event);
-
                 let id = event.data;
 
                 if (id == this.myUserName) {
                     this.leaveSession();
-                    alert("방에서 추방당하셨습니다.");
+                    alert("세션에서 추방당하셨습니다.");
+                    return;
                 }
             })
 
@@ -228,12 +249,23 @@ export default {
             // 3) Spcify the actions when events take place in the session
             // 3-1) streamCreated
             this.session.on('streamCreated', ({ stream }) => {
+                console.log("들어가는 스트림 확인");
+                console.log(stream);
+                                console.log(stream.connection.data);
+
                 const subscriber = this.session.subscribe(stream);
                 this.subscribers.push(subscriber);
             }) 
 
             // 3-2) streamDestroyed
             this.session.on('streamDestroyed', ({ stream }) => {
+                const { isOwner } = JSON.parse(stream.connection.data);
+                if (isOwner) {
+                    this.leaveSession();
+                    alert("세션이 종료되었습니다.");
+                    return;
+                }
+
                 const index = this.subscribers.indexOf(stream.streamManager, 0);
                 if (index >= 0) {
                     this.subscribers.splice(index, 1);
@@ -242,8 +274,6 @@ export default {
 
             // 3-3) stream kicked out
             this.session.on("signal:out", async (event) => {
-                console.log("out으로 전달된 event");
-                console.log(event);
                 let id = event.data;
 
                 if (id == this.myUserName) {
