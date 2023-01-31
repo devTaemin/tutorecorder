@@ -1,11 +1,14 @@
 <template>
   <div class="hello">
-    <el-button 
-      type="success" 
-      :icon="Check" 
-      @click="nameSetVisible=true"
-    >
-    START</el-button>
+    <div style="width:80%; border:5px solid red; margin:auto; margin-top:5%;">
+      <img src="../assets/logo.png" alt="logo img" style="width:50%;" > 
+      
+      <div @click="nameSetVisible=true" style="cursor:pointer;">
+        <img src="../assets/star.png" alt="star img" style="height:24px;">
+        <img src="../assets/start.png" alt="start img" style="width:10%;">
+      </div>
+    </div>
+
 
     <el-dialog
       v-model="nameSetVisible"
