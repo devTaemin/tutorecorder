@@ -28,9 +28,6 @@ export default {
             this.$router.push({ name: 'soloTutorial' })
         },
         moveSoloSound: function() {
-            if (localStorage.getItem('charVisible')) {
-                localStorage.removeItem('charVisible')
-            }
             this.$router.push({ name: 'soloSound' })
         },
         moveSoloSong: function() {

@@ -15,8 +15,8 @@
                 곡 이미지 들어갈 곳
             </div>
             <div class="game-sub-button">
-                <el-button>분석</el-button>
-                <el-button>나가기</el-button>
+                <el-button class="solo-analyze-button">분석</el-button>
+                <el-button class="solo-out-button">나가기</el-button>
             </div>
         </el-col>
     </el-row>
@@ -69,8 +69,4 @@ div {
     height: 50%;
 }
 
-.game-sub-button{
-    margin-top: 30px;
-    height: 20%;
-}
 </style>

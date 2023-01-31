@@ -151,4 +151,11 @@ export default {
     transform: scale(1)
   }
 }
+
+.pink-container{
+    width: 95vw;
+    height: 95vh;
+    background-color: #F2E6E6;
+    margin: auto;
+}
 </style>
