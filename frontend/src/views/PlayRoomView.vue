@@ -27,11 +27,12 @@
                 </el-scrollbar>
 
                 <!-- 입력 부분-->
-                <el-input v-model="chatMessage" clearable />
-                <el-button type="success" @click="this.sendMessage">
+                <el-input v-model="chatMessage" clearable @keyup.enter="this.sendMessage" 
+                    style="position:fixed; bottom:0; border:10px solid black;"/>
+                <!-- <el-button type="success" @click="this.sendMessage">
                     Submit
                     <el-icon class="el-icon--right"><Upload /></el-icon>
-                </el-button>
+                </el-button> -->
             </div>
             <!-- 대기방 채팅창 끝 -->
 
@@ -108,16 +109,21 @@
 
 
             <div id="RedBoxRightBottom">
-                <img src="../assets/confsetting.png" 
-                    alt="configuration setting img" 
-                    @click="SettingVisible=true" 
-                    style="cursor:pointer; width: 45px;"
-                >
                 <img src="../assets/goback.png" 
                     alt="game setting img" 
                     @click="leaveSession" 
                     style="cursor:pointer; 
                     width: 45px; "
+                >
+                <img src="../assets/share.png" 
+                    alt="game setting img" 
+                    style="cursor:pointer; 
+                    width: 45px; "
+                >
+                <img src="../assets/confsetting.png" 
+                    alt="configuration setting img" 
+                    @click="SettingVisible=true" 
+                    style="cursor:pointer; width: 45px;"
                 >
             </div>
         </div>
@@ -215,7 +221,6 @@ import { OpenVidu } from "openvidu-browser";
 import { mapState } from "vuex"
 import axios from "axios";
 import UserVideo from "@/components/video/UserVideo.vue"
-import { Upload } from '@element-plus/icons-vue'
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
 
@@ -225,7 +230,6 @@ export default {
     name: 'PlayRoomView',
     components: {
         UserVideo,
-        Upload,
     },
     data() {
         return {
@@ -404,7 +408,7 @@ export default {
                             videoSource: undefined,
                             publishAudio: true,
                             publishVideo: true,
-                            resolution: "240x160",
+                            resolution: "300x250",
                             frameRate: 30,
                             insertMode: "Append",
                             mirror: false,
@@ -508,7 +512,7 @@ export default {
                             videoSource: undefined,
                             publishAudio: true,
                             publishVideo: true,
-                            resolution: "240x160",
+                            resolution: "300x250",
                             frameRate: 30,
                             insertMode: "Append",
                             mirror: false,
@@ -565,6 +569,7 @@ export default {
     text-align: left;;
     margin-left: 5px;
   }
+
   #pink-container{
     width: 95vw;
     height: 95vh;
@@ -573,7 +578,11 @@ export default {
     border-radius: 30px;
     padding:0;
     display: flex;
+    position: relative;
+    z-index: 2;
+    border-radius: 30px;
   }
+
 
   #BlackBoxLargestBox{
     display: flex;
@@ -595,7 +604,7 @@ export default {
     border: 5px solid yellow;
     display: flex;
     width:99%;
-    height:80%;
+    height:65%;
     margin: 0;
     padding: 0;
   }
@@ -603,7 +612,7 @@ export default {
     border: 5px solid green;
     display: inline-block;
     width: 85%;
-    height: 15%; 
+    height: 25%; 
     margin: 0;
     padding: 0;
   } 
