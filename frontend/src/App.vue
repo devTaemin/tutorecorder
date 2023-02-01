@@ -2,10 +2,17 @@
   <div>
     <div id="background-image">
       <router-view/>
-      <div v-if="charVisible" class="char1 enlarge"></div>
-      <div v-if="charVisible" class="char2 shake"></div>
-      <div v-if="charVisible" class="char3 enlarge"></div>
-      <div v-if="charVisible" class="char4 shake"></div>
+      <div class="char1 enlarge"></div>
+      <div class="char2 shake"></div>
+      <div class="char3 enlarge"></div>
+      <div class="char4 shake"></div>
+      <div class="snow-wrapper">
+        <transition-group @before-enter="randomPart">
+          <div class="snow falling" v-for="snow in snowUnits" :key="snow">♩</div>
+          <div class="snow falling" v-for="snow in snowUnits" :key="snow">♪</div>
+          <div class="snow falling" v-for="snow in snowUnits" :key="snow">♬</div>
+        </transition-group>
+      </div>
     </div>
   </div>
 </template>
@@ -17,22 +24,68 @@ export default {
     components: {
 
     },
-    computed: {
-      charVisible() {
-        return true
-      }
-    },
     data() {
       return {
+        snowUnits: [],
+        sequence: 0,
       }
     },
     methods: {
-      sendCharVisble: () => {
+      addSnow(){
+        this.snowUnits.push(this.sequence++)
+      },
+
+      generateSnow(size){
         
-      }
+        for(let i=0; i<size; i++) {
+          this.addSnow()
+        }
+      },
+
+      randomPart(el) {
+        // 1 left : 화면 - 오차 ~ 화면 + 오차 범위 내 생성
+        const offset = 400;
+        const min = -offset;
+        const max = window.screen.width + offset;
+        const left = this.RNG_INT(min, max)
+        el.style.left = left + "px";
+
+        // 2 scale : 0.25~1
+        const scale = this.RNG_float(0.25, 1)
+        el.style.transform = `scale(${scale})`;
+        
+        // 3 opacity: 0.1~1
+        const opacity = this.RNG_float(0.1, 1)
+        el.style.opacity = opacity;
+
+        // 4 animation delay(1ms ~10000ms)
+        const delay = this.RNG_float(1, 10000);
+        el.style.animationDelay = delay+"ms"
+
+        // 5 animation duration(10s~30s)
+        const duration = this.RNG_float(10000, 30000);
+        el.style.animationDuration = duration + 'ms'
+
+        // 6 color
+        const colors = ['#eb8484', '#8a95ea', '#8ecc7d', '#d9c000']
+        const color_pick = colors[this.RNG_INT(0, 4)];
+        el.style.color = color_pick
+      },
+
+      RNG_float(begin, end) {
+        const max = Math.max(begin, end)
+        const min = Math.min(begin, end)
+        const range = max - min
+        return Math.random() * range + min;
+      },
+
+      RNG_INT(begin, end) {
+        return parseInt(this.RNG_float(begin, end))
+      },
+
     },
-    created() {
-      this.sendCharVisble()
+    mounted() {
+      this.generateSnow(50)
     }
 }
 </script>
@@ -49,7 +102,7 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
+  /* color: #2c3e50; */
   height: 100vh;
   font-family: 'JUA', serif;
 }
@@ -70,6 +123,7 @@ export default {
   width:11.2vw;
   left: 6%;
   top: 45%;
+  z-index: 2;
 }
 .char2{
   background-image: url("./assets/Background/char2.png");
@@ -80,6 +134,7 @@ export default {
   width: 19vh;
   left: 38%;
   top: 55%;
+  z-index: 2;
 }
 .char3{
   background-image: url("./assets/Background/char3.png");
@@ -90,6 +145,7 @@ export default {
   width: 12vh;
   left: 60%;
   top: 55%;
+  z-index: 2;
 }
 .char4{
   background-image: url("./assets/Background/char4.png");
@@ -100,6 +156,22 @@ export default {
   width: 15vh;
   left: 85%;
   top: 65%;
+  z-index: 2;
+}
+
+.pink-container{
+  width: 95vw;
+  height: 95vh;
+  background-color: #F2E6E6;
+  margin: auto;
+  border-radius: 30px;
+  position: relative;
+  z-index: 3;
+}
+
+.mode{
+  position: relative;
+  z-index: 3;
 }
 
 .shake:hover {
@@ -107,16 +179,6 @@ export default {
   animation-timing-function: linear;
   animation-iteration-count: infinite;
   animation-duration: 0.5s;
-}
-
-.pink-container{
-    width: 95vw;
-    height: 95vh;
-    background-color: #F2E6E6;
-    margin: auto;
-    position: relative;
-    z-index: 2;
-    border-radius: 30px;
 }
 
 
@@ -165,11 +227,35 @@ export default {
     transform: scale(1)
   }
 }
-
-.pink-container{
-    width: 95vw;
-    height: 95vh;
-    background-color: #F2E6E6;
-    margin: auto;
+.snow-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  overflow: hidden;
+  /* em으로 크기 설정할 때 쓰임 (1em은 1글자 높이) */
+  font-size: 10px;
+  z-index: 1;
+}
+.snow-wrapper > .snow {
+  position: absolute;
+  font-size: 50px;
+  z-index: 1;
+  top: -20%;
+  left: 50%;
+}
+.snow.falling {
+  animation-name: falling;
+  animation-timing-function:linear;
+  animation-iteration-count: infinite;
+}
+@keyframes falling {
+  0% {top: -20%; 
+    transform: rotate(-180deg);
+  }
+  100% {top: 120%;
+    transform: rotate(360deg);
+  }
 }
 </style>

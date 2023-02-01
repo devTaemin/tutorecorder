@@ -16,13 +16,4 @@ export default {
 </script>
 
 <style>
-.pink-container{
-    width: 95vw;
-    height: 95vh;
-    background-color: #F2E6E6;
-    margin: auto;
-    position: relative;
-    z-index: 2;
-    border-radius: 30px;
-}
 </style>
