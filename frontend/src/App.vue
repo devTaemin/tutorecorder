@@ -108,6 +108,18 @@ export default {
   animation-iteration-count: infinite;
   animation-duration: 0.5s;
 }
+
+.pink-container{
+    width: 95vw;
+    height: 95vh;
+    background-color: #F2E6E6;
+    margin: auto;
+    position: relative;
+    z-index: 2;
+    border-radius: 30px;
+}
+
+
 @keyframes shaking {
   0% {
     transform: rotate(0deg);

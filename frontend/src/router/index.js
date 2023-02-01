@@ -46,6 +46,11 @@ const routes = [
     path: '/multi/sound',
     name: 'multiSound',
     component: () => import(/* webpackChunkName: "mulit" */ '../views/multi/MultiSoundView.vue')
+  },
+  {
+    path: '/multi/song',
+    name: 'multiSong',
+    component: () => import(/* webpackChunkName: "multi" */ '../views/multi/MultiSongView.vue')
   }
 ]
 
