@@ -20,8 +20,8 @@
                 <img id="board-image" src="../../assets/board.png" alt="">
             </div>
             <div class="game-content-button">
-                <el-button class="multi-analyze-button" @click="goMultiAnalize">분석</el-button>
-                <el-button class="multi-out-button" @click="goMulti">나가기</el-button>
+                <el-button class="solo-analyze-button" @click="goMultiAnalize">분석</el-button>
+                <el-button class="solo-out-button" @click="goMulti">나가기</el-button>
             </div>
         </el-col>
     </el-row>
@@ -113,25 +113,6 @@ export default {
 #board-image{
     width: 100%;
     height: 100%;
-}
-
-.multi-analyze-button{
-    background-color: #8684FF;
-    color: white;
-    font-family: 'JUA', serif;
-    font-size: 4vh;
-    width: 18vh;
-    height: 6vh;
-    margin-right: 8vh;
-
-}
-
-.multi-out-button{
-    background-color: #F0AFAF;
-    font-family: 'JUA', serif;
-    font-size: 4vh;
-    width: 18vh;
-    height: 6vh;
 }
 
 .game-content-title{
