@@ -39,9 +39,6 @@ import { mapActions } from 'vuex'
 
 export default {
   name: 'HomeMain',
-  props: {
-    msg: String
-  },
   data() {
     return {
       Check: Check,

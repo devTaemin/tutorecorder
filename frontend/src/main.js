@@ -6,5 +6,10 @@ import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 
 
-createApp(App).use(store).use(router).use(ElementPlus).mount('#app')
+createApp(App,
+    {
+        onExpand() {
+            console.log('expand')
+        }
+    }).use(store).use(router).use(ElementPlus).mount('#app')
 

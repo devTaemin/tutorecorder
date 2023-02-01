@@ -10,7 +10,7 @@ import HomeMain from '@/components/HomeMain'
 export default {
   name: 'HomeView',
   components: {
-    HomeMain
-  }
+    HomeMain,
+  },
 }
 </script>

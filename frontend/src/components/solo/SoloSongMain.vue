@@ -84,7 +84,6 @@ export default {
     background-size: contain;
     background-repeat: no-repeat;
 }
-
 .game-sub-button{
     margin-top: 5vh;
 }
