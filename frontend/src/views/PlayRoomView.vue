@@ -68,9 +68,14 @@
                 <!-- 방장이 아닌 경우 게임 정보를 볼 수 있도록 한다-->
                 <div v-if="!isOwner">
                     <h1> 게임 정보 </h1>
-                    <li> {{ GameMode }} </li>
-                    <li> {{ BasicSong }}</li>
-                    <li> {{ Difficulty }}</li>
+                    <div v-if='gameMode=="play"'>
+                        게임 모드: {{ gameMode }} <br/>
+                        곡 이름: {{ basicSong }}
+                    </div>
+                    <div v-if='gameMode=="sound"'>
+                        게임 모드: {{ gameMode }} <br/>
+                        난이도: {{ difficulty }}
+                    </div>
                 </div>
             </div>
             <!-- 게임 세팅 창 끝 -->
@@ -140,23 +145,23 @@
 
             <h1 style="border:5px solid red">게임선택</h1>
             <el-radio-group v-model="gameMode" class="ml-4">
-                <el-radio label="play" size="large" border="true">연주하기</el-radio>
-                <el-radio label="sound" size="large" border>소리내기</el-radio>
+                <el-radio label="play" size="large" border="true" @click="this.choosePlay">연주하기</el-radio>
+                <el-radio label="sound" size="large" border @click="this.chooseSound">소리내기</el-radio>
             </el-radio-group>
             <hr>
 
             <h1>곡 선택 - 곡 연주</h1>
             <el-radio-group v-model="basicSong" class="ml-4">
-                <el-radio label="airplane" size="large" border>비행기</el-radio>
-                <el-radio label="anthem" size="large" border>애국가</el-radio>
+                <el-radio label="airplane" size="large" border :disabled="optionEnabler">비행기</el-radio>
+                <el-radio label="anthem" size="large" border :disabled="optionEnabler">애국가</el-radio>
             </el-radio-group>
             <hr>
 
             <h1>난이도 선택 - 소리내기, 운지법</h1>
             <el-radio-group v-model="difficulty" class="ml-4">
-                <el-radio label="level1" size="large" border>1단계(5초)</el-radio>
-                <el-radio label="level2" size="large" border>2단계(3초)</el-radio>
-                <el-radio label="level3" size="large" border>3단계(2초)</el-radio>
+                <el-radio label="level1" size="large" border :disabled="!optionEnabler">1단계(5초)</el-radio>
+                <el-radio label="level2" size="large" border :disabled="!optionEnabler">2단계(3초)</el-radio>
+                <el-radio label="level3" size="large" border :disabled="!optionEnabler">3단계(2초)</el-radio>
             </el-radio-group>
             <hr>
         
@@ -243,6 +248,7 @@ export default {
             difficulty: undefined,
             chatMessage: '',
             messageList: [],
+            optionEnabler: false,
         }
     },
     mounted() {
@@ -258,11 +264,37 @@ export default {
 
     },
     methods: {
+        choosePlay: function() {
+            this.optionEnabler = false;
+            this.gameMode = "play";
+            this.basicSong = "airplane";
+            this.difficulty = undefined;
+        },
+        chooseSound: function() {
+            this.optionEnabler = true;
+            this.gameMode = "sound";
+            this.basicSong = undefined;
+            this.difficulty = "level1";
+        },
         gameSettingConfirm: function() {
             this.gameSettingVisible = false;
-            console.log(this.gameMode);
-            console.log(this.basicSong);
-            console.log(this.difficulty);
+            let obj = {
+                "gameMode" : this.gameMode,
+                "basicSong" : this.basicSong,
+                "difficulty" : this.difficulty
+            }
+
+            this.publisher.session.signal({
+                data: JSON.stringify(obj),
+                to: [],
+                type: 'game-setting'
+            })
+            .then(() => {
+                console.log('game-setting successfully sent');
+            })
+            .catch(error => {
+                console.error(error);
+            })
         },
         jsonNameRendering: function(data) {
             const { clientData } = JSON.parse(data);
@@ -305,6 +337,7 @@ export default {
             this.basicSong = undefined;
             this.difficulty = undefined;
             this.messageList = [];
+            this.gameSettingVisible = false;
            
             window.location.href = window.location.origin + '/mode';
         },
@@ -345,6 +378,7 @@ export default {
             this.session.on('streamCreated', ({ stream }) => {
                 const subscriber = this.session.subscribe(stream);
                 this.subscribers.push(subscriber);
+                this.gameSettingConfirm();
             }) 
 
             // 3-2) streamDestroyed
@@ -423,8 +457,9 @@ export default {
                         this.isOwner = true;
                         
                         // Game 설정 (어떻게 고쳐야 하냐?)
-                        this.gameMode = undefined;
-                        this.basicSong = undefined;
+                        this.optionEnabler = false;
+                        this.gameMode = "play";
+                        this.basicSong = "airplane";
                         this.difficulty = undefined;
                     })
                     .catch((error) => {
@@ -446,10 +481,6 @@ export default {
             // 3) Spcify the actions when events take place in the session
             // 3-1) streamCreated
             this.session.on('streamCreated', ({ stream }) => {
-                console.log("들어가는 스트림 확인");
-                console.log(stream);
-                                console.log(stream.connection.data);
-
                 const subscriber = this.session.subscribe(stream);
                 this.subscribers.push(subscriber);
             }) 
@@ -490,6 +521,25 @@ export default {
                 let { clientData } = JSON.parse(event.from.data);
 
                 this.messageList.push(clientData + ": " + inMessage);
+            })
+
+            // 3-6) game setting
+            this.session.on('signal:game-setting', (event) => {
+                let { gameMode } = JSON.parse(event.data);
+                if (gameMode === "play") {
+                    let { basicSong } = JSON.parse(event.data);
+
+                    this.gameMode = gameMode;
+                    this.basicSong = basicSong;
+                    this.difficulty = undefined;
+                }
+                else {
+                    let { difficulty } = JSON.parse(event.data);
+
+                    this.gameMode = gameMode;
+                    this.basicSong = undefined;
+                    this.difficulty = difficulty;
+                }
             })
         
 
