@@ -18,23 +18,34 @@
             
 
             <!-- 대기방 채팅창 -->
-            <div id="GreenBoxChat">
+            <!-- <div id="GreenBoxChat" > -->
                 <!-- 채팅 내용 스크롤 기능으로 집어 넣기 -->
-                <el-scrollbar enline="nearest">
-                    <p v-for="message in messageList" :key="message" class="chat-scrollbar-item" style="margin-left:0;">
-                        {{ message }}
-                    </p>
-                </el-scrollbar>
-                <!-- 입력 부분-->
-                <span> </span>
-                <el-input v-model="chatMessage" clearable @keyup.enter="this.sendMessage"/>
-            </div>
+                <!-- <el-scrollbar> -->
+                    <!-- <p v-for="message in messageList" :key="message" class="chat-scrollbar-item" style="margin-left:0;"> -->
+                        <!-- {{ message }} -->
+                    <!-- </p> -->
+                <!-- </el-scrollbar> -->
+                    <!-- 입력 부분-->
+                <!-- <el-input v-model="chatMessage" clearable @keyup.enter="this.sendMessage"/> -->
+            <!-- </div> -->
             <!-- 대기방 채팅창 끝 -->
+
+
+            <!-- 채팅 스크롤바 시험 -->
+            <div id="GreenBoxChat" class="scroll" style="text-align:left;">
+                <p v-for="message in messageList" :key="message"  style="margin-left:0;">
+                    {{ message }}
+                </p>
+            </div>
+            <input v-model="chatMessage" clearable @keyup.enter="this.sendMessage" />
+
+            <!-- 채팅 스크롤바 시험 끝 -->
             
             
             <!-- 게임 시작/준비 전환 버튼 -->
             <div id="OrangeBoxStart"> 
                 <p>start box</p>
+                <button @click="this.watchtest"></button>
             </div>
             <!-- 게임 시작/준비 전환 버튼 끝 -->
 
@@ -218,6 +229,7 @@ axios.defaults.headers.post["Content-Type"] = "application/json";
 
 const APPLICATION_SERVER_URL = "http://localhost:5000/";
 
+
 export default {
     name: 'PlayRoomView',
     components: {
@@ -239,7 +251,10 @@ export default {
             difficulty: undefined,
             chatMessage: '',
             messageList: [],
-        }
+
+
+            index:0,
+        }   
     },
     mounted() {
         // Check if the URL already has a room
@@ -318,15 +333,25 @@ export default {
                 data: this.chatMessage,
                 to: [],
                 type: 'my-chat'
-            })
+            }
+            
+            
+            )
             .then(() => {
                 console.log('Message successfully sent');
+                console.log(this.chatMessage)
+
+
+                console.log(this.messageList)
+                const $el = document.querySelector(".scroll");
+                $el.scrollTop = $el.scrollHeight;
             })
             .catch(error => {
                 console.error(error);
             })
 
             this.chatMessage = '';
+
         }, 
         createRoom: function() {
 
@@ -551,8 +576,17 @@ export default {
             {}, { headers: { 'Content-Type': 'application/json' }});
 
             return response.data;
-        }
-    }
+        },
+    },
+
+    watch: {
+        messageList(){
+                this.sendMessage
+            }
+        },
+        
+
+
 }
 </script>
 <style scoped>
@@ -683,5 +717,63 @@ export default {
     margin-left: 12px;
   }
   /* volume slider */
+
+
+
+  /* chat slider test */
+  @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css");
+
+* {
+  font-family: Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto,
+    "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR",
+    "Malgun Gothic", sans-serif;
+}
+
+.scroll {
+  height: 300px; 
+  width: 80vw;
+  overflow-y: scroll;
+}
+
+button {
+  cursor: pointer;
+  margin-bottom: 1rem;
+  background: #febf00;
+  border: none;
+  padding: .6rem 1.5rem;
+  border-radius: .3rem;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.scroll > div span {
+  display: inline-block;
+  max-width: 100%;
+  border-top-right-radius: 1.5rem;
+  border-bottom-left-radius: 1.5rem;
+  border-bottom-right-radius: 1.5rem;
+  padding: 0.8rem 1.2rem;
+  background-color: #ececff;
+  margin-top: .6rem;
+}
+
+
+/* 스크롤바 커스텀 */
+.scroll::-webkit-scrollbar {
+  background-color: #fff;
+  width: 1rem;
+}
+
+.scroll::-webkit-scrollbar-track {
+  background-color: #fff;
+}
+
+.scroll::-webkit-scrollbar-thumb {
+  height: 15%;
+  background-color: #babac0;
+
+  border-radius: 1rem;
+  border: 4px solid #fff;
+}
 
 </style>
