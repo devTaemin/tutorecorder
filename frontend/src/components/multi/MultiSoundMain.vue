@@ -3,13 +3,11 @@
         <el-col :span="15" class="game-content-cam-section">
             <el-col :span="6" class="game-content-others-cam">
                 <el-button class="carousel-button" :icon="ArrowUpBold" @click="goPrev"></el-button>
-                <el-carousel height="610px" indicator-position="none" direction="vertical" :autoplay="false" ref="myCarousel">
-                    <el-carousel-item v-for="item in others.length" :key="item">
-                        <div class="others-cam" v-for="cam in others[item-1].length" :key="cam">
-                            {{ others[item-1][cam-1] }}
+                    <div class="carousel" id="cam-carousel">
+                        <div v-for="other in others" :key="other" class="caroursel-item">
+                            <h3>{{ other }}</h3>
                         </div>
-                    </el-carousel-item>
-                </el-carousel>
+                    </div>
                 <el-button class="carousel-button" :icon="ArrowDownBold" @click="goNext"></el-button>
             </el-col>
             <el-col :span="18" class="game-content-my-cam">
@@ -43,7 +41,7 @@ export default {
         return {
             ArrowUpBold: ArrowUpBold,
             ArrowDownBold: ArrowDownBold,
-            others: [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 16], [17, 18, 19, 20]]
+            others: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
         }
     },
     methods: {
@@ -54,19 +52,18 @@ export default {
         //     this.$router.push({ name: 'MultiRoom' })
         // }
         goNext() {
-            this.$refs.myCarousel.next();
+            let height = document.getElementById('cam-carousel').clientHeight;
+            document.getElementById('cam-carousel').scrollTop += height; 
         },
         goPrev() {
-            this.$refs.myCarousel.prev();
+            let height = document.getElementById('cam-carousel').clientHeight;
+            document.getElementById('cam-carousel').scrollTop -= height; 
         }
     }
 }
 </script>
 
 <style>
-div{
-    border: 1px solid red
-}
 .game-content-container{
     height: 100%;
 }
@@ -147,22 +144,23 @@ div{
     background-color: #F0CDCD;
     color: #6A6D71;
 }
-.el-carousel {
-    width: 90%;
-    overflow: hidden;
-}
-.el-carousel__item{
-    width: 100% !important;
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: center !important;
-    align-items: center !important;
-}
-
-.others-cam {
-    height: 20%;
+#cam-carousel{
     width: 100%;
-    margin: 10px;
+    height: 87%;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    overflow-y: auto;
+    scroll-behavior: smooth;
+}
+#cam-carousel::-webkit-scrollbar{
+    display:none;
+}
+.caroursel-item {
+    height: 24.7%;
+    width: 99.5%;
     background-color: #9fa1a4;
+    overflow: hidden;
+    border: 1px solid black;
+    border-radius: 10px;
 }
 </style>
