@@ -3,6 +3,7 @@
         <SoloMain/>
     </div>
 </template>
+
 <script>
 import SoloMain from '@/components/solo/SoloMain.vue'
 
@@ -11,7 +12,6 @@ export default {
     components: {
         SoloMain,
     }
-
 }
 </script>
 

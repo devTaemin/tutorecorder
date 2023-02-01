@@ -63,9 +63,6 @@ import { mapActions } from 'vuex'
 
 export default {
     name: 'ModeMain',
-    props: {
-        msg: String,
-    },
     data() {
         return {
             roomEnterVisible: false,
