@@ -37,11 +37,16 @@
 
 
             <!-- 게임 시작/준비 전환 버튼 -->
-            <!-- Question: 아래쪽을 전부 chatbox로 채우고 UserList아래 부분에 StartBox를 만들면 되지 않을까?
-                           톱니바퀴, 화살표가 왜 필요한지 질문필요
-            -->
             <div id="OrangeBoxStart"> 
-                <p>start box</p>
+                <div v-if="isOwner">
+                    <el-button :type="startButton" :disabled="!startButtonEnabled">시작하기</el-button>
+                </div>
+                <div v-if="!isOwner && !readyButtonOn">
+                    <el-button type="warning" @click="this.readyButtonConfirm">준비하기</el-button>
+                </div>
+                <div v-if="!isOwner && readyButtonOn">
+                    <el-button type="success" @click="this.readyButtonConfirm">준비완료</el-button>
+                </div>
             </div>
             <!-- 게임 시작/준비 전환 버튼 끝 -->
 
@@ -53,10 +58,6 @@
         <div id="RightBox">
 
             <!-- 게임 세팅 창 -->
-            <!-- 중요한 점은 외부에서 들어온 사람들에게 이 방의 설정을 뿌려줘야 한다
-                 또한 처음 방이 생성되어 있을때 default로 값이 설정되어 있어야 한다 -->
-            <!-- 왜 게임 정보를 다 올리는 거야? 연주하기 소리내기 구분한건 뭐고 연주 나뉘고 난이도 선택 나뉘고 이게 뭐야? 또 이걸 왜 다 보여줘
-                 게임 입장할때 기본값 설정은 왜 안되어 있는데?  -->
             <div id="PurpleBoxGameSetting">
                 <!-- 방장인 경우 게임 정보를 세팅할 수 있도록 한다 -->
                 <img v-if="isOwner" 
@@ -83,7 +84,8 @@
 
             <!-- 사용자 리스트 -->
             <div id="BlueBoxUserList">
-                <h1>User List</h1>
+                <h1>유저 리스트</h1>
+
                 <!-- 방장인 경우 참가자 확인 및 추방 기능을 추가한다 -->
                 <div v-if="this.isOwner">
                     <el-scrollbar height="400px">
@@ -172,7 +174,6 @@
         <!-- 게임설정 모달 창 끝-->
 
         <!-- 환경설정 모달 창 -->
-        <!-- 이 부분이 필요한가??? -->
         <el-dialog v-model="SettingVisible" width="20%" 
             style="border-radius: 10px; background-color: #DFE4F6;">
         <span>
@@ -249,6 +250,10 @@ export default {
             chatMessage: '',
             messageList: [],
             optionEnabler: false,
+            countReady: 0,
+            startButton: "primary",
+            startButtonEnabled: true,
+            readyButtonOn: false,
         }
     },
     mounted() {
@@ -264,6 +269,44 @@ export default {
 
     },
     methods: {
+        readyButtonConfirm: function() {
+            if (this.readyButtonOn) {
+                // 준비 버튼이 활성화가 되어 있는 경우
+                this.readyButtonOn = false;
+                this.count--;
+                this.readyButton = "warning";
+
+                this.publisher.session.signal({
+                    data: "",
+                    to: [],
+                    type: 'ready-minus'
+                })
+                .then(() => {
+                    console.log('the count of ready state is decremented');
+                })
+                .catch(error => {
+                    console.log(error);
+                })
+            }
+            else {
+                // 준비 버튼이 활성화가 되어 있지 않는 경우
+                this.readyButtonOn = true;
+                this.count++;
+                this.readyButton = "success";
+
+                this.publisher.session.signal({
+                    data: "",
+                    to: [],
+                    type: 'ready-plus'
+                })
+                .then(() => {
+                    console.log('the count of ready state is incremented');
+                })
+                .catch(error => {
+                    console.log(error);
+                })
+            }
+        },
         choosePlay: function() {
             this.optionEnabler = false;
             this.gameMode = "play";
@@ -338,6 +381,11 @@ export default {
             this.difficulty = undefined;
             this.messageList = [];
             this.gameSettingVisible = false;
+            this.countReady = 0;
+            this.startButton = "success";
+            this.readyButton = "warning";
+            this.startButtonEnabled = true;
+            this.readyButtonOn = false;
            
             window.location.href = window.location.origin + '/mode';
         },
@@ -379,6 +427,11 @@ export default {
                 const subscriber = this.session.subscribe(stream);
                 this.subscribers.push(subscriber);
                 this.gameSettingConfirm();
+                if (this.countReady != this.subscribers.length) {
+                    console.log("Owner 스트림 생성에 버튼 상태 변화가 감지되었다!!");
+                    this.startButtonEnabled = false;
+                    this.startButton = "danger";
+                }
             }) 
 
             // 3-2) streamDestroyed
@@ -393,6 +446,12 @@ export default {
                 const index = this.subscribers.indexOf(stream.streamManager, 0);
                 if (index >= 0) {
                     this.subscribers.splice(index, 1);
+                }
+
+                if (this.countReady == this.subscribers.length) {
+                    console.log("Owner 스트림 생성에 버튼 상태 변화가 감지되었다!!");
+                    this.startButtonEnabled = true;
+                    this.startButton = "primary";
                 }
             })
 
@@ -420,6 +479,29 @@ export default {
                 this.messageList.push(clientData + ": " + inMessage);
             })
         
+            // 3-7) ready plus
+            this.session.on('signal:ready-plus', () => {
+                this.countReady++;
+                if (this.countReady == this.subscribers.length) {
+                    // 추가
+                    this.startButtonEnabled = true;
+                    this.startButton = "primary";
+                }
+
+                console.log("owner에서 ready-plus를 받았다: ", this.countReady);
+                console.log("현재 subscribers의 수: ", this.subscribers.length);
+            })
+            
+
+            // 3-8) ready minus
+            this.session.on('signal:ready-minus', () => {
+                this.countReady--;
+                this.startButtonEnabled = false;
+                this.startButton = "danger";
+
+                console.log("owner에서 ready-minus를 받았다: ", this.countReady);
+                console.log("현재 subscribers의 수: ", this.subscribers.length);
+            })
 
 
 
@@ -494,6 +576,10 @@ export default {
                     return;
                 }
 
+                // if (this.readyButtonOn) {
+                //     this.readyButtonConfirm();
+                // }
+
                 const index = this.subscribers.indexOf(stream.streamManager, 0);
                 if (index >= 0) {
                     this.subscribers.splice(index, 1);
@@ -541,7 +627,7 @@ export default {
                     this.difficulty = difficulty;
                 }
             })
-        
+
 
             // 4) Get a token from the OpenVidu deployment
             this.getToken(this.roomCode).then((token) => {
@@ -571,13 +657,13 @@ export default {
 
                         // console.log("현재 session에 접속한 인원 수: " + this.session.connection.localOptions.value.length);
                         // 최대 정원 4명으로 설정
-                        let numOfJoined = this.session.connection.localOptions.value.length;
-                        console.log("방에 접속한 현재 인원: " + numOfJoined);
-                        if (numOfJoined >= 4) {
-                            alert("정원초과");
-                            this.leaveSession();
-                            return;
-                        }
+                        // let numOfJoined = this.session.connection.localOptions.value.length;
+                        // console.log("방에 접속한 현재 인원: " + numOfJoined);
+                        // if (numOfJoined >= 4) {
+                        //     alert("정원초과");
+                        //     this.leaveSession();
+                        //     return;
+                        // }
                     })
                     .catch((error) => {
                         console.log("There was an error connecting to the session: ", 
