@@ -169,6 +169,24 @@ export default {
   z-index: 3;
 }
 
+.solo-out-button{
+    background-color: #F0AFAF !important;
+    font-family: 'JUA', serif !important;
+    font-size: 4vh !important;
+    width: 10vw !important;
+    height: 6vh !important;
+}
+
+.solo-analyze-button{
+    background-color: #8684FF !important;
+    color: white !important;
+    font-family: 'JUA', serif !important;
+    font-size: 4vh !important;
+    width: 10vw !important;
+    height: 6vh !important;
+    margin-right: 3vw !important;
+}
+
 .mode{
   position: relative;
   z-index: 3;
@@ -180,7 +198,6 @@ export default {
   animation-iteration-count: infinite;
   animation-duration: 0.5s;
 }
-
 
 @keyframes shaking {
   0% {
