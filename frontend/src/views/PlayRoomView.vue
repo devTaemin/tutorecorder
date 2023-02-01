@@ -30,24 +30,26 @@
             <!-- </div> -->
             <!-- 대기방 채팅창 끝 -->
 
-
-            <!-- 채팅 스크롤바 시험 -->
-            <div id="GreenBoxChat" class="scroll" style="text-align:left;">
-                <p v-for="message in messageList" :key="message"  style="margin-left:0;">
-                    {{ message }}
-                </p>
+            <div style="display:flex; flex-direction:row; ">
+                <!-- 채팅 스크롤바 시험 -->
+                <div style="display:flex; flex-direction:column;  width:100%; margin: 0; padding: 0;">
+                    <div id="GreenBoxChat" class="scroll" style="text-align:left;">
+                        <p v-for="message in messageList" :key="message"  style="margin-left:0; margin-right:0;">
+                            {{ message }}
+                        </p>
+                    </div>
+                    <input v-model="chatMessage" clearable @keyup.enter="this.sendMessage" style="width:98.5%; margin-top:3px;" />
+                </div>
+                
+                <!-- 채팅 스크롤바 시험 끝 -->
+                
+                <!-- 게임 시작/준비 전환 버튼 -->
+                <div id="OrangeBoxStart"> 
+                    <p>start box</p>
+                </div>
+                <!-- 게임 시작/준비 전환 버튼 끝 -->
             </div>
-            <input v-model="chatMessage" clearable @keyup.enter="this.sendMessage" />
-
-            <!-- 채팅 스크롤바 시험 끝 -->
             
-            
-            <!-- 게임 시작/준비 전환 버튼 -->
-            <div id="OrangeBoxStart"> 
-                <p>start box</p>
-                <button @click="this.watchtest"></button>
-            </div>
-            <!-- 게임 시작/준비 전환 버튼 끝 -->
 
         </div>
         <!-- 왼쪽 박스 끝-->
@@ -85,7 +87,7 @@
                 <h1>User List</h1>
                 <!-- 방장인 경우 참가자 확인 및 추방 기능을 추가한다 -->
                 <div v-if="this.isOwner">
-                    <el-scrollbar height="320px">
+                    <el-scrollbar height="250px">
                         <div class="user-scrollbar-item">{{ this.myUserName }}</div>
                         <div class="user-scrollbar-item" v-for="sub in subscribers" :key="sub.stream.connection.connectionId">
                             {{ jsonNameRendering(sub.stream.connection.data) }}
@@ -100,7 +102,7 @@
 
                 <!-- 참가자인 경우 사용자 목록을 확인한다-->
                 <div v-if="!this.isOwner">
-                    <el-scrollbar height="320px">
+                    <el-scrollbar height="250px">
                         <div class="user-scrollbar-item">{{ this.myUserName }}</div>
                         <div class="user-scrollbar-item" v-for="sub in subscribers" :key="sub.stream.connection.connectionId">
                             {{ jsonNameRendering(sub.stream.connection.data) }} 
@@ -119,9 +121,10 @@
                     width: 45px; "
                 >
                 <img src="../assets/share.png" 
-                    alt="game setting img" 
+                    alt="share img" 
                     style="cursor:pointer; 
-                    width: 45px; "
+                    width: 45px; height: 45px;"
+                    
                 >
                 <img src="../assets/confsetting.png" 
                     alt="configuration setting img" 
@@ -341,10 +344,19 @@ export default {
                 console.log('Message successfully sent');
                 console.log(this.chatMessage)
 
+                console.log('flag1')
+                console.log(this.messageList.length)
+                console.log('flag2')
 
-                console.log(this.messageList)
+                // 둘이서 통신을 할때 메세지 리스트 길이는 대화에 흐름을 반영하는 것까지 확인
+                // watch 동작의 문제?
+                // chatmsg 로 확인 : messageList 만 동작을 안함 >> console.log 로 확인
+
+
+                // 스크롤 내리기 위해 필요한 부분
                 const $el = document.querySelector(".scroll");
                 $el.scrollTop = $el.scrollHeight;
+                // 스크롤 내리기 위해 필요한 부분 끝
             })
             .catch(error => {
                 console.error(error);
@@ -425,7 +437,7 @@ export default {
                             videoSource: undefined,
                             publishAudio: true,
                             publishVideo: true,
-                            resolution: "280x180",
+                            resolution: "240x160",
                             frameRate: 30,
                             insertMode: "Append",
                             mirror: false,
@@ -529,7 +541,7 @@ export default {
                             videoSource: undefined,
                             publishAudio: true,
                             publishVideo: true,
-                            resolution: "280x180",
+                            resolution: "240x160",
                             frameRate: 30,
                             insertMode: "Append",
                             mirror: false,
@@ -577,16 +589,19 @@ export default {
 
             return response.data;
         },
+        watchtest(){
+
+        }
     },
 
     watch: {
+        chatMessage(){
+            console.log('watch activating')
+        },
         messageList(){
-                this.sendMessage
+                console.log('watch activating in msg')
             }
         },
-        
-
-
 }
 </script>
 <style scoped>
@@ -637,20 +652,19 @@ export default {
   #GreenBoxChat{
     border: 2px solid green;
     display: inline-block;
-    width: 81%;
-    height: 27%; 
-    margin: 0;
+    width: 98.5%; 
+    height: 160px;
+    margin: 0; 
     padding: 0;
-    float: left;;
     
   }
   #OrangeBoxStart{
     border: 5px solid orange;
     display: inline-block;
-    width: 15%;
-    height: 27%;
-    margin: 15px;
-    padding: auto;
+    width: 400px; 
+    height: 180px;
+    margin-top: 3px;
+    margin-right: 10px;
     float: right;
   }
 
@@ -685,7 +699,7 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 50px;
+    height: 25px;
     margin: 10px;
     text-align: center;
     border-radius: 4px;
