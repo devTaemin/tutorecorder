@@ -15,32 +15,24 @@
             </div>
             <!-- 대기방 비디오 디스플레이 끝 -->
 
+            
 
             <!-- 대기방 채팅창 -->
             <div id="GreenBoxChat">
-                <p>chat box</p>
                 <!-- 채팅 내용 스크롤 기능으로 집어 넣기 -->
-                <el-scrollbar>
-                    <p v-for="message in messageList" :key="message" class="chat-scrollbar-item">
+                <el-scrollbar enline="nearest">
+                    <p v-for="message in messageList" :key="message" class="chat-scrollbar-item" style="margin-left:0;">
                         {{ message }}
                     </p>
                 </el-scrollbar>
-
                 <!-- 입력 부분-->
-                <el-input v-model="chatMessage" clearable @keyup.enter="this.sendMessage" 
-                    style="position:fixed; bottom:0; border:10px solid black;"/>
-                <!-- <el-button type="success" @click="this.sendMessage">
-                    Submit
-                    <el-icon class="el-icon--right"><Upload /></el-icon>
-                </el-button> -->
+                <span> </span>
+                <el-input v-model="chatMessage" clearable @keyup.enter="this.sendMessage"/>
             </div>
             <!-- 대기방 채팅창 끝 -->
-
-
+            
+            
             <!-- 게임 시작/준비 전환 버튼 -->
-            <!-- Question: 아래쪽을 전부 chatbox로 채우고 UserList아래 부분에 StartBox를 만들면 되지 않을까?
-                           톱니바퀴, 화살표가 왜 필요한지 질문필요
-            -->
             <div id="OrangeBoxStart"> 
                 <p>start box</p>
             </div>
@@ -82,7 +74,7 @@
                 <h1>User List</h1>
                 <!-- 방장인 경우 참가자 확인 및 추방 기능을 추가한다 -->
                 <div v-if="this.isOwner">
-                    <el-scrollbar height="400px">
+                    <el-scrollbar height="320px">
                         <div class="user-scrollbar-item">{{ this.myUserName }}</div>
                         <div class="user-scrollbar-item" v-for="sub in subscribers" :key="sub.stream.connection.connectionId">
                             {{ jsonNameRendering(sub.stream.connection.data) }}
@@ -97,7 +89,7 @@
 
                 <!-- 참가자인 경우 사용자 목록을 확인한다-->
                 <div v-if="!this.isOwner">
-                    <el-scrollbar height="400px">
+                    <el-scrollbar height="320px">
                         <div class="user-scrollbar-item">{{ this.myUserName }}</div>
                         <div class="user-scrollbar-item" v-for="sub in subscribers" :key="sub.stream.connection.connectionId">
                             {{ jsonNameRendering(sub.stream.connection.data) }} 
@@ -408,7 +400,7 @@ export default {
                             videoSource: undefined,
                             publishAudio: true,
                             publishVideo: true,
-                            resolution: "300x250",
+                            resolution: "280x180",
                             frameRate: 30,
                             insertMode: "Append",
                             mirror: false,
@@ -512,7 +504,7 @@ export default {
                             videoSource: undefined,
                             publishAudio: true,
                             publishVideo: true,
-                            resolution: "300x250",
+                            resolution: "280x180",
                             frameRate: 30,
                             insertMode: "Append",
                             mirror: false,
@@ -525,13 +517,13 @@ export default {
 
                         // console.log("현재 session에 접속한 인원 수: " + this.session.connection.localOptions.value.length);
                         // 최대 정원 4명으로 설정
-                        let numOfJoined = this.session.connection.localOptions.value.length;
-                        console.log("방에 접속한 현재 인원: " + numOfJoined);
-                        if (numOfJoined >= 4) {
-                            alert("정원초과");
-                            this.leaveSession();
-                            return;
-                        }
+                        // let numOfJoined = this.session.connection.localOptions.value.length;
+                        // console.log("방에 접속한 현재 인원: " + numOfJoined);
+                        // if (numOfJoined >= 4) {
+                        //     alert("정원초과");
+                        //     this.leaveSession();
+                        //     return;
+                        // }
                     })
                     .catch((error) => {
                         console.log("There was an error connecting to the session: ", 
@@ -609,20 +601,23 @@ export default {
     padding: 0;
   }
   #GreenBoxChat{
-    border: 5px solid green;
+    border: 2px solid green;
     display: inline-block;
-    width: 85%;
-    height: 25%; 
+    width: 81%;
+    height: 27%; 
     margin: 0;
     padding: 0;
-  } 
+    float: left;;
+    
+  }
   #OrangeBoxStart{
     border: 5px solid orange;
     display: inline-block;
-    width: 12%;
-    height: 15%;
-    margin: 0;
-    padding: 0;
+    width: 15%;
+    height: 27%;
+    margin: 15px;
+    padding: auto;
+    float: right;
   }
 
   #RightBox{
@@ -668,13 +663,14 @@ export default {
   .chat-scrollbar-item {
     display: flex;
     align-items: center;
-    justify-content: center;
-    height: 50px;
+    justify-content: left;
+    height: 25px;
     margin: 10px;
-    text-align: center;
+    text-align: left;
     border-radius: 4px;
     background: rgba(255, 255, 255, 0.6);
     box-shadow: 0 0 5px #333;
+    border: 5px solid red;
   }
 
   /* volume slider */
