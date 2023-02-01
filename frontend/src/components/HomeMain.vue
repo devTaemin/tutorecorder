@@ -1,11 +1,11 @@
 <template>
   <div class="hello">
-    <div style="width:80%; border:5px solid red; margin:auto; margin-top:5%;">
-      <img src="../assets/logo.png" alt="logo img" style="width:50%;" > 
+    <div style="width:80%;  margin:auto; margin-top:5%;">
+      <img src="../assets/logo.png" alt="logo img" style="width:60%;" > 
       
-      <div @click="nameSetVisible=true" style="cursor:pointer;">
-        <img src="../assets/star.png" alt="star img" style="height:24px;">
-        <img src="../assets/start.png" alt="start img" style="width:10%;">
+      <div @click="nameSetVisible=true" style="cursor:pointer; padding-top:20%;">
+        <!-- <img src="../assets/star.png" alt="star img" style="height:52px;"> -->
+        <img src="../assets/start.png" alt="start img" style="width:20%;">
       </div>
     </div>
 
