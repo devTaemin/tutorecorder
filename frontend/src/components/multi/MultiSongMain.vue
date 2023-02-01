@@ -21,8 +21,8 @@
             </el-col>
         </el-row>
     </div>
-    </template>
-    <script>
+</template>
+<script>
     export default {
         name: 'MultiSongMain',
         props: {
@@ -37,8 +37,8 @@
             }
         }
     }
-    </script>
-    <style>
+</script>
+<style>
 .container{
     width: 100%;
     height: 100%;
@@ -88,4 +88,4 @@
 .game-sub-button{
     margin-top: 5vh;
 }
-    </style>
+</style>
