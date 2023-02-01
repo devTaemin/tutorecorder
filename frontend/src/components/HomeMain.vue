@@ -3,9 +3,9 @@
     <div style="width:80%;  margin:auto; margin-top:5%;">
       <img src="../assets/logo.png" alt="logo img" style="width:60%;" > 
       
-      <div @click="nameSetVisible=true" style="cursor:pointer; padding-top:20%;">
+      <div style="padding-top:20%">
         <!-- <img src="../assets/star.png" alt="star img" style="height:52px;"> -->
-        <img src="../assets/start.png" alt="start img" style="width:20%;">
+        <img @click="nameSetVisible=true" style="cursor:pointer; width:20%;" class="start" src="../assets/start.png" alt="start img">
       </div>
     </div>
 
@@ -76,6 +76,10 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
+.start{
+  position: relative;
+  z-index: 2;
+}
 
 .el-dialog__header{
   display: none;
@@ -110,5 +114,4 @@ export default {
   color: red;
   font-size: 20px;
 }
-
 </style>

@@ -1,5 +1,5 @@
 <template>
-    <div class="pink-container-solo">
+    <div class="pink-container-solo mode">
         <SoloAnalizeMain/>
     </div>
 </template>
@@ -23,7 +23,5 @@ export default {
     background-color: #F2E6E6;
     margin: auto;
     border-radius: 30px;
-    position: relative;
-    z-index: 2;
 }
 </style>
