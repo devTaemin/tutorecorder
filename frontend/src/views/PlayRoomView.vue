@@ -15,35 +15,34 @@
             </div>
             <!-- 대기방 비디오 디스플레이 끝 -->
 
+            
 
-            <!-- 대기방 채팅창 -->
-            <div id="GreenBoxChat">
-                <!-- 채팅 내용 스크롤 기능으로 집어 넣기 -->
-                <el-scrollbar height="400px" id="chat-scrollbar" ref="chatList">
-                    <div v-for="message in messageList" :key="message" class="chat-scrollbar-item">
-                        {{ message }}
+            <div style="display:flex; flex-direction:row; ">
+                <!-- 대기방 채팅창 -->
+                <div style="display:flex; flex-direction:column;  width:100%; margin: 0; padding: 0;">
+                    <div id="GreenBoxChat" class="scroll" style="text-align:left;">
+                        <p v-for="message in messageList" :key="message"  style="margin-left:0; margin-right:0;">
+                            {{ message }}
+                        </p>
                     </div>
-                </el-scrollbar>
-
-                <!-- 입력 부분-->
-                <el-input v-model="chatMessage" clearable @keyup.enter="this.sendMessage"/>
+                    <input v-model="chatMessage" clearable @keyup.enter="this.sendMessage" style="width:98.5%; margin-top:3px;" />
+                </div>
+                <!-- 대기방 채팅창 끝-->
+                
+                <!-- 게임 시작/준비 전환 버튼 -->
+                <div id="OrangeBoxStart"> 
+                    <div v-if="isOwner">
+                        <el-button :type="startButton" :disabled="!startButtonEnabled">시작하기</el-button>
+                    </div>
+                    <div v-if="!isOwner && !readyButtonOn">
+                        <el-button type="warning" @click="this.readyButtonConfirm">준비하기</el-button>
+                    </div>
+                    <div v-if="!isOwner && readyButtonOn">
+                        <el-button type="success" @click="this.readyButtonConfirm">준비완료</el-button>
+                    </div>
+                </div>
+                <!-- 게임 시작/준비 전환 버튼 끝 -->
             </div>
-            <!-- 대기방 채팅창 끝 -->
-
-
-            <!-- 게임 시작/준비 전환 버튼 -->
-            <div id="OrangeBoxStart"> 
-                <div v-if="isOwner">
-                    <el-button :type="startButton" :disabled="!startButtonEnabled">시작하기</el-button>
-                </div>
-                <div v-if="!isOwner && !readyButtonOn">
-                    <el-button type="warning" @click="this.readyButtonConfirm">준비하기</el-button>
-                </div>
-                <div v-if="!isOwner && readyButtonOn">
-                    <el-button type="success" @click="this.readyButtonConfirm">준비완료</el-button>
-                </div>
-            </div>
-            <!-- 게임 시작/준비 전환 버튼 끝 -->
 
         </div>
         <!-- 왼쪽 박스 끝-->
@@ -83,7 +82,7 @@
 
                 <!-- 방장인 경우 참가자 확인 및 추방 기능을 추가한다 -->
                 <div v-if="this.isOwner">
-                    <el-scrollbar height="400px">
+                    <el-scrollbar height="250px">
                         <div class="user-scrollbar-item">{{ this.myUserName }}</div>
                         <div class="user-scrollbar-item" v-for="sub in subscribers" :key="sub.stream.connection.connectionId">
                             {{ jsonNameRendering(sub.stream.connection.data) }}
@@ -98,7 +97,7 @@
 
                 <!-- 참가자인 경우 사용자 목록을 확인한다-->
                 <div v-if="!this.isOwner">
-                    <el-scrollbar height="400px">
+                    <el-scrollbar height="250px">
                         <div class="user-scrollbar-item">{{ this.myUserName }}</div>
                         <div class="user-scrollbar-item" v-for="sub in subscribers" :key="sub.stream.connection.connectionId">
                             {{ jsonNameRendering(sub.stream.connection.data) }} 
@@ -110,14 +109,21 @@
 
 
             <div id="RedBoxRightBottom">
-                <img src="../assets/confsetting.png" 
-                    alt="configuration setting img" 
-                    @click="envSettingVisible=true" 
-                    style="cursor:pointer; width: 45px;"
-                >
                 <img src="../assets/goback.png" 
                     alt="game setting img" 
                     @click="leaveSession" 
+                    style="cursor:pointer; 
+                    width: 45px; "
+                >
+                <img src="../assets/share.png" 
+                    alt="share img" 
+                    style="cursor:pointer; 
+                    width: 45px; height: 45px;"
+                    
+                >
+                <img src="../assets/confsetting.png" 
+                    alt="configuration setting img" 
+                    @click="envSettingVisible=true" 
                     style="cursor:pointer; width: 45px;"
                 >
             </div>
@@ -125,7 +131,6 @@
         <!-- 오른쪽 박스 끝 -->
 
         <!-- 게임설정 모달 창 -->
-        <!-- Question: 게임 설정과 관련해서 각각 선택에 따라 어떤게 나오는지 질문 -->
         <el-dialog 
             v-model="gameSettingVisible" 
             title="" 
@@ -183,19 +188,6 @@
             </span>
             <hr>
 
-
-            <!-- <h2>노래</h2>
-            <div class="slider-demo-block">
-                <el-slider v-model="musicVolume" />
-            </div>
-            <hr> -->
-
-            <!-- <h2>효과음</h2>
-            <div class="slider-demo-block">
-                <el-slider v-model="effectVolume" />
-            </div>
-            <hr> -->
-
             <h2>카메라</h2>
             <el-radio-group v-model="cam" class="ml-4">
                 <el-radio label="on" size="large">켜기</el-radio>
@@ -222,17 +214,15 @@ import { OpenVidu } from "openvidu-browser";
 import { mapState } from "vuex"
 import axios from "axios";
 import UserVideo from "@/components/video/UserVideo.vue"
-// import { Upload } from '@element-plus/icons-vue'
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
-
 const APPLICATION_SERVER_URL = "http://localhost:5000/";
+
 
 export default {
     name: 'PlayRoomView',
     components: {
         UserVideo,
-        // Upload,
     },
     data() {
         return {
@@ -258,16 +248,7 @@ export default {
             readyButtonOn: false,
             cam: "on",
             mic: "on",
-        }
-    },
-    watch: {
-        chatList() {
-            this.$nextTick(() => {
-                console.log("스크롤탑: ", this.$refs.chatList.scrollTop);
-                console.log("스크롤높이: ", this.$refs.chatList.scrollHeight);
-                this.$refs.chatList.scrollTop = this.$refs.chatList.scrollHeight;
-            })
-        }
+        }   
     },
     mounted() {
         // Check if the URL already has a room
@@ -283,9 +264,6 @@ export default {
     },
     methods: {
         envSettingConfirm: function() {
-            console.log("마이크 설정 상황: ", this.mic);
-            console.log("카메라 설정 상황: ", this.cam);
-
             if (this.mic == "on") {
                 this.publisher.publishAudio(true);
             } else {
@@ -297,19 +275,6 @@ export default {
             } else {
                 this.publisher.publishVideo(false);
             }
-
-
-            // this.publisher.session.signal({
-            //     data: "",
-            //     to: [],
-            //     type: 'env-setting'
-            // })
-            // .then(() => {
-            //     console.log("the environment setting is adopted")
-            // })
-            // .catch((error) => {
-            //     console.log(error);
-            // })
 
             this.envSettingVisible=false
         },
@@ -446,7 +411,6 @@ export default {
             });
         },
         sendMessage() {
-
             this.publisher.session.signal({
                 data: this.chatMessage,
                 to: [],
@@ -454,12 +418,20 @@ export default {
             })
             .then(() => {
                 console.log('Message successfully sent');
+                console.log(this.chatMessage)
+
+                // 스크롤바 추적1 : 3까지
+                // 스크롤 내리기 위해 필요한 부분
+                const $el = document.querySelector(".scroll");
+                $el.scrollTop = $el.scrollHeight;
+                // 스크롤 내리기 위해 필요한 부분 끝
             })
             .catch(error => {
                 console.error(error);
             })
 
             this.chatMessage = '';
+
         }, 
         createRoom: function() {
 
@@ -523,10 +495,15 @@ export default {
             this.session.on('signal:my-chat', (event) => {
                 let inMessage = event.data;
                 let { clientData } = JSON.parse(event.from.data);
-
+                
                 this.messageList.push(clientData + ": " + inMessage);
+                
+                
+                // 스크롤바 추적2
+                const $el = document.querySelector(".scroll");
+                $el.scrollTop = $el.scrollHeight
             })
-        
+
             // 3-7) ready plus
             this.session.on('signal:ready-plus', () => {
                 this.countReady++;
@@ -550,12 +527,9 @@ export default {
                 console.log("owner에서 ready-minus를 받았다: ", this.countReady);
                 console.log("현재 subscribers의 수: ", this.subscribers.length);
             })
+        
 
-            // // 3-9) mute/unmute video and audio
-            // this.session.on('signal:env-setting', () => {
-            //     this.publisher.publishAudio(this.mic);   // true to unmute the audio track, false to mute it
-            //     this.publisher.publishVideo(this.cam);   // true to enable the video track, false to disable it
-            // })
+
 
             // 4) Get a token from the OpenVidu deployment
             this.getToken(this.roomCode).then((token) => {
@@ -585,12 +559,12 @@ export default {
 
 
                         // console.log("현재 session에 접속한 인원 수: " + this.session.connection.localOptions.value.length);
-                        // 최대 정원 4명으로 설정
+                        // 최대 정원 설정 가능
 
                         // Owner 설정
                         this.isOwner = true;
                         
-                        // Game 설정 (어떻게 고쳐야 하냐?)
+                        // Game 설정
                         this.optionEnabler = false;
                         this.gameMode = "play";
                         this.basicSong = "airplane";
@@ -628,10 +602,6 @@ export default {
                     return;
                 }
 
-                // if (this.readyButtonOn) {
-                //     this.readyButtonConfirm();
-                // }
-
                 const index = this.subscribers.indexOf(stream.streamManager, 0);
                 if (index >= 0) {
                     this.subscribers.splice(index, 1);
@@ -659,6 +629,10 @@ export default {
                 let { clientData } = JSON.parse(event.from.data);
 
                 this.messageList.push(clientData + ": " + inMessage);
+
+                // 스크롤바 추적
+                const $el = document.querySelector(".scroll");
+                $el.scrollTop = $el.scrollHeight*2;
             })
 
             // 3-6) game setting
@@ -679,7 +653,7 @@ export default {
                     this.difficulty = difficulty;
                 }
             })
-
+        
 
             // 4) Get a token from the OpenVidu deployment
             this.getToken(this.roomCode).then((token) => {
@@ -743,8 +717,9 @@ export default {
             {}, { headers: { 'Content-Type': 'application/json' }});
 
             return response.data;
-        }
-    }
+        },
+
+    },
 }
 </script>
 <style scoped>
@@ -753,6 +728,7 @@ export default {
     text-align: left;;
     margin-left: 5px;
   }
+
   #pink-container{
     width: 95vw;
     height: 95vh;
@@ -761,7 +737,11 @@ export default {
     border-radius: 30px;
     padding:0;
     display: flex;
+    position: relative;
+    z-index: 2;
+    border-radius: 30px;
   }
+
 
   #BlackBoxLargestBox{
     display: flex;
@@ -783,25 +763,27 @@ export default {
     border: 5px solid yellow;
     display: flex;
     width:99%;
-    height:80%;
+    height:65%;
     margin: 0;
     padding: 0;
   }
   #GreenBoxChat{
-    border: 5px solid green;
+    border: 2px solid green;
     display: inline-block;
-    width: 85%;
-    height: 400px; 
-    margin: 0;
+    width: 98.5%; 
+    height: 160px;
+    margin: 0; 
     padding: 0;
-  } 
+    
+  }
   #OrangeBoxStart{
     border: 5px solid orange;
     display: inline-block;
-    width: 12%;
-    height: 15%;
-    margin: 0;
-    padding: 0;
+    width: 400px; 
+    height: 180px;
+    margin-top: 3px;
+    margin-right: 10px;
+    float: right;
   }
 
   #RightBox{
@@ -835,7 +817,7 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 50px;
+    height: 25px;
     margin: 10px;
     text-align: center;
     border-radius: 4px;
@@ -847,13 +829,14 @@ export default {
   .chat-scrollbar-item {
     display: flex;
     align-items: center;
-    justify-content: center;
-    height: 50px;
+    justify-content: left;
+    height: 25px;
     margin: 10px;
-    text-align: center;
+    text-align: left;
     border-radius: 4px;
     background: rgba(255, 255, 255, 0.6);
     box-shadow: 0 0 5px #333;
+    border: 5px solid red;
   }
 
   /* volume slider */
@@ -866,5 +849,63 @@ export default {
     margin-left: 12px;
   }
   /* volume slider */
+
+
+
+  /* chat slider test */
+  @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css");
+
+* {
+  font-family: Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto,
+    "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR",
+    "Malgun Gothic", sans-serif;
+}
+
+.scroll {
+  height: 300px; 
+  width: 80vw;
+  overflow-y: scroll;
+}
+
+/* button {
+  cursor: pointer;
+  margin-bottom: 1rem;
+  background: #febf00;
+  border: none;
+  padding: .6rem 1.5rem;
+  border-radius: .3rem;
+  font-size: 1rem;
+  font-weight: bold;
+} */
+
+.scroll > div span {
+  display: inline-block;
+  max-width: 100%;
+  border-top-right-radius: 1.5rem;
+  border-bottom-left-radius: 1.5rem;
+  border-bottom-right-radius: 1.5rem;
+  padding: 0.8rem 1.2rem;
+  background-color: #ececff;
+  margin-top: .6rem;
+}
+
+
+/* 스크롤바 커스텀 */
+.scroll::-webkit-scrollbar {
+  background-color: #fff;
+  width: 1rem;
+}
+
+.scroll::-webkit-scrollbar-track {
+  background-color: #fff;
+}
+
+.scroll::-webkit-scrollbar-thumb {
+  height: 15%;
+  background-color: #babac0;
+
+  border-radius: 1rem;
+  border: 4px solid #fff;
+}
 
 </style>
