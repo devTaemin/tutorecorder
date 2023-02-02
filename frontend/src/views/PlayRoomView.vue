@@ -18,20 +18,15 @@
 
             <!-- 대기방 채팅창 -->
             <div id="GreenBoxChat">
-                <p>chat box</p>
                 <!-- 채팅 내용 스크롤 기능으로 집어 넣기 -->
-                <el-scrollbar>
-                    <p v-for="message in messageList" :key="message" class="chat-scrollbar-item">
+                <el-scrollbar height="400px" id="chat-scrollbar" ref="chatList">
+                    <div v-for="message in messageList" :key="message" class="chat-scrollbar-item">
                         {{ message }}
-                    </p>
+                    </div>
                 </el-scrollbar>
 
                 <!-- 입력 부분-->
-                <el-input v-model="chatMessage" clearable />
-                <el-button type="success" @click="this.sendMessage">
-                    Submit
-                    <el-icon class="el-icon--right"><Upload /></el-icon>
-                </el-button>
+                <el-input v-model="chatMessage" clearable @keyup.enter="this.sendMessage"/>
             </div>
             <!-- 대기방 채팅창 끝 -->
 
@@ -117,14 +112,13 @@
             <div id="RedBoxRightBottom">
                 <img src="../assets/confsetting.png" 
                     alt="configuration setting img" 
-                    @click="SettingVisible=true" 
+                    @click="envSettingVisible=true" 
                     style="cursor:pointer; width: 45px;"
                 >
                 <img src="../assets/goback.png" 
                     alt="game setting img" 
                     @click="leaveSession" 
-                    style="cursor:pointer; 
-                    width: 45px; "
+                    style="cursor:pointer; width: 45px;"
                 >
             </div>
         </div>
@@ -135,31 +129,31 @@
         <el-dialog 
             v-model="gameSettingVisible" 
             title="" 
-            width="40%" 
+            width="35%" 
             style="border-radius: 10px"
             background-color= "#DFE4F6"
         >
             <span>
                 <img src="../assets/gamesetting.png" alt="game setting img in modal" style="width: 25px;">
-                게임설정
+                <h1>게임설정</h1>
             </span>
             <hr>
 
-            <h1 style="border:5px solid red">게임선택</h1>
+            <h2>게임선택</h2>
             <el-radio-group v-model="gameMode" class="ml-4">
                 <el-radio label="play" size="large" border="true" @click="this.choosePlay">연주하기</el-radio>
                 <el-radio label="sound" size="large" border @click="this.chooseSound">소리내기</el-radio>
             </el-radio-group>
             <hr>
 
-            <h1>곡 선택 - 곡 연주</h1>
+            <h2>곡 선택 - 곡 연주</h2>
             <el-radio-group v-model="basicSong" class="ml-4">
                 <el-radio label="airplane" size="large" border :disabled="optionEnabler">비행기</el-radio>
                 <el-radio label="anthem" size="large" border :disabled="optionEnabler">애국가</el-radio>
             </el-radio-group>
             <hr>
 
-            <h1>난이도 선택 - 소리내기, 운지법</h1>
+            <h2>난이도 선택 - 소리내기, 운지법</h2>
             <el-radio-group v-model="difficulty" class="ml-4">
                 <el-radio label="level1" size="large" border :disabled="!optionEnabler">1단계(5초)</el-radio>
                 <el-radio label="level2" size="large" border :disabled="!optionEnabler">2단계(3초)</el-radio>
@@ -174,44 +168,51 @@
         <!-- 게임설정 모달 창 끝-->
 
         <!-- 환경설정 모달 창 -->
-        <el-dialog v-model="SettingVisible" width="20%" 
-            style="border-radius: 10px; background-color: #DFE4F6;">
-        <span>
-            <img src="../assets/confsetting.png" alt="configuration setting img in modal" style="width: 45px;">
-            환경설정
-        </span>
-        <hr>
+        <el-dialog 
+            v-model="envSettingVisible" 
+            width="30%" 
+            style="border-radius: 10px; background-color: #DFE4F6;"
+        >
+            <span>
+                <img 
+                    src="../assets/confsetting.png" 
+                    alt="configuration setting img in modal" 
+                    style="width: 45px;"
+                >
+                <h1>환경설정</h1>
+            </span>
+            <hr>
 
 
-        <h1 style="border:5px solid red">노래</h1>
-        <div class="slider-demo-block">
-            <el-slider v-model="MusicVolume" />
-        </div>
-        <hr>
+            <!-- <h2>노래</h2>
+            <div class="slider-demo-block">
+                <el-slider v-model="musicVolume" />
+            </div>
+            <hr> -->
 
-        <h1>효과음</h1>
-        <div class="slider-demo-block">
-            <el-slider v-model="EffectVolume" />
-        </div>
-        <hr>
+            <!-- <h2>효과음</h2>
+            <div class="slider-demo-block">
+                <el-slider v-model="effectVolume" />
+            </div>
+            <hr> -->
 
-        <h1>카메라</h1>
-        <el-radio-group v-model="Cam" class="ml-4">
-            <el-radio label="1" size="large">켜기</el-radio>
-            <el-radio label="2" size="large">끄기</el-radio>
-        </el-radio-group>
-        <hr>
+            <h2>카메라</h2>
+            <el-radio-group v-model="cam" class="ml-4">
+                <el-radio label="on" size="large">켜기</el-radio>
+                <el-radio label="off" size="large">끄기</el-radio>
+            </el-radio-group>
+            <hr>
 
-        <h1>마이크</h1>
-        <el-radio-group v-model="MiC" class="ml-4">
-            <el-radio label="1" size="large">켜기</el-radio>
-            <el-radio label="2" size="large">끄기</el-radio>
-        </el-radio-group>
-        <hr>
+            <h2>마이크</h2>
+            <el-radio-group v-model="mic" class="ml-4">
+                <el-radio label="on" size="large">켜기</el-radio>
+                <el-radio label="off" size="large">끄기</el-radio>
+            </el-radio-group>
+            <hr>
         
-        <template #footer>
-            <el-button type="success" @click="SettingVisible=false">설정완료</el-button>
-        </template>
+            <template #footer>
+                <el-button type="success" @click="this.envSettingConfirm">설정완료</el-button>
+            </template>
         </el-dialog>
         <!-- 환경설정 모달 창 끝-->
     </div>
@@ -221,7 +222,7 @@ import { OpenVidu } from "openvidu-browser";
 import { mapState } from "vuex"
 import axios from "axios";
 import UserVideo from "@/components/video/UserVideo.vue"
-import { Upload } from '@element-plus/icons-vue'
+// import { Upload } from '@element-plus/icons-vue'
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
 
@@ -231,7 +232,7 @@ export default {
     name: 'PlayRoomView',
     components: {
         UserVideo,
-        Upload,
+        // Upload,
     },
     data() {
         return {
@@ -244,6 +245,7 @@ export default {
             subscribers: [],
             isOwner: false,
             gameSettingVisible: false,
+            envSettingVisible: false,
             gameMode: undefined,
             basicSong: undefined,
             difficulty: undefined,
@@ -254,6 +256,17 @@ export default {
             startButton: "primary",
             startButtonEnabled: true,
             readyButtonOn: false,
+            cam: "on",
+            mic: "on",
+        }
+    },
+    watch: {
+        chatList() {
+            this.$nextTick(() => {
+                console.log("스크롤탑: ", this.$refs.chatList.scrollTop);
+                console.log("스크롤높이: ", this.$refs.chatList.scrollHeight);
+                this.$refs.chatList.scrollTop = this.$refs.chatList.scrollHeight;
+            })
         }
     },
     mounted() {
@@ -269,6 +282,37 @@ export default {
 
     },
     methods: {
+        envSettingConfirm: function() {
+            console.log("마이크 설정 상황: ", this.mic);
+            console.log("카메라 설정 상황: ", this.cam);
+
+            if (this.mic == "on") {
+                this.publisher.publishAudio(true);
+            } else {
+                this.publisher.publishAudio(false);
+            }
+
+            if (this.cam == "on") {
+                this.publisher.publishVideo(true);
+            } else {
+                this.publisher.publishVideo(false);
+            }
+
+
+            // this.publisher.session.signal({
+            //     data: "",
+            //     to: [],
+            //     type: 'env-setting'
+            // })
+            // .then(() => {
+            //     console.log("the environment setting is adopted")
+            // })
+            // .catch((error) => {
+            //     console.log(error);
+            // })
+
+            this.envSettingVisible=false
+        },
         readyButtonConfirm: function() {
             if (this.readyButtonOn) {
                 // 준비 버튼이 활성화가 되어 있는 경우
@@ -381,11 +425,14 @@ export default {
             this.difficulty = undefined;
             this.messageList = [];
             this.gameSettingVisible = false;
+            this.envSettingVisible = false;
             this.countReady = 0;
             this.startButton = "success";
             this.readyButton = "warning";
             this.startButtonEnabled = true;
             this.readyButtonOn = false;
+            this.cam = "on";
+            this.mic = "on";
            
             window.location.href = window.location.origin + '/mode';
         },
@@ -399,6 +446,7 @@ export default {
             });
         },
         sendMessage() {
+
             this.publisher.session.signal({
                 data: this.chatMessage,
                 to: [],
@@ -503,7 +551,11 @@ export default {
                 console.log("현재 subscribers의 수: ", this.subscribers.length);
             })
 
-
+            // // 3-9) mute/unmute video and audio
+            // this.session.on('signal:env-setting', () => {
+            //     this.publisher.publishAudio(this.mic);   // true to unmute the audio track, false to mute it
+            //     this.publisher.publishVideo(this.cam);   // true to enable the video track, false to disable it
+            // })
 
             // 4) Get a token from the OpenVidu deployment
             this.getToken(this.roomCode).then((token) => {
@@ -739,7 +791,7 @@ export default {
     border: 5px solid green;
     display: inline-block;
     width: 85%;
-    height: 15%; 
+    height: 400px; 
     margin: 0;
     padding: 0;
   } 
