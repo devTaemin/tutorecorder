@@ -16,7 +16,7 @@ const routes = [
   {
     path: '/mode',
     name: 'mode',
-    component: () => import(/* webpackChunkName: "mode" */ '../views/ModeView.vue')
+    component: () => import(/* webpackChunkName: "mode" */ '../views/ModeView.vue'),
   },
   {
     path: '/solo',
@@ -49,6 +49,16 @@ const routes = [
     component: Playroom,
     // component: () => import(/* webpackChunkName: "play" */ '../views/PlayRoomView.vue')    
   },
+  {
+    path: '/multi/sound',
+    name: 'multiSound',
+    component: () => import(/* webpackChunkName: "mulit" */ '../views/multi/MultiSoundView.vue')
+  },
+  {
+    path: '/multi/song',
+    name: 'multiSong',
+    component: () => import(/* webpackChunkName: "multi" */ '../views/multi/MultiSongView.vue')
+  }
 ]
 
 

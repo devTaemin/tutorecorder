@@ -17,7 +17,6 @@
                 </el-card>
             </el-col>
         </el-row>
-
     </div>
 </template>
 <script>
@@ -34,7 +33,7 @@ export default {
         moveSoloSong: function() {
             this.$router.push({ name: 'soloSong' })
         }
-    }
+    },
 
 }
 </script>

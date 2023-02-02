@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="mode">
         <ModeMain/>
     </div>
 </template>
@@ -10,7 +10,6 @@ export default {
     name: 'ModeView',
     components: {
         ModeMain,
-    }
-
+    },
 }
 </script>
