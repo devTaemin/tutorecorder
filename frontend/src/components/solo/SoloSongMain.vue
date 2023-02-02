@@ -32,7 +32,7 @@
 <script>
 import { OpenVidu } from "openvidu-browser";
 import axios from "axios";
-import UserVideo from "@/components/video/solo/soloSongUserVideo.vue"
+import UserVideo from "@/components/video/soloUserVideo.vue"
 import { mapActions } from 'vuex'
 
 axios.defaults.headers.post["Content-Type"] = "application/json";

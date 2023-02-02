@@ -48,7 +48,8 @@ export default {
   display: inline-block;
   margin: 0;
   padding: 0;
-  flex-basis: 86.5%;
+  /* flex-basis: 86.5%; */
+  flex-basis: 100%;
   max-height: 100%;
   border-radius: 3%;
 }
