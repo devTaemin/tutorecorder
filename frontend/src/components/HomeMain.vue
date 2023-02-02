@@ -74,9 +74,40 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
+/* 버튼 플리커 */
+@keyframes flickerAnimation {
+  0%   { filter: brightness(1); }
+  50%  { filter: brightness(1.5); }
+  100% { filter: brightness(1) }
+}
+@-o-keyframes flickerAnimation{
+  0%   { filter: brightness(1); }
+  50%  { filter: brightness(1.5); }
+  100% { filter: brightness(1) }
+}
+@-moz-keyframes flickerAnimation{
+  0%   { filter: brightness(1); }
+  50%  { filter: brightness(1.5); }
+  100% { filter: brightness(1) }
+}
+@-webkit-keyframes flickerAnimation{
+  0%   { filter: brightness(1); }
+  50%  { filter: brightness(1.5); }
+  100% { filter: brightness(1) }
+}
 .start{
   position: relative;
   z-index: 2;
+  -webkit-animation: flickerAnimation 1s infinite;
+  -moz-animation: flickerAnimation 1s infinite;
+  -o-animation: flickerAnimation 1s infinite;
+  animation: flickerAnimation 1s infinite;
+}
+.start:hover {
+  -webkit-animation: false;
+  -moz-animation: false;
+  -o-animation: false;
+  animation: false;
 }
 
 .el-dialog__header{
