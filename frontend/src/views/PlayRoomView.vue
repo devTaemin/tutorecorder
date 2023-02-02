@@ -18,7 +18,7 @@
             
 
             <div style="display:flex; flex-direction:row; ">
-                <!-- 채팅창 -->
+                <!-- 대기방 채팅창 -->
                 <div style="display:flex; flex-direction:column;  width:100%; margin: 0; padding: 0;">
                     <div id="GreenBoxChat" class="scroll" style="text-align:left;">
                         <p v-for="message in messageList" :key="message"  style="margin-left:0; margin-right:0;">
@@ -27,16 +27,22 @@
                     </div>
                     <input v-model="chatMessage" clearable @keyup.enter="this.sendMessage" style="width:98.5%; margin-top:3px;" />
                 </div>
-                
-                <!-- 채팅창 끝 -->
+                <!-- 대기방 채팅창 끝-->
                 
                 <!-- 게임 시작/준비 전환 버튼 -->
                 <div id="OrangeBoxStart"> 
-                    <p>start box</p>
+                    <div v-if="isOwner">
+                        <el-button :type="startButton" :disabled="!startButtonEnabled">시작하기</el-button>
+                    </div>
+                    <div v-if="!isOwner && !readyButtonOn">
+                        <el-button type="warning" @click="this.readyButtonConfirm">준비하기</el-button>
+                    </div>
+                    <div v-if="!isOwner && readyButtonOn">
+                        <el-button type="success" @click="this.readyButtonConfirm">준비완료</el-button>
+                    </div>
                 </div>
                 <!-- 게임 시작/준비 전환 버튼 끝 -->
             </div>
-            
 
         </div>
         <!-- 왼쪽 박스 끝-->
@@ -46,10 +52,6 @@
         <div id="RightBox">
 
             <!-- 게임 세팅 창 -->
-            <!-- 중요한 점은 외부에서 들어온 사람들에게 이 방의 설정을 뿌려줘야 한다
-                 또한 처음 방이 생성되어 있을때 default로 값이 설정되어 있어야 한다 -->
-            <!-- 왜 게임 정보를 다 올리는 거야? 연주하기 소리내기 구분한건 뭐고 연주 나뉘고 난이도 선택 나뉘고 이게 뭐야? 또 이걸 왜 다 보여줘
-                 게임 입장할때 기본값 설정은 왜 안되어 있는데?  -->
             <div id="PurpleBoxGameSetting">
                 <!-- 방장인 경우 게임 정보를 세팅할 수 있도록 한다 -->
                 <img v-if="isOwner" 
@@ -61,9 +63,14 @@
                 <!-- 방장이 아닌 경우 게임 정보를 볼 수 있도록 한다-->
                 <div v-if="!isOwner">
                     <h1> 게임 정보 </h1>
-                    <li> {{ GameMode }} </li>
-                    <li> {{ BasicSong }}</li>
-                    <li> {{ Difficulty }}</li>
+                    <div v-if='gameMode=="play"'>
+                        게임 모드: {{ gameMode }} <br/>
+                        곡 이름: {{ basicSong }}
+                    </div>
+                    <div v-if='gameMode=="sound"'>
+                        게임 모드: {{ gameMode }} <br/>
+                        난이도: {{ difficulty }}
+                    </div>
                 </div>
             </div>
             <!-- 게임 세팅 창 끝 -->
@@ -71,7 +78,8 @@
 
             <!-- 사용자 리스트 -->
             <div id="BlueBoxUserList">
-                <h1>User List</h1>
+                <h1>유저 리스트</h1>
+
                 <!-- 방장인 경우 참가자 확인 및 추방 기능을 추가한다 -->
                 <div v-if="this.isOwner">
                     <el-scrollbar height="250px">
@@ -115,7 +123,7 @@
                 >
                 <img src="../assets/confsetting.png" 
                     alt="configuration setting img" 
-                    @click="SettingVisible=true" 
+                    @click="envSettingVisible=true" 
                     style="cursor:pointer; width: 45px;"
                 >
             </div>
@@ -123,39 +131,38 @@
         <!-- 오른쪽 박스 끝 -->
 
         <!-- 게임설정 모달 창 -->
-        <!-- Question: 게임 설정과 관련해서 각각 선택에 따라 어떤게 나오는지 질문 -->
         <el-dialog 
             v-model="gameSettingVisible" 
             title="" 
-            width="40%" 
+            width="35%" 
             style="border-radius: 10px"
             background-color= "#DFE4F6"
         >
             <span>
                 <img src="../assets/gamesetting.png" alt="game setting img in modal" style="width: 25px;">
-                게임설정
+                <h1>게임설정</h1>
             </span>
             <hr>
 
-            <h1 style="border:5px solid red">게임선택</h1>
+            <h2>게임선택</h2>
             <el-radio-group v-model="gameMode" class="ml-4">
-                <el-radio label="play" size="large" border="true">연주하기</el-radio>
-                <el-radio label="sound" size="large" border>소리내기</el-radio>
+                <el-radio label="play" size="large" border="true" @click="this.choosePlay">연주하기</el-radio>
+                <el-radio label="sound" size="large" border @click="this.chooseSound">소리내기</el-radio>
             </el-radio-group>
             <hr>
 
-            <h1>곡 선택 - 곡 연주</h1>
+            <h2>곡 선택 - 곡 연주</h2>
             <el-radio-group v-model="basicSong" class="ml-4">
-                <el-radio label="airplane" size="large" border>비행기</el-radio>
-                <el-radio label="anthem" size="large" border>애국가</el-radio>
+                <el-radio label="airplane" size="large" border :disabled="optionEnabler">비행기</el-radio>
+                <el-radio label="anthem" size="large" border :disabled="optionEnabler">애국가</el-radio>
             </el-radio-group>
             <hr>
 
-            <h1>난이도 선택 - 소리내기, 운지법</h1>
+            <h2>난이도 선택 - 소리내기, 운지법</h2>
             <el-radio-group v-model="difficulty" class="ml-4">
-                <el-radio label="level1" size="large" border>1단계(5초)</el-radio>
-                <el-radio label="level2" size="large" border>2단계(3초)</el-radio>
-                <el-radio label="level3" size="large" border>3단계(2초)</el-radio>
+                <el-radio label="level1" size="large" border :disabled="!optionEnabler">1단계(5초)</el-radio>
+                <el-radio label="level2" size="large" border :disabled="!optionEnabler">2단계(3초)</el-radio>
+                <el-radio label="level3" size="large" border :disabled="!optionEnabler">3단계(2초)</el-radio>
             </el-radio-group>
             <hr>
         
@@ -166,45 +173,38 @@
         <!-- 게임설정 모달 창 끝-->
 
         <!-- 환경설정 모달 창 -->
-        <!-- 이 부분이 필요한가??? -->
-        <el-dialog v-model="SettingVisible" width="20%" 
-            style="border-radius: 10px; background-color: #DFE4F6;">
-        <span>
-            <img src="../assets/confsetting.png" alt="configuration setting img in modal" style="width: 45px;">
-            환경설정
-        </span>
-        <hr>
+        <el-dialog 
+            v-model="envSettingVisible" 
+            width="30%" 
+            style="border-radius: 10px; background-color: #DFE4F6;"
+        >
+            <span>
+                <img 
+                    src="../assets/confsetting.png" 
+                    alt="configuration setting img in modal" 
+                    style="width: 45px;"
+                >
+                <h1>환경설정</h1>
+            </span>
+            <hr>
 
+            <h2>카메라</h2>
+            <el-radio-group v-model="cam" class="ml-4">
+                <el-radio label="on" size="large">켜기</el-radio>
+                <el-radio label="off" size="large">끄기</el-radio>
+            </el-radio-group>
+            <hr>
 
-        <h1 style="border:5px solid red">노래</h1>
-        <div class="slider-demo-block">
-            <el-slider v-model="MusicVolume" />
-        </div>
-        <hr>
-
-        <h1>효과음</h1>
-        <div class="slider-demo-block">
-            <el-slider v-model="EffectVolume" />
-        </div>
-        <hr>
-
-        <h1>카메라</h1>
-        <el-radio-group v-model="Cam" class="ml-4">
-            <el-radio label="1" size="large">켜기</el-radio>
-            <el-radio label="2" size="large">끄기</el-radio>
-        </el-radio-group>
-        <hr>
-
-        <h1>마이크</h1>
-        <el-radio-group v-model="MiC" class="ml-4">
-            <el-radio label="1" size="large">켜기</el-radio>
-            <el-radio label="2" size="large">끄기</el-radio>
-        </el-radio-group>
-        <hr>
+            <h2>마이크</h2>
+            <el-radio-group v-model="mic" class="ml-4">
+                <el-radio label="on" size="large">켜기</el-radio>
+                <el-radio label="off" size="large">끄기</el-radio>
+            </el-radio-group>
+            <hr>
         
-        <template #footer>
-            <el-button type="success" @click="SettingVisible=false">설정완료</el-button>
-        </template>
+            <template #footer>
+                <el-button type="success" @click="this.envSettingConfirm">설정완료</el-button>
+            </template>
         </el-dialog>
         <!-- 환경설정 모달 창 끝-->
     </div>
@@ -235,11 +235,19 @@ export default {
             subscribers: [],
             isOwner: false,
             gameSettingVisible: false,
+            envSettingVisible: false,
             gameMode: undefined,
             basicSong: undefined,
             difficulty: undefined,
             chatMessage: '',
             messageList: [],
+            optionEnabler: false,
+            countReady: 0,
+            startButton: "primary",
+            startButtonEnabled: true,
+            readyButtonOn: false,
+            cam: "on",
+            mic: "on",
         }   
     },
     mounted() {
@@ -255,11 +263,90 @@ export default {
 
     },
     methods: {
+        envSettingConfirm: function() {
+            if (this.mic == "on") {
+                this.publisher.publishAudio(true);
+            } else {
+                this.publisher.publishAudio(false);
+            }
+
+            if (this.cam == "on") {
+                this.publisher.publishVideo(true);
+            } else {
+                this.publisher.publishVideo(false);
+            }
+
+            this.envSettingVisible=false
+        },
+        readyButtonConfirm: function() {
+            if (this.readyButtonOn) {
+                // 준비 버튼이 활성화가 되어 있는 경우
+                this.readyButtonOn = false;
+                this.count--;
+                this.readyButton = "warning";
+
+                this.publisher.session.signal({
+                    data: "",
+                    to: [],
+                    type: 'ready-minus'
+                })
+                .then(() => {
+                    console.log('the count of ready state is decremented');
+                })
+                .catch(error => {
+                    console.log(error);
+                })
+            }
+            else {
+                // 준비 버튼이 활성화가 되어 있지 않는 경우
+                this.readyButtonOn = true;
+                this.count++;
+                this.readyButton = "success";
+
+                this.publisher.session.signal({
+                    data: "",
+                    to: [],
+                    type: 'ready-plus'
+                })
+                .then(() => {
+                    console.log('the count of ready state is incremented');
+                })
+                .catch(error => {
+                    console.log(error);
+                })
+            }
+        },
+        choosePlay: function() {
+            this.optionEnabler = false;
+            this.gameMode = "play";
+            this.basicSong = "airplane";
+            this.difficulty = undefined;
+        },
+        chooseSound: function() {
+            this.optionEnabler = true;
+            this.gameMode = "sound";
+            this.basicSong = undefined;
+            this.difficulty = "level1";
+        },
         gameSettingConfirm: function() {
             this.gameSettingVisible = false;
-            console.log(this.gameMode);
-            console.log(this.basicSong);
-            console.log(this.difficulty);
+            let obj = {
+                "gameMode" : this.gameMode,
+                "basicSong" : this.basicSong,
+                "difficulty" : this.difficulty
+            }
+
+            this.publisher.session.signal({
+                data: JSON.stringify(obj),
+                to: [],
+                type: 'game-setting'
+            })
+            .then(() => {
+                console.log('game-setting successfully sent');
+            })
+            .catch(error => {
+                console.error(error);
+            })
         },
         jsonNameRendering: function(data) {
             const { clientData } = JSON.parse(data);
@@ -302,6 +389,15 @@ export default {
             this.basicSong = undefined;
             this.difficulty = undefined;
             this.messageList = [];
+            this.gameSettingVisible = false;
+            this.envSettingVisible = false;
+            this.countReady = 0;
+            this.startButton = "success";
+            this.readyButton = "warning";
+            this.startButtonEnabled = true;
+            this.readyButtonOn = false;
+            this.cam = "on";
+            this.mic = "on";
            
             window.location.href = window.location.origin + '/mode';
         },
@@ -319,10 +415,7 @@ export default {
                 data: this.chatMessage,
                 to: [],
                 type: 'my-chat'
-            }
-            
-            
-            )
+            })
             .then(() => {
                 console.log('Message successfully sent');
                 console.log(this.chatMessage)
@@ -353,6 +446,12 @@ export default {
             this.session.on('streamCreated', ({ stream }) => {
                 const subscriber = this.session.subscribe(stream);
                 this.subscribers.push(subscriber);
+                this.gameSettingConfirm();
+                if (this.countReady != this.subscribers.length) {
+                    console.log("Owner 스트림 생성에 버튼 상태 변화가 감지되었다!!");
+                    this.startButtonEnabled = false;
+                    this.startButton = "danger";
+                }
             }) 
 
             // 3-2) streamDestroyed
@@ -367,6 +466,12 @@ export default {
                 const index = this.subscribers.indexOf(stream.streamManager, 0);
                 if (index >= 0) {
                     this.subscribers.splice(index, 1);
+                }
+
+                if (this.countReady == this.subscribers.length) {
+                    console.log("Owner 스트림 생성에 버튼 상태 변화가 감지되었다!!");
+                    this.startButtonEnabled = true;
+                    this.startButton = "primary";
                 }
             })
 
@@ -397,6 +502,30 @@ export default {
                 // 스크롤바 추적2
                 const $el = document.querySelector(".scroll");
                 $el.scrollTop = $el.scrollHeight
+            })
+
+            // 3-7) ready plus
+            this.session.on('signal:ready-plus', () => {
+                this.countReady++;
+                if (this.countReady == this.subscribers.length) {
+                    // 추가
+                    this.startButtonEnabled = true;
+                    this.startButton = "primary";
+                }
+
+                console.log("owner에서 ready-plus를 받았다: ", this.countReady);
+                console.log("현재 subscribers의 수: ", this.subscribers.length);
+            })
+            
+
+            // 3-8) ready minus
+            this.session.on('signal:ready-minus', () => {
+                this.countReady--;
+                this.startButtonEnabled = false;
+                this.startButton = "danger";
+
+                console.log("owner에서 ready-minus를 받았다: ", this.countReady);
+                console.log("현재 subscribers의 수: ", this.subscribers.length);
             })
         
 
@@ -430,14 +559,15 @@ export default {
 
 
                         // console.log("현재 session에 접속한 인원 수: " + this.session.connection.localOptions.value.length);
-                        // 최대 정원 4명으로 설정
+                        // 최대 정원 설정 가능
 
                         // Owner 설정
                         this.isOwner = true;
                         
-                        // Game 설정 (어떻게 고쳐야 하냐?)
-                        this.gameMode = undefined;
-                        this.basicSong = undefined;
+                        // Game 설정
+                        this.optionEnabler = false;
+                        this.gameMode = "play";
+                        this.basicSong = "airplane";
                         this.difficulty = undefined;
                     })
                     .catch((error) => {
@@ -459,10 +589,6 @@ export default {
             // 3) Spcify the actions when events take place in the session
             // 3-1) streamCreated
             this.session.on('streamCreated', ({ stream }) => {
-                console.log("들어가는 스트림 확인");
-                console.log(stream);
-                                console.log(stream.connection.data);
-
                 const subscriber = this.session.subscribe(stream);
                 this.subscribers.push(subscriber);
             }) 
@@ -504,10 +630,28 @@ export default {
 
                 this.messageList.push(clientData + ": " + inMessage);
 
-
-                // 스크롤바 추적3
+                // 스크롤바 추적
                 const $el = document.querySelector(".scroll");
                 $el.scrollTop = $el.scrollHeight*2;
+            })
+
+            // 3-6) game setting
+            this.session.on('signal:game-setting', (event) => {
+                let { gameMode } = JSON.parse(event.data);
+                if (gameMode === "play") {
+                    let { basicSong } = JSON.parse(event.data);
+
+                    this.gameMode = gameMode;
+                    this.basicSong = basicSong;
+                    this.difficulty = undefined;
+                }
+                else {
+                    let { difficulty } = JSON.parse(event.data);
+
+                    this.gameMode = gameMode;
+                    this.basicSong = undefined;
+                    this.difficulty = difficulty;
+                }
             })
         
 
@@ -723,7 +867,7 @@ export default {
   overflow-y: scroll;
 }
 
-button {
+/* button {
   cursor: pointer;
   margin-bottom: 1rem;
   background: #febf00;
@@ -732,7 +876,7 @@ button {
   border-radius: .3rem;
   font-size: 1rem;
   font-weight: bold;
-}
+} */
 
 .scroll > div span {
   display: inline-block;
