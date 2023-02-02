@@ -35,7 +35,7 @@
                         <el-button :type="startButton" :disabled="!startButtonEnabled">시작하기</el-button>
                     </div>
                     <div v-if="!isOwner && !readyButtonOn">
-                        <el-button type="warning" @click="this.readyButtonConfirm">준비하기</el-button>
+                        <el-button class="button-flicker" type="warning" @click="this.readyButtonConfirm">준비하기</el-button>
                     </div>
                     <div v-if="!isOwner && readyButtonOn">
                         <el-button type="success" @click="this.readyButtonConfirm">준비완료</el-button>
@@ -738,7 +738,7 @@ export default {
     padding:0;
     display: flex;
     position: relative;
-    z-index: 2;
+    z-index: 3;
     border-radius: 30px;
   }
 
@@ -867,16 +867,17 @@ export default {
   overflow-y: scroll;
 }
 
-/* button {
+button {
   cursor: pointer;
   margin-bottom: 1rem;
-  background: #febf00;
+  /* background: #febf00; */
   border: none;
   padding: .6rem 1.5rem;
   border-radius: .3rem;
-  font-size: 1rem;
-  font-weight: bold;
-} */
+  font-size: 2.25rem;
+  width: 90%;
+  height: 160px;
+}
 
 .scroll > div span {
   display: inline-block;
@@ -908,4 +909,31 @@ export default {
   border: 4px solid #fff;
 }
 
+/* 버튼 플리커 */
+@keyframes flickerAnimation {
+  0%   { opacity:1; }
+  50%  { opacity:0.5; }
+  100% { opacity:1; }
+}
+@-o-keyframes flickerAnimation{
+  0%   { opacity:1; }
+  50%  { opacity:0.5; }
+  100% { opacity:1; }
+}
+@-moz-keyframes flickerAnimation{
+  0%   { opacity:1; }
+  50%  { opacity:0.5; }
+  100% { opacity:1; }
+}
+@-webkit-keyframes flickerAnimation{
+  0%   { opacity:1; }
+  50%  { opacity:0.5; }
+  100% { opacity:1; }
+}
+.button-flicker {
+   -webkit-animation: flickerAnimation 1s infinite;
+   -moz-animation: flickerAnimation 1s infinite;
+   -o-animation: flickerAnimation 1s infinite;
+    animation: flickerAnimation 1s infinite;
+}
 </style>
