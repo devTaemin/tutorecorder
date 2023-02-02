@@ -17,21 +17,8 @@
 
             
 
-            <!-- 대기방 채팅창 -->
-            <!-- <div id="GreenBoxChat" > -->
-                <!-- 채팅 내용 스크롤 기능으로 집어 넣기 -->
-                <!-- <el-scrollbar> -->
-                    <!-- <p v-for="message in messageList" :key="message" class="chat-scrollbar-item" style="margin-left:0;"> -->
-                        <!-- {{ message }} -->
-                    <!-- </p> -->
-                <!-- </el-scrollbar> -->
-                    <!-- 입력 부분-->
-                <!-- <el-input v-model="chatMessage" clearable @keyup.enter="this.sendMessage"/> -->
-            <!-- </div> -->
-            <!-- 대기방 채팅창 끝 -->
-
             <div style="display:flex; flex-direction:row; ">
-                <!-- 채팅 스크롤바 시험 -->
+                <!-- 채팅창 -->
                 <div style="display:flex; flex-direction:column;  width:100%; margin: 0; padding: 0;">
                     <div id="GreenBoxChat" class="scroll" style="text-align:left;">
                         <p v-for="message in messageList" :key="message"  style="margin-left:0; margin-right:0;">
@@ -41,7 +28,7 @@
                     <input v-model="chatMessage" clearable @keyup.enter="this.sendMessage" style="width:98.5%; margin-top:3px;" />
                 </div>
                 
-                <!-- 채팅 스크롤바 시험 끝 -->
+                <!-- 채팅창 끝 -->
                 
                 <!-- 게임 시작/준비 전환 버튼 -->
                 <div id="OrangeBoxStart"> 
@@ -229,7 +216,6 @@ import axios from "axios";
 import UserVideo from "@/components/video/UserVideo.vue"
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
-
 const APPLICATION_SERVER_URL = "http://localhost:5000/";
 
 
@@ -254,9 +240,6 @@ export default {
             difficulty: undefined,
             chatMessage: '',
             messageList: [],
-
-
-            index:0,
         }   
     },
     mounted() {
@@ -344,15 +327,7 @@ export default {
                 console.log('Message successfully sent');
                 console.log(this.chatMessage)
 
-                console.log('flag1')
-                console.log(this.messageList.length)
-                console.log('flag2')
-
-                // 둘이서 통신을 할때 메세지 리스트 길이는 대화에 흐름을 반영하는 것까지 확인
-                // watch 동작의 문제?
-                // chatmsg 로 확인 : messageList 만 동작을 안함 >> console.log 로 확인
-
-
+                // 스크롤바 추적1 : 3까지
                 // 스크롤 내리기 위해 필요한 부분
                 const $el = document.querySelector(".scroll");
                 $el.scrollTop = $el.scrollHeight;
@@ -415,8 +390,13 @@ export default {
             this.session.on('signal:my-chat', (event) => {
                 let inMessage = event.data;
                 let { clientData } = JSON.parse(event.from.data);
-
+                
                 this.messageList.push(clientData + ": " + inMessage);
+                
+                
+                // 스크롤바 추적2
+                const $el = document.querySelector(".scroll");
+                $el.scrollTop = $el.scrollHeight
             })
         
 
@@ -523,6 +503,11 @@ export default {
                 let { clientData } = JSON.parse(event.from.data);
 
                 this.messageList.push(clientData + ": " + inMessage);
+
+
+                // 스크롤바 추적3
+                const $el = document.querySelector(".scroll");
+                $el.scrollTop = $el.scrollHeight*2;
             })
         
 
@@ -589,19 +574,8 @@ export default {
 
             return response.data;
         },
-        watchtest(){
 
-        }
     },
-
-    watch: {
-        chatMessage(){
-            console.log('watch activating')
-        },
-        messageList(){
-                console.log('watch activating in msg')
-            }
-        },
 }
 </script>
 <style scoped>
