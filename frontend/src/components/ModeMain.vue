@@ -1,19 +1,25 @@
 <template>
-    <div>
-        <el-row :gutter="18" justify="center">
-            <el-col :span="6">
+    <div id="background">
+        <img src="../assets/logo_nocircle.png" alt="logo img" style="width:20%;" > 
+
+        <el-row :gutter="20" style="padding-left:5%;">
+            <!-- 아이콘은 각자의 크기가 달라 크기를 각자 설정 -->
+            <el-col :span="8">
                 <el-card shadow="hover" @click="moveSoloPage">
-                    <div>혼자하기</div>
+                    <div><img id="iconImg" src="../assets/modeSelect-solo.png" alt="modeSelect-solo img" style="width:50%"></div>
+                    <div><img id="textImg" src="../assets/text/solo_play.png" alt="혼자하기"></div>
                 </el-card>
             </el-col>
-            <el-col :span="6">
+            <el-col :span="8">
                 <el-card shadow="hover" @click="roomEnterVisible=true">
-                    <div>방들어가기</div>
+                    <div><img id="iconImg" src="../assets/modeSelect-multi.png" alt="modeSelect-multi img" style="width:100%;"></div>
+                    <div><img id="textImg" src="../assets/text/multi_play.png" alt="같이하기" style="margin-top: 20%;"></div>
                 </el-card>
             </el-col>
-            <el-col :span="6">
+            <el-col :span="8">
                 <el-card shadow="hover" @click="roomMakeVisible=true">
-                    <div>방만들기</div>
+                    <div><img id="iconImg" src="../assets/modeSelect-makeRoom.png" alt="modeSelect-makeRoom img" style="width:60%"></div>
+                    <div><img id="textImg" src="../assets/text/make_room.png" alt="방만들기"></div>
                 </el-card>
             </el-col>
         </el-row>
@@ -110,8 +116,35 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+ .el-card{
+     /* border: 5px solid red; */
+     width: 80%;
+     height: 120%;
+     display: flex;
+     align-items: center;
+     cursor: pointer;
+     border-radius: 20px;
+     background-color: #F2E6E6;
+ }
 .tutorial-modal{
-    background-color: #F2E6E6;;
+    background-color: #6624c9;;
 }
+
+#background{
+    border-radius: 30px;
+    width: 100%;  
+    height: 99%;
+    background-color: rgba(0, 0, 0, 0.374);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 5px;
+
+    aspect-ratio: 16/9;
+}
+
+ #textImg{
+    width:70%;
+ }
 </style>
