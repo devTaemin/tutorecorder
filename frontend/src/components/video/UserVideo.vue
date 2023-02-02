@@ -1,7 +1,7 @@
 <template>
     <div v-if="streamManager" id="video-div">
         <ov-video :stream-manager="streamManager"  id="video-box"/>
-        <div><p>{{ clientData }}</p></div>
+        <div style="margin:0; padding:0;"> {{ clientData }} </div>
     </div>
 </template>
 
@@ -35,14 +35,14 @@ export default {
 
 <style scoped>
   #video-div{
-    border: 15px solid pink;
+    border: 5px solid pink;
     display: inline-block;
     margin: 0;
     padding: 0;  
   }
 
   #video-box {
-    border: 15px solid red;
+    /* border: 15px solid red;  */
     display: inline-block;
     margin: 0;
     padding: 0;  
