@@ -46,9 +46,6 @@ export default {
   },
   methods: {
     ...mapActions(['setMyUserName']),
-    enterkeyup: function(){
-      console.log('111111')
-    },
 
     setName: function() {
       if (this.userName === '') {
