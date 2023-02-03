@@ -6,10 +6,10 @@
     top:5%;
     cursor: pointer;
 }
-#logo-img.rotateY {
-    animation: rotateY 3s;
+.rotateY {
+    animation: rotate-y 3s;
 }
-@keyframes rotateY {
+@keyframes rotate-y {
     from {
       transform: rotateY(0deg);
     } to {

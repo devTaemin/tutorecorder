@@ -63,9 +63,10 @@ export default {
     },
     rotateY: () => {
       const element = document.getElementById("logo-img");
-      element.classList.remove("rotateY");
-      element.style.width = element.offsetWidth;
       element.classList.add("rotateY");
+      setTimeout(function() {
+        element.classList.remove("rotateY");
+      }, 3000);
     }
   },
 
