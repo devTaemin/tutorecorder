@@ -19,7 +19,7 @@
     </el-row>
 </template>
 
-<script>
+<script type="text/javascript">
 import '@tensorflow/tfjs'
 import * as speechCommands from '@tensorflow-models/speech-commands'
 import { mapActions } from 'vuex'
@@ -29,6 +29,7 @@ let pick_list = ['준비하세요', '시작!']
 for (let i=0; i<5; i++) {
     pick_list.push(pitch_list[Math.floor(Math.random() * 7)])
 }
+const URL = "https://teachablemachine.withgoogle.com/models/m6ms0qdPf/";
 
 // 음계 측정값 넣을 리스트 - 현재 7개의 음과 배경소음만 있고 나중에 삑사리 추가
 let grade_list = [[], [], [], [], [], [], [], []];
@@ -54,7 +55,7 @@ export default {
             this.$router.push({ name: 'solo' })
         },
         async createModel () {
-            const URL = 'file://../../assets/teachable/';
+
             
             const checkpointURL = URL + 'model.json' // model topology
             const metadataURL = URL + 'metadata.json' // model metadata
