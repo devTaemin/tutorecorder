@@ -154,7 +154,7 @@ export default {
   position: absolute;
   height: 13vh;
   width: 15vh;
-  left: 85%;
+  left: 80%;
   top: 65%;
   z-index: 2;
 }
@@ -215,7 +215,7 @@ export default {
 }
 
 @keyframes shaking {
-  0% {
+  0%, 100% {
     transform: rotate(0deg);
   }
   30% {
@@ -226,13 +226,10 @@ export default {
   }
   90% {
     transform: rotate(5deg);
-  }
-  100% {
-    transform: rotate(0deg);
   }
 }
 @-webkit-keyframes shaking {
-  0% {
+  0%, 100% {
     transform: rotate(0deg);
   }
   30% {
@@ -243,13 +240,10 @@ export default {
   }
   90% {
     transform: rotate(5deg);
-  }
-  100% {
-    transform: rotate(0deg);
   }
 }
 @-moz-keyframes shaking {
-  0% {
+  0%, 100% {
     transform: rotate(0deg);
   }
   30% {
@@ -260,13 +254,10 @@ export default {
   }
   90% {
     transform: rotate(5deg);
-  }
-  100% {
-    transform: rotate(0deg);
   }
 }
 @-o-keyframes shaking {
-  0% {
+  0%, 100% {
     transform: rotate(0deg);
   }
   30% {
@@ -277,9 +268,6 @@ export default {
   }
   90% {
     transform: rotate(5deg);
-  }
-  100% {
-    transform: rotate(0deg);
   }
 }
 .enlarge:hover {
@@ -300,7 +288,7 @@ export default {
   -o-animation-duration: 1s;
 }
 @keyframes enlarging {
-  0% {
+  0%, 100% {
     transform: scale(1)
   }
   5% {
@@ -317,13 +305,10 @@ export default {
   }
   90% {
     transform: scale(0.95)
-  }
-  100% {
-    transform: scale(1)
   }
 }
 @-webkit-keyframes enlarging {
-  0% {
+  0%, 100% {
     transform: scale(1)
   }
   5% {
@@ -340,13 +325,10 @@ export default {
   }
   90% {
     transform: scale(0.95)
-  }
-  100% {
-    transform: scale(1)
   }
 }
 @-moz-keyframes enlarging {
-  0% {
+  0%, 100% {
     transform: scale(1)
   }
   5% {
@@ -363,13 +345,10 @@ export default {
   }
   90% {
     transform: scale(0.95)
-  }
-  100% {
-    transform: scale(1)
   }
 }
 @-o-keyframes enlarging {
-  0% {
+  0%, 100% {
     transform: scale(1)
   }
   5% {
@@ -386,9 +365,6 @@ export default {
   }
   90% {
     transform: scale(0.95)
-  }
-  100% {
-    transform: scale(1)
   }
 }
 .snow-wrapper {

@@ -1,13 +1,7 @@
 <template>
   <div class="hello">
-    <div style="width:80%;  margin:auto; margin-top:5%; aspect-ratio: 16/9;">
-      <img src="../assets/logo.png" alt="logo img" style="width:60%;" > 
-      
-      <div style="padding-top:20%">
-        <img @click="nameSetVisible=true" style="cursor:pointer; width:20%;" class="start" src="../assets/start.png" alt="start img">
-      </div>
-    </div>
-
+    <img id="logo-img" class="logo-img" @click="rotateY" src="../assets/logo.png" alt="logo img"> 
+    <img class="start-img" @click="nameSetVisible=true" src="../assets/start.png" alt="start img">
 
     <el-dialog
       v-model="nameSetVisible"
@@ -66,6 +60,10 @@ export default {
         this.errorMessage = ''
         this.$router.push({ name: 'mode' })
       }
+    },
+    rotateY: () => {
+      const element = document.getElementById("logo-img");
+      element.classList.add("rotateY")
     }
   },
 
@@ -74,42 +72,67 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
-/* 버튼 플리커 */
-@keyframes flickerAnimation {
-  0%   { filter: brightness(1); }
-  50%  { filter: brightness(1.5); }
-  100% { filter: brightness(1) }
+.hello {
+  height: 99%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
-@-o-keyframes flickerAnimation{
-  0%   { filter: brightness(1); }
-  50%  { filter: brightness(1.5); }
-  100% { filter: brightness(1) }
+.img-container{
+  border: 3px solid ;
+  flex-basis: 95%;
 }
-@-moz-keyframes flickerAnimation{
-  0%   { filter: brightness(1); }
-  50%  { filter: brightness(1.5); }
-  100% { filter: brightness(1) }
-}
-@-webkit-keyframes flickerAnimation{
-  0%   { filter: brightness(1); }
-  50%  { filter: brightness(1.5); }
-  100% { filter: brightness(1) }
-}
-.start{
-  position: relative;
+.logo-img{
+  width: 30vw;
+  min-width: 60vh;
+  position: absolute;
   z-index: 2;
+  top:5%;
+}
+#logo-img.rotateY {
+  animation: rotateY 3s;
+}
+@keyframes rotateY {
+  from {
+    transform: rotateY(0deg);
+  } to {
+    transform: rotateY(360deg);
+  }
+}
+.start-img{
+  position: absolute;
+  width: 13vw;
+  min-width: 20vh;
+  z-index: 2;
+  top: 80%;
+  cursor: pointer;
   -webkit-animation: flickerAnimation 1s infinite;
   -moz-animation: flickerAnimation 1s infinite;
   -o-animation: flickerAnimation 1s infinite;
   animation: flickerAnimation 1s infinite;
 }
-.start:hover {
+.start-img:hover {
   -webkit-animation: false;
   -moz-animation: false;
   -o-animation: false;
   animation: false;
 }
-
+@keyframes flickerAnimation {
+  0%, 100%   { filter: brightness(1); }
+  50%  { filter: brightness(1.5); }
+}
+@-o-keyframes flickerAnimation{
+  0%, 100%   { filter: brightness(1); }
+  50%  { filter: brightness(1.5); }
+}
+@-moz-keyframes flickerAnimation{
+  0%, 100%   { filter: brightness(1); }
+  50%  { filter: brightness(1.5); }
+}
+@-webkit-keyframes flickerAnimation{
+  0%, 100%   { filter: brightness(1); }
+  50%  { filter: brightness(1.5); }
+}
 .el-dialog__header{
   display: none;
 }
