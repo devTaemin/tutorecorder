@@ -23,6 +23,10 @@
                 </el-card>
             </el-col>
         </el-row>
+
+
+
+        <!-- 뒤로가기, 홈버튼 -->
         <!-- 이미지 방향은 놔두기 playroom branch 에서 수정함 -->
         <div @click="goback">
             <div style="width:20%; position: fixed; bottom:2%; left:8%; cursor: pointer;" >
@@ -30,7 +34,9 @@
                 <span style="font-size:45px;"> 뒤로가기 </span>
             </div>
         </div>
-
+        <img src="@/assets/homeButton.png" alt="홈" @click="goHome"
+        style="width:4%; position: fixed; bottom:2%; left:48%; cursor: pointer;">
+        <!--  -->
     </div>
 </template>
 <script>
@@ -48,9 +54,14 @@ export default {
             this.$router.push({ name: 'soloSong' })
         },
         goback() {  
-            console.log('mode test')
+            console.log('go mode select')
             this.$router.push({ name: 'mode' })
+        },
+        goHome() {
+            console.log('go home')
+            this.$router.push({ name: 'home' })
         }
+
     },
 
 }
