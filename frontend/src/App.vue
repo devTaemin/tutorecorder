@@ -2,10 +2,10 @@
   <div>
     <div id="background-image">
       <router-view/>
-      <div class="char1 enlarge"></div>
-      <div class="char2 shake"></div>
-      <div class="char3 enlarge"></div>
-      <div class="char4 shake"></div>
+      <div id="char1" class="char1 enlarge" @click="disappear"></div>
+      <div id="char2" class="char2 shake" @click="move"></div>
+      <div id="char3" class="char3 enlarge" @click="popUp"></div>
+      <div id="char4" class="char4 shake" @click="rotateY"></div>
       <div class="snow-wrapper">
         <transition-group @before-enter="randomPart">
           <div class="snow falling" v-for="snow in snowUnits" :key="snow">♩</div>
@@ -83,6 +83,46 @@ export default {
         return parseInt(this.RNG_float(begin, end))
       },
 
+      disappear: () => {
+        const element = document.getElementById("char1");
+        element.classList.remove("enlarge")
+        element.classList.add("disappear");
+        setTimeout(function() {
+          element.classList.remove('disappear')
+          element.classList.add("enlarge")
+        }, 3000);
+      },
+
+      move: () => {
+        const element = document.getElementById("char2");
+        element.classList.remove("shake")
+        element.classList.add("moveChar");
+        setTimeout(function() {
+          element.classList.remove('moveChar')
+          element.classList.add("shake")
+        }, 3000);
+      },
+
+      popUp: () => {
+        const element = document.getElementById("char3");
+        element.classList.remove("enlarge")
+        element.classList.add("popUp");
+        setTimeout(function() {
+          element.classList.remove('popUp')
+          element.classList.add("enlarge")
+        }, 3000);
+      },
+
+      rotateY: () => {
+        const element = document.getElementById("char4");
+        element.classList.remove("shake")
+        element.classList.add("rotateY");
+        setTimeout(function() {
+          element.classList.remove('rotateY')
+          element.classList.add("shake")
+        }, 3000);
+      },
+      
     },
     mounted() {
       this.generateSnow(50)
@@ -90,348 +130,7 @@ export default {
 }
 </script>
 <style>
-
-@font-face { /* JUA 폰트 */
-  font-family: "JUA";
-  src: url("./assets/fonts/Jua-Regular.ttf") format("truetype");
-  font-weight: normal;
-}
-
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  /* color: #2c3e50; */
-  height: 100vh;
-  font-family: 'JUA', serif;
-}
-#background-image{
-  background-image: url("./assets/Background/BackgroundImage.png");
-  width: 100vw;
-  height: 100vh;
-  background-size: 100vw 100vh;
-  display: flex;
-  justify-content: center;
-}
-.char1{
-  background-image: url("./assets/Background/char1.png");
-  background-size:contain;
-  background-repeat:no-repeat;
-  position: absolute;
-  height: 20vh;
-  width:11.2vw;
-  left: 6%;
-  top: 45%;
-  z-index: 2;
-}
-.char2{
-  background-image: url("./assets/Background/char2.png");
-  background-size:contain;
-  background-repeat:no-repeat;
-  position: absolute;
-  height: 20vh;
-  width: 19vh;
-  left: 38%;
-  top: 55%;
-  z-index: 2;
-}
-.char3{
-  background-image: url("./assets/Background/char3.png");
-  background-size:contain;
-  background-repeat:no-repeat;
-  position: absolute;
-  height: 15vh;
-  width: 12vh;
-  left: 60%;
-  top: 55%;
-  z-index: 2;
-}
-.char4{
-  background-image: url("./assets/Background/char4.png");
-  background-size:contain;
-  background-repeat:no-repeat;
-  position: absolute;
-  height: 13vh;
-  width: 15vh;
-  left: 80%;
-  top: 65%;
-  z-index: 2;
-}
-
-.pink-container{
-  width: 95vw;
-  height: 95vh;
-  background-color: #F2E6E6;
-  margin: auto;
-  border-radius: 30px;
-  position: relative;
-  z-index: 3;
-}
-
-.solo-out-button{
-    background-color: #F0AFAF !important;
-    font-family: 'JUA', serif !important;
-    font-size: 4vh !important;
-    width: 10vw !important;
-    height: 6vh !important;
-}
-
-.solo-analyze-button{
-    background-color: #8684FF !important;
-    color: white !important;
-    font-family: 'JUA', serif !important;
-    font-size: 4vh !important;
-    width: 10vw !important;
-    height: 6vh !important;
-    margin-right: 3vw !important;
-}
-
-.mode{
-  position: relative;
-  z-index: 3;
-}
-
-.shake:hover {
-  animation-name: shaking;
-  animation-timing-function: linear;
-  animation-iteration-count: infinite;
-  animation-duration: 0.5s;
-
-  -webkit-animation-name: shaking;
-  -webkit-animation-timing-function: linear;
-  -webkit-animation-iteration-count: infinite;
-  -webkit-animation-duration: 0.5s;
-
-  -moz-animation-name: shaking;
-  -moz-animation-timing-function: linear;
-  -moz-animation-iteration-count: infinite;
-  -moz-animation-duration: 0.5s;
-
-  -o-animation-name: shaking;
-  -o-animation-timing-function: linear;
-  -o-animation-iteration-count: infinite;
-  -o-animation-duration: 0.5s;
-}
-
-@keyframes shaking {
-  0%, 100% {
-    transform: rotate(0deg);
-  }
-  30% {
-    transform: rotate(10deg);
-  }
-  60% {
-    transform: rotate(-10deg);
-  }
-  90% {
-    transform: rotate(5deg);
-  }
-}
-@-webkit-keyframes shaking {
-  0%, 100% {
-    transform: rotate(0deg);
-  }
-  30% {
-    transform: rotate(10deg);
-  }
-  60% {
-    transform: rotate(-10deg);
-  }
-  90% {
-    transform: rotate(5deg);
-  }
-}
-@-moz-keyframes shaking {
-  0%, 100% {
-    transform: rotate(0deg);
-  }
-  30% {
-    transform: rotate(10deg);
-  }
-  60% {
-    transform: rotate(-10deg);
-  }
-  90% {
-    transform: rotate(5deg);
-  }
-}
-@-o-keyframes shaking {
-  0%, 100% {
-    transform: rotate(0deg);
-  }
-  30% {
-    transform: rotate(10deg);
-  }
-  60% {
-    transform: rotate(-10deg);
-  }
-  90% {
-    transform: rotate(5deg);
-  }
-}
-.enlarge:hover {
-  animation-name: enlarging;
-  animation-iteration-count: infinite;
-  animation-duration: 1s;
-
-  -webkit-animation-name: enlarging;
-  -webkit-animation-iteration-count: infinite;
-  -webkit-animation-duration: 1s;
-
-  -moz-animation-name: enlarging;
-  -moz-animation-iteration-count: infinite;
-  -moz-animation-duration: 1s;
-
-  -o-animation-name: enlarging;
-  -o-animation-iteration-count: infinite;
-  -o-animation-duration: 1s;
-}
-@keyframes enlarging {
-  0%, 100% {
-    transform: scale(1)
-  }
-  5% {
-    transform: scale(0.8)
-  }
-  60% {
-    transform: scale(1.2)
-  }
-  70% {
-    transform: scale(0.9)
-  }
-  80% {
-    transform: scale(1.1)
-  }
-  90% {
-    transform: scale(0.95)
-  }
-}
-@-webkit-keyframes enlarging {
-  0%, 100% {
-    transform: scale(1)
-  }
-  5% {
-    transform: scale(0.8)
-  }
-  60% {
-    transform: scale(1.2)
-  }
-  70% {
-    transform: scale(0.9)
-  }
-  80% {
-    transform: scale(1.1)
-  }
-  90% {
-    transform: scale(0.95)
-  }
-}
-@-moz-keyframes enlarging {
-  0%, 100% {
-    transform: scale(1)
-  }
-  5% {
-    transform: scale(0.8)
-  }
-  60% {
-    transform: scale(1.2)
-  }
-  70% {
-    transform: scale(0.9)
-  }
-  80% {
-    transform: scale(1.1)
-  }
-  90% {
-    transform: scale(0.95)
-  }
-}
-@-o-keyframes enlarging {
-  0%, 100% {
-    transform: scale(1)
-  }
-  5% {
-    transform: scale(0.8)
-  }
-  60% {
-    transform: scale(1.2)
-  }
-  70% {
-    transform: scale(0.9)
-  }
-  80% {
-    transform: scale(1.1)
-  }
-  90% {
-    transform: scale(0.95)
-  }
-}
-.snow-wrapper {
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  overflow: hidden;
-  /* em으로 크기 설정할 때 쓰임 (1em은 1글자 높이) */
-  font-size: 10px;
-  z-index: 1;
-}
-.snow-wrapper > .snow {
-  position: absolute;
-  font-size: 50px;
-  z-index: 1;
-  top: -20%;
-  left: 50%;
-}
-.snow.falling {
-  animation-name: falling;
-  animation-timing-function:linear;
-  animation-iteration-count: infinite;
-
-  -webkit-animation-name: falling;
-  -webkit-animation-timing-function:linear;
-  -webkit-animation-iteration-count: infinite;
-
-  -moz-animation-name: falling;
-  -moz-animation-timing-function:linear;
-  -moz-animation-iteration-count: infinite;
-
-  -o-animation-name: falling;
-  -o-animation-timing-function:linear;
-  -o-animation-iteration-count: infinite;
-}
-@keyframes falling {
-  0% {top: -20%; 
-    transform: rotate(-180deg);
-  }
-  100% {top: 120%;
-    transform: rotate(360deg);
-  }
-}
-@-webkit-keyframes falling {
-  0% {top: -20%; 
-    transform: rotate(-180deg);
-  }
-  100% {top: 120%;
-    transform: rotate(360deg);
-  }
-}
-@-moz-keyframes falling {
-  0% {top: -20%; 
-    transform: rotate(-180deg);
-  }
-  100% {top: 120%;
-    transform: rotate(360deg);
-  }
-}
-@-o-keyframes falling {
-  0% {top: -20%; 
-    transform: rotate(-180deg);
-  }
-  100% {top: 120%;
-    transform: rotate(360deg);
-  }
-}
+  @import '@/appStyle.css';
+  @import '@/appCharacter.css';
+  @import '@/appSnow.css';
 </style>
