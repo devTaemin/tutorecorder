@@ -24,35 +24,21 @@
             </el-col>
         </el-row>
 
-        <el-dialog
-            v-model="roomEnterVisible"
-            title=""
-            width="40%"
-            class="tutorial-modal"
-        >
-            <el-form
-                label-width="100px"
-                style="max-width:500px"
-            >
-                <el-form-item label="방 코드 입력">
-                    <el-input v-model="roomCode" />
-                </el-form-item>
-            </el-form>
-            <template #footer>
-                <el-button @click="roomEnterVisible=false">취소</el-button>
-                <el-button type="success" @click="enterRoom">입장</el-button>
-            </template>
+        <!-- 같이하기 모달 -->
+        <el-dialog v-model="roomEnterVisible" :show-close="false" :show-header="false" :modal-append-to-body="true"
+            :class="{'modal-container': this.inputCorrect === true, 'modal-container-wrong': this.inputCorrect === false }">
+            <!-- 입력 칸 -->
+            <span style="font-size:1.5vw">참여코드</span>
+            <el-input v-model="roomCode" @keyup.enter="enterRoom" class="nickname-input"/>
+            <el-button @click="enterRoom" class="enterCode-input-button">입장</el-button>
+            <div class="errorMessage">{{ errorMessage }}</div>
         </el-dialog>
+        <!-- 같이하기 모달 끝-->
 
-        <el-dialog
-            v-model="roomMakeVisible"
-            title=""
-            width="40%"
-        >
-            <el-form
-                label-width="100px"
-                style="max-width:500px"
-            >
+
+        <!-- 방만들기 모달 -->
+        <el-dialog v-model="roomMakeVisible" title="" width="40%">
+            <el-form label-width="100px" style="max-width:500px">
                 <el-form-item label="방 코드 설정">
                     <el-input v-model="roomCode" />
                 </el-form-item>
@@ -62,6 +48,8 @@
                 <el-button type="success" @click="createRoom">생성</el-button>
             </template>
         </el-dialog>
+        <!-- 방만들기 모달 끝-->
+
     </div>
 </template>
 <script>
@@ -74,6 +62,9 @@ export default {
             roomEnterVisible: false,
             roomMakeVisible: false,
             roomCode: '',
+
+            inputCorrect: true,
+            errorMessage: '',
         }
     },
     computed: {
@@ -85,19 +76,37 @@ export default {
         moveSoloPage: function() {
             this.$router.push({ name: 'solo' })
         },
+
+
         enterRoom: function() {
             // 세션 코드 검사 후 예외 처리 (일치하는 방 정보 유무)
-            // 방에 접속하는 코드
-            this.setMySessionId(this.roomCode)
-
-            console.log("방 입장");
-            this.roomCode='';
-            this.roomEnterVisible=false;
-
-            // DEBUG
-
-            this.$router.push({ name: 'test' })
+            // 유효성 검사  - 수정 필요!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            if (this.roomCode === '') {
+                this.inputCorrect = false
+                this.errorMessage = '참여코드를 입력해주세요!'
+                this.roomCode = ''
+            } else if (this.roomCode.length > 5) {
+                this.inputCorrect = false
+                this.errorMessage = '참여코드를 확인해 주세요!(5글자)'
+                this.roomCode = ''
+            } else {
+                this.inputCorrect = true
+                this.roomEnterVisible=false
+                this.errorMessage = ''
+            // 유효성 검사 끝
+    
+                // 방에 접속하는 코드
+                this.setMySessionId(this.roomCode)
+                console.log("방 입장");
+                this.roomCode='';
+                this.roomEnterVisible=false;
+    
+                // DEBUG
+                this.$router.push({ name: 'test' })
+            }
         },
+
+
         createRoom: function() {
             // 방 생성
             this.setMySessionId(this.roomCode)
@@ -112,7 +121,7 @@ export default {
             this.$router.push({ name: 'test' })
         }
 
-    }
+        }
 }
 </script>
 
@@ -147,4 +156,40 @@ export default {
  #textImg{
     width:70%;
  }
+
+
+ /* 모달 css */
+.el-dialog__header{
+  display: none;
+}
+
+.modal-container{
+  border-radius: 20px !important;
+  background-color: #B3F7A8 !important;
+  width: 40vw !important;
+}
+
+.modal-container-wrong{
+  border-radius: 20px !important;
+  background-color: #F2B2B2 !important;
+  width: 40vw !important;
+}
+
+.enterCode-input{
+  width: 20vw !important;
+  margin-right: 2vw;
+  margin-left: 1vw;
+}
+
+.enterCode-input-button{
+  width: 8vw !important;
+  background-color: #3AD84A !important;
+  font-family: 'JUA', serif;
+  font-size: 1.5vw !important;
+}
+
+.errorMessage{
+  color: red;
+  font-size: 20px;
+}
 </style>
