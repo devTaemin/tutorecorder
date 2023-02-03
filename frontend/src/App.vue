@@ -197,9 +197,75 @@ export default {
   animation-timing-function: linear;
   animation-iteration-count: infinite;
   animation-duration: 0.5s;
+
+  -webkit-animation-name: shaking;
+  -webkit-animation-timing-function: linear;
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-duration: 0.5s;
+
+  -moz-animation-name: shaking;
+  -moz-animation-timing-function: linear;
+  -moz-animation-iteration-count: infinite;
+  -moz-animation-duration: 0.5s;
+
+  -o-animation-name: shaking;
+  -o-animation-timing-function: linear;
+  -o-animation-iteration-count: infinite;
+  -o-animation-duration: 0.5s;
 }
 
 @keyframes shaking {
+  0% {
+    transform: rotate(0deg);
+  }
+  30% {
+    transform: rotate(10deg);
+  }
+  60% {
+    transform: rotate(-10deg);
+  }
+  90% {
+    transform: rotate(5deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+@-webkit-keyframes shaking {
+  0% {
+    transform: rotate(0deg);
+  }
+  30% {
+    transform: rotate(10deg);
+  }
+  60% {
+    transform: rotate(-10deg);
+  }
+  90% {
+    transform: rotate(5deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+@-moz-keyframes shaking {
+  0% {
+    transform: rotate(0deg);
+  }
+  30% {
+    transform: rotate(10deg);
+  }
+  60% {
+    transform: rotate(-10deg);
+  }
+  90% {
+    transform: rotate(5deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+@-o-keyframes shaking {
   0% {
     transform: rotate(0deg);
   }
@@ -220,8 +286,89 @@ export default {
   animation-name: enlarging;
   animation-iteration-count: infinite;
   animation-duration: 1s;
+
+  -webkit-animation-name: enlarging;
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-duration: 1s;
+
+  -moz-animation-name: enlarging;
+  -moz-animation-iteration-count: infinite;
+  -moz-animation-duration: 1s;
+
+  -o-animation-name: enlarging;
+  -o-animation-iteration-count: infinite;
+  -o-animation-duration: 1s;
 }
 @keyframes enlarging {
+  0% {
+    transform: scale(1)
+  }
+  5% {
+    transform: scale(0.8)
+  }
+  60% {
+    transform: scale(1.2)
+  }
+  70% {
+    transform: scale(0.9)
+  }
+  80% {
+    transform: scale(1.1)
+  }
+  90% {
+    transform: scale(0.95)
+  }
+  100% {
+    transform: scale(1)
+  }
+}
+@-webkit-keyframes enlarging {
+  0% {
+    transform: scale(1)
+  }
+  5% {
+    transform: scale(0.8)
+  }
+  60% {
+    transform: scale(1.2)
+  }
+  70% {
+    transform: scale(0.9)
+  }
+  80% {
+    transform: scale(1.1)
+  }
+  90% {
+    transform: scale(0.95)
+  }
+  100% {
+    transform: scale(1)
+  }
+}
+@-moz-keyframes enlarging {
+  0% {
+    transform: scale(1)
+  }
+  5% {
+    transform: scale(0.8)
+  }
+  60% {
+    transform: scale(1.2)
+  }
+  70% {
+    transform: scale(0.9)
+  }
+  80% {
+    transform: scale(1.1)
+  }
+  90% {
+    transform: scale(0.95)
+  }
+  100% {
+    transform: scale(1)
+  }
+}
+@-o-keyframes enlarging {
   0% {
     transform: scale(1)
   }
@@ -266,8 +413,44 @@ export default {
   animation-name: falling;
   animation-timing-function:linear;
   animation-iteration-count: infinite;
+
+  -webkit-animation-name: falling;
+  -webkit-animation-timing-function:linear;
+  -webkit-animation-iteration-count: infinite;
+
+  -moz-animation-name: falling;
+  -moz-animation-timing-function:linear;
+  -moz-animation-iteration-count: infinite;
+
+  -o-animation-name: falling;
+  -o-animation-timing-function:linear;
+  -o-animation-iteration-count: infinite;
 }
 @keyframes falling {
+  0% {top: -20%; 
+    transform: rotate(-180deg);
+  }
+  100% {top: 120%;
+    transform: rotate(360deg);
+  }
+}
+@-webkit-keyframes falling {
+  0% {top: -20%; 
+    transform: rotate(-180deg);
+  }
+  100% {top: 120%;
+    transform: rotate(360deg);
+  }
+}
+@-moz-keyframes falling {
+  0% {top: -20%; 
+    transform: rotate(-180deg);
+  }
+  100% {top: 120%;
+    transform: rotate(360deg);
+  }
+}
+@-o-keyframes falling {
   0% {top: -20%; 
     transform: rotate(-180deg);
   }
