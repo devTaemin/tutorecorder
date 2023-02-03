@@ -46,12 +46,12 @@ export default {
     name: 'SoloAnalizeMain',
     created() {
         const gameResult = this.$store.state.gameResult
-        console.log(gameResult)
+        console.log(gameResult[0])
         for (let i = 0; i<7; i++) {
             if (gameResult[i].length === 0) {
                 this.gameResult.push(0)
             } else {
-                this.gameResult.push(((gameResult.reduce((a, b) => a + b, 0) / gameResult[i].length)*100).toFixed(0));
+                this.gameResult.push(((gameResult[i].reduce((a, b) => a + b, 0) / gameResult[i].length)*100).toFixed(0));
             }
         }
     },

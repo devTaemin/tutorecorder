@@ -25,14 +25,31 @@ import * as speechCommands from '@tensorflow-models/speech-commands'
 import { mapActions } from 'vuex'
 
 const pitch_list = ['도', '레', '미', '파', '솔', '라', '시'];
+const pitch_list2 = ['도', '레', '미', '파', '솔', '라', '시'];
+
+
+// pick_list에 나올 음계 저장
+// 최소 한 번씩 나오게 하는 구간
 let pick_list = ['준비하세요', '시작!']
-for (let i=0; i<5; i++) {
-    pick_list.push(pitch_list[Math.floor(Math.random() * 7)])
+for (let i=0; i<7; i++) {
+    const pick_index = Math.floor(Math.random() * pitch_list.length);
+    pick_list.push(pitch_list[pick_index]);
+    pitch_list.splice(pick_index, 1);
 }
+// 최소 한 번씩 나오게 하는 구간 끝
+
+const problem = 3
+// 랜덤으로 problem개 더 출력
+for (let i=0; i<problem; i++) {
+    pick_list.push(pitch_list2[Math.floor(Math.random() * 7)]);
+}
+
+pick_list.push('참 잘했어요!')
+const total_problem = problem + 10;
 const URL = "https://teachablemachine.withgoogle.com/models/m6ms0qdPf/";
 
 // 음계 측정값 넣을 리스트 - 현재 7개의 음과 배경소음만 있고 나중에 삑사리 추가
-let grade_list = [[], [], [], [], [], [], [], []];
+let grade_list = [[], [], [], [], [], [], []];
 
 
 export default {
@@ -164,7 +181,8 @@ export default {
             let index = 0
             let timer = setInterval(() => {
                 this.pitch_target = pick_list[index];
-                index = (index + 1) % 7;
+                // index에 몇 가지 나올지 저장
+                index = (index + 1) % total_problem;
                 if (index === 0) {
                     clearInterval(timer);
                     this.saveGameResult(grade_list)
