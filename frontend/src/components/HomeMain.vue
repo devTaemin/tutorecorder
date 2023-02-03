@@ -1,10 +1,9 @@
 <template>
   <div class="hello">
-    <div style="width:80%;  margin:auto; margin-top:5%;">
+    <div style="width:80%;  margin:auto; margin-top:5%; aspect-ratio: 16/9;">
       <img src="../assets/logo.png" alt="logo img" style="width:60%;" > 
       
       <div style="padding-top:20%">
-        <!-- <img src="../assets/star.png" alt="star img" style="height:52px;"> -->
         <img @click="nameSetVisible=true" style="cursor:pointer; width:20%;" class="start" src="../assets/start.png" alt="start img">
       </div>
     </div>
@@ -18,15 +17,10 @@
       :modal-append-to-body="true"
     >
       <!-- 입력 칸 -->
-      <el-form
-      >
-      <el-form-item>
-        <span style="font-size:1.5vw">닉네임</span>
-        <el-input v-model="userName"  class="nickname-input"/>
-        <el-button @click="setName" class="nickname-input-button">입장</el-button>
-      </el-form-item>
+      <span style="font-size:1.5vw">닉네임</span>
+      <el-input @keyup.enter="setName" v-model="userName" class="nickname-input"/>
+      <el-button @click="setName" class="nickname-input-button">입장</el-button>
       <div class="errorMessage">{{ errorMessage }}</div>
-      </el-form>
     </el-dialog>
   </div>
 </template>
@@ -34,6 +28,7 @@
 <script>
 import { Check } from '@element-plus/icons-vue'
 import { mapActions } from 'vuex'
+
 
 export default {
   name: 'HomeMain',

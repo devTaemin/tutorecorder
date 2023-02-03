@@ -32,7 +32,10 @@
                     <el-progress :percentage="gameResult[6]" :color="siPurple"/>
                 </div>
             </div>
-            <div class="analize-result">분석결과</div>
+            <div class="analize-result">
+                <div>분석결과</div>
+                <div>{{ analizeResultText }}</div>
+            </div>
         </div>
         <div>
             <el-button class="solo-out-button" @click="goSolo">나가기</el-button>
@@ -42,11 +45,19 @@
 
 <script>
 
+const pitchText = ['도', '레', '미', '파', '솔', '라', '시'];
+const badList = [];
+const nomalList = [];
+const goodList = [];
+const badTextForm = '는 연습이 많이 필요해 보여요. '
+const goodTextForm = '는 아주 잘하고 있어요. '
+const nomalTextForm = '보통이에요. 전체적으로 연습을 하면 더 잘할 수 있어요.'
+
 export default {
     name: 'SoloAnalizeMain',
     created() {
+        this.analizeResultText = ''
         const gameResult = this.$store.state.gameResult
-        console.log(gameResult[0])
         for (let i = 0; i<7; i++) {
             if (gameResult[i].length === 0) {
                 this.gameResult.push(0)
@@ -54,6 +65,39 @@ export default {
                 this.gameResult.push(((gameResult[i].reduce((a, b) => a + b, 0) / gameResult[i].length)*100).toFixed(0));
             }
         }
+
+        // 분석 결과를 내주기 위해서 텍스트로 변환
+        for (let i=0; i<7; i++) {
+            if (this.gameResult[i] < 40) {
+                badList.push(pitchText[i])
+            } else if (this.gameResult[i] < 70) {
+                nomalList.push(pitchText[i])
+            } else {
+                goodList.push(pitchText[i])
+            }
+        }
+
+        let badText;
+        let goodText;
+        if (badList.length !== 0) {
+            badText = badList[0]
+            for (let i=1; i<badList.length; i++) {
+                badText = badText + ', ' + badList[i]
+            }
+            this.analizeResultText = badText + badTextForm
+        }
+        if (goodList !== 0) {
+            goodText = goodList[0]
+            for (let i=1; i<goodList.length; i++) {
+                goodText = goodText + ', ' + goodList[i]
+            }
+            this.analizeResultText += goodText + goodTextForm
+        }
+        if (this.analizeResultText === '') {
+            this.analizeResultText = nomalTextForm
+        }
+
+
     },
     data() {
         return{
@@ -107,6 +151,7 @@ export default {
                 { color: '#9C27B0', percentage: 100 },
             ],
             gameResult: [],
+            analizeResultText: '',
         }
     },
     methods: {
