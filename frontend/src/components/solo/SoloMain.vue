@@ -1,42 +1,40 @@
 <template>
     <div id="background">
-        <img src="@/assets/logo_nocircle.png" alt="logo img" style="width:20%;" > 
+        <img id="logo" src="@/assets/logo_nocircle.png" alt="logo img" > 
 
-        <el-row :gutter="20" style="padding-left:5%;">
+        <el-row id="card-container" :gutter="20" >
             <el-col :span="8">
                 <el-card shadow="hover" @click="moveSoloTutorial">
-                    <div><img id="iconImg" src="@/assets/soloSelect-tutorial.png" alt="튜토리얼 img" style="width:60%"></div>
+                    <div><img id="iconImg" src="@/assets/soloSelect-tutorial.png" alt="튜토리얼 img"></div>
                     <div><img id="textImg" src="@/assets/text/solo_tutorial.png" alt="튜토리얼"></div>
                 </el-card>  
             </el-col>
             <el-col :span="8">
                 <el-card shadow="hover" @click="moveSoloSound" >
-                    <div><img id="iconImg" src="@/assets/soloSelect-sound.png" alt="소리내기 img" style="width:60%"></div>
+                    <div><img id="iconImg" src="@/assets/soloSelect-sound.png" alt="소리내기 img"></div>
                     <div><img id="textImg" src="@/assets/text/solo_sound.png" alt="소리내기"></div>
                 </el-card>
             </el-col>
             <el-col :span="8">
                 <el-card shadow="hover" @click="moveSoloSong" >
-                    <div><img id="iconImg" src="@/assets/soloSelect-song.png" alt="연주하기 img" style="width:80%;"></div>
-                    <div><img id="textImg" src="@/assets/text/solo_song.png" alt="연주하기" style="padding-top:12%;"></div>
-
+                    <div><img id="iconImg" src="@/assets/soloSelect-song.png" alt="연주하기 img"></div>
+                    <div><img id="textImg" src="@/assets/text/solo_song.png" alt="연주하기"></div>
                 </el-card>
             </el-col>
         </el-row>
 
-
+        <div style="height:10vh"></div>
 
         <!-- 뒤로가기, 홈버튼 -->
         <!-- 이미지 방향은 놔두기 playroom branch 에서 수정함 -->
-        <div @click="goback">
-            <div style="width:20%; position: fixed; bottom:2%; left:8%; cursor: pointer;" >
-                <img src="@/assets/goback.png" alt="돌아가기" style="width:15%; ">
-                <span style="font-size:45px;"> 뒤로가기 </span>
-            </div>
-        </div>
-        <img src="@/assets/homeButton.png" alt="홈" @click="goHome"
-        style="width:4%; position: fixed; bottom:2%; left:48%; cursor: pointer;">
-        <!--  -->
+        
+            <img id="backImg" src="@/assets/goback.png" alt="돌아가기"  @click="goback"
+                style="cursor: pointer; width:5%; position: absolute; left: 2%; bottom: 5%;">
+    
+            <img id="homeImg" src="@/assets/homeButton.png" alt="홈" @click="goHome"
+                style="cursor: pointer; width: 5%; position: absolute; left: 48%; bottom: 5%;">
+        
+        <!-- 뒤로가기, 홈버튼  -->
     </div>
 </template>
 <script>
@@ -67,38 +65,74 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .hover-button{
     cursor: pointer;
 }
 
-
-.el-card{
-     /* border: 5px solid red; */
-     width: 80%;
-     height: 120%;
-     display: flex;
-     align-items: center;
-     cursor: pointer;
-     border-radius: 20px;
-     background-color: #F2E6E6;
- }
-
- #background{
+#background{
     border-radius: 30px;
-    width: 100%;  
-    height: 99%;
+    width: 90vw;  
+    height: 90vh;
     background-color: rgba(0, 0, 0, 0.374);
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: 5px;
-
-    aspect-ratio: 16/9;
+    margin-top: 5vh;
+    position: relative;
 }
 
- #textImg{
+#logo{
+    width: 20%;
+    margin-top: 2%;
+    margin-bottom: 2%;
+}
+
+/* 카드 */
+#card-container{
+    width:90%;
+}
+.el-row{
+    /* border:   10px solid gray; */
+    position: absolute;
+    left: 9%;
+    top: 30%;
+    width: 40vw;
+}
+.el-card{
+    border: 5px solid red;
+    width: 20vw;
+    height: 35vh;
+    cursor: pointer;
+    border-radius: 20px;
+    background-color: #F2E6E6;
+    position: relative;
+    
+}
+#iconImg{
+    width: 40%;
+    position: absolute;
+    left: 30%;
+} 
+#textImg{
     width:70%;
+    position: absolute;
+    bottom: 1%;
+    left: 15%
+}
+/* 카드 끝 */
+
+
+/* 하단 아이콘 */
+/* #iconContainer{
+    margin-top:5%;
+}
+ #homeImg{
+    z-index:1234;
  }
+ #backImg{
+    z-index: 1234;
+ } */
+ /* 하단 아이콘 끝 */
 
 </style>
