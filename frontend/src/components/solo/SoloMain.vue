@@ -1,40 +1,40 @@
 <template>
-    <div id="background">
-        <img id="logo" src="@/assets/logo_nocircle.png" alt="logo img" > 
+    <div id="backgroundContainer">
+        <div id="logoContainter">
+            <img id='logo' src="@/assets/logo_nocircle.png" alt="logo img" >
+        </div>
 
-        <el-row id="card-container" :gutter="20" >
-            <el-col :span="8">
-                <el-card shadow="hover" @click="moveSoloTutorial">
-                    <div><img id="iconImg" src="@/assets/soloSelect-tutorial.png" alt="튜토리얼 img"></div>
-                    <div><img id="textImg" src="@/assets/text/solo_tutorial.png" alt="튜토리얼"></div>
-                </el-card>  
-            </el-col>
-            <el-col :span="8">
-                <el-card shadow="hover" @click="moveSoloSound" >
-                    <div><img id="iconImg" src="@/assets/soloSelect-sound.png" alt="소리내기 img"></div>
-                    <div><img id="textImg" src="@/assets/text/solo_sound.png" alt="소리내기"></div>
-                </el-card>
-            </el-col>
-            <el-col :span="8">
-                <el-card shadow="hover" @click="moveSoloSong" >
-                    <div><img id="iconImg" src="@/assets/soloSelect-song.png" alt="연주하기 img"></div>
-                    <div><img id="textImg" src="@/assets/text/solo_song.png" alt="연주하기"></div>
-                </el-card>
-            </el-col>
-        </el-row>
+        <div id="containerStack">
+            <div id="cardContainer" @click="moveSoloTutorial">
+                <!-- <div><img id="iconImg" src="@/assets/soloSelect-tutorial.png" alt="튜토리얼 img"></div> -->
+                <div><img id="iconImg" src="@/assets/rectan.png" alt="튜토리얼 img"></div>
+                <div><img id="textImg" src="@/assets/text/solo_tutorial.png" alt="튜토리얼"></div>
+            </div>
+            <div id="cardContainer" @click="moveSoloSound">
+                <!-- <div><img id="iconImg" src="@/assets/soloSelect-sound.png" alt="소리내기 img"></div> -->
+                <div><img id="iconImg" src="@/assets/rectan.png" alt="소리내기 img"></div>
+                <div><img id="textImg" src="@/assets/text/solo_sound.png" alt="소리내기"></div>
+            </div>
+            <div id="cardContainer" @click="moveSoloSong">
+                <!-- <div><img id="iconImg" src="@/assets/soloSelect-song.png" alt="연주하기 img"></div> -->
+                <div><img id="iconImg" src="@/assets/rectan.png" alt="연주하기 img"></div>
+                <div><img id="textImg" src="@/assets/text/solo_song.png" alt="연주하기"></div>
+            </div>
+        </div>
 
-        <div style="height:10vh"></div>
-
+        
         <!-- 뒤로가기, 홈버튼 -->
         <!-- 이미지 방향은 놔두기 playroom branch 에서 수정함 -->
-        
-            <img id="backImg" src="@/assets/goback.png" alt="돌아가기"  @click="goback"
-                style="cursor: pointer; width:5%; position: absolute; left: 2%; bottom: 5%;">
-    
-            <img id="homeImg" src="@/assets/homeButton.png" alt="홈" @click="goHome"
-                style="cursor: pointer; width: 5%; position: absolute; left: 48%; bottom: 5%;">
-        
+        <!-- <div id="iconContainer">
+            <div @click="goback">
+                <img id="backImg" src="@/assets/goback.png" alt="돌아가기">
+                <span>돌아가기</span>
+            </div> -->
+            <!-- <img id="homeImg" src="@/assets/homeButton.png" alt="홈" @click="goHome"> -->
+        <!-- </div> -->
+        <!-- style="cursor: pointer; width: 5%; position: absolute; left: 48%; bottom: 5%;" -->
         <!-- 뒤로가기, 홈버튼  -->
+        
     </div>
 </template>
 <script>
@@ -70,69 +70,91 @@ export default {
     cursor: pointer;
 }
 
-#background{
+#backgroundContainer{
     border-radius: 30px;
     width: 90vw;  
     height: 90vh;
     background-color: rgba(0, 0, 0, 0.374);
     display: flex;
     flex-direction: column;
+    justify-items: center;
     align-items: center;
     margin-top: 5vh;
     position: relative;
 }
 
-#logo{
-    width: 20%;
+/* #logoContainter{
+    border: 5px solid yellow;
+    width: 50%;
     margin-top: 2%;
-    margin-bottom: 2%;
+    position: inherit;
+} */
+
+#logo{
+    border: 5px solid yellow;
+    position: absolute;
+    width: 25%;
+    height: 20%;
+    margin-top: 2%;
+        
 }
 
 /* 카드 */
-#card-container{
-    width:90%;
-}
-.el-row{
-    /* border:   10px solid gray; */
+#containerStack{
+    border: 10px solid blue;
+    width: 70%;
+    height: 40%;
+    margin-top: 13%;
     position: absolute;
-    left: 9%;
-    top: 30%;
-    width: 40vw;
+}
+#cardContainer{
+    position: absolute;
+    border: 5px solid rgb(141, 46, 67);
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-items: left;
+}
+
+#iconImg{
+    border: 5px solid red;
+    width: 50%;
+    height: 80%;
+    position: absolute;
+} 
+#textImg{
+    border: 10px solid greenyellow;
+    width: 50%;
+    height: 50%;
+    position: absolute;
+    left: 25%;
 }
 .el-card{
     border: 5px solid red;
-    width: 20vw;
-    height: 35vh;
     cursor: pointer;
     border-radius: 20px;
     background-color: #F2E6E6;
-    position: relative;
+    position: absolute;
+    height: 100%;
     
-}
-#iconImg{
-    width: 40%;
-    position: absolute;
-    left: 30%;
-} 
-#textImg{
-    width:70%;
-    position: absolute;
-    bottom: 1%;
-    left: 15%
 }
 /* 카드 끝 */
 
 
 /* 하단 아이콘 */
-/* #iconContainer{
-    margin-top:5%;
+#iconContainer{
+    width:90%;
+    height:10%;
+    display: flex;
+    border: 5px solid pink;
+    font-size: 4em;    
 }
- #homeImg{
-    z-index:1234;
- }
- #backImg{
-    z-index: 1234;
- } */
- /* 하단 아이콘 끝 */
+#homeImg{
+    width:5%;
+}
+#backImg{
+    width:5%;
+}
+/* 하단 아이콘 끝 */
 
 </style>

@@ -149,8 +149,6 @@ export default {
     flex-direction: column;
     align-items: center;
     margin-top: 5px;
-
-    aspect-ratio: 16/9;
 }
 
  #textImg{
