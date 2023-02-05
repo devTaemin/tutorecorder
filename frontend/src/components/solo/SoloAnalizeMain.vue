@@ -46,17 +46,20 @@
 <script>
 
 const pitchText = ['도', '레', '미', '파', '솔', '라', '시'];
-const badList = [];
-const nomalList = [];
-const goodList = [];
 const badTextForm = '는 연습이 많이 필요해 보여요. '
 const goodTextForm = '는 아주 잘하고 있어요. '
-const nomalTextForm = '보통이에요. 전체적으로 연습을 하면 더 잘할 수 있어요.'
+const nomalTextForm = '는 조금만 더 연습 하면 지금보다 더 잘할 수 있어요. '
+const allBad = '전체적으로 많은 연습이 필요해요. 운지법을 다르게 알고 있는 것은 아닌지 튜토리얼을 확인해보아요. '
+const allNomal = '조금만 더 연습하면 더 빠르고 정확하게 연주할 수 있어요. 다시 한 번 해볼까요? '
+const allGood = '훌룡해요! 이제는 노래를 연주해 보는건 어떨까요? '
 
 export default {
     name: 'SoloAnalizeMain',
     created() {
         this.analizeResultText = ''
+        const badList = [];
+        const nomalList = [];
+        const goodList = [];
         const gameResult = this.$store.state.gameResult
         for (let i = 0; i<7; i++) {
             if (gameResult[i].length === 0) {
@@ -65,6 +68,8 @@ export default {
                 this.gameResult.push(((gameResult[i].reduce((a, b) => a + b, 0) / gameResult[i].length)*100).toFixed(0));
             }
         }
+
+        console.log(this.gameResult)
 
         // 분석 결과를 내주기 위해서 텍스트로 변환
         for (let i=0; i<7; i++) {
@@ -78,23 +83,39 @@ export default {
         }
 
         let badText;
+        let nomalText;
         let goodText;
-        if (badList.length !== 0) {
+        if (badList.length !== 0 && badList.length !== 7) {
             badText = badList[0]
             for (let i=1; i<badList.length; i++) {
                 badText = badText + ', ' + badList[i]
             }
             this.analizeResultText = badText + badTextForm
         }
-        if (goodList !== 0) {
+        if (nomalList.length !== 0 && nomalList.length !== 7) {
+            nomalText = nomalList[0]
+            for (let i=1; i<nomalList.length; i++) {
+                nomalText = nomalText + ', ' + nomalList[i]
+            }
+            this.analizeResultText += nomalText + nomalTextForm
+        }
+        if (goodList.length !== 0 && goodList.length !== 7) {
             goodText = goodList[0]
             for (let i=1; i<goodList.length; i++) {
                 goodText = goodText + ', ' + goodList[i]
             }
             this.analizeResultText += goodText + goodTextForm
         }
+
         if (this.analizeResultText === '') {
-            this.analizeResultText = nomalTextForm
+            if (badList.length === 7) {
+                this.analizeResultText = allBad
+            } else if (nomalList.length === 7) {
+                this.analizeResultText = allNomal
+            } else {
+                this.analizeResultText = allGood
+            }
+
         }
 
 
