@@ -68,7 +68,7 @@ export default {
      height: 120%;
      display: flex;
      align-items: center;
-     cursor: pointer;
+     cursor: url(../../assets/cursor_click.png), auto !important;
      border-radius: 20px;
      background-color: #F2E6E6;
  }

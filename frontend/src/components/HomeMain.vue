@@ -109,12 +109,15 @@ export default {
   margin-right: 2vw;
   margin-left: 1vw;
 }
-
+.el-input__inner{
+  cursor: url(../assets/cursor_pen.png), auto !important;
+}
 .nickname-input-button{
   width: 8vw !important;
   background-color: #3AD84A !important;
   font-family: 'JUA', serif;
   font-size: 1.5vw !important;
+  cursor: url(../assets/cursor_click.png), auto !important;
 }
 
 .errorMessage{

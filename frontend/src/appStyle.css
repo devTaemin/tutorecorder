@@ -4,7 +4,9 @@
   src: url("./assets/fonts/Jua-Regular.ttf") format("truetype");
   font-weight: normal;
 }
-
+body {
+  cursor: url(./assets/cursor_gen.png), auto;
+}
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -40,6 +42,7 @@
     font-size: 4vh !important;
     width: 10vw !important;
     height: 6vh !important;
+    cursor: url(./assets/cursor_click.png), auto !important;
 }
 
 .solo-analyze-button{
@@ -50,6 +53,7 @@
     width: 10vw !important;
     height: 6vh !important;
     margin-right: 3vw !important;
+    cursor: url(./assets/cursor_click.png), auto !important;
 }
 
 .mode{

@@ -4,7 +4,7 @@
     position: absolute;
     z-index: 2;
     top:5%;
-    cursor: pointer;
+    cursor: url(../assets/cursor_click.png), auto;
 }
 .rotateLogo {
     animation: rotateLogo 3s;
@@ -22,7 +22,7 @@
     min-width: 20vh;
     z-index: 2;
     top: 80%;
-    cursor: pointer;
+    cursor: url(../assets/cursor_click.png), auto;
     -webkit-animation: flickerAnimation 1s infinite;
     -moz-animation: flickerAnimation 1s infinite;
     -o-animation: flickerAnimation 1s infinite;
