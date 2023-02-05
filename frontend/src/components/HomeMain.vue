@@ -1,6 +1,6 @@
 <template>
   <div class="hello">
-    <img id="logo-img" class="logo-img" @click="rotateY" src="../assets/logo.png" alt="logo img"> 
+    <img id="logo-img" class="logo-img" @click="rotateLogo" src="../assets/logo.png" alt="logo img"> 
     <img class="start-img" @click="nameSetVisible=true" src="../assets/start.png" alt="start img">
 
     <el-dialog
@@ -61,12 +61,12 @@ export default {
         this.$router.push({ name: 'mode' })
       }
     },
-    rotateY: () => {
+    rotateLogo: () => {
       const element = document.getElementById("logo-img");
-      element.classList.add("rotateY");
+      element.classList.add("rotateLogo");
       setTimeout(function() {
-        element.classList.remove("rotateY");
-      }, 3000);
+        element.classList.remove("rotateLogo");
+      }, 3010);
     }
   },
 

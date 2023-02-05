@@ -221,6 +221,9 @@
 
 .disappear{
     animation: disappear 3s;
+    -webkit-animation: disappear 3s;
+    -moz-animation: disappear 3s;
+    -o-animation: disappear 3s;
 }
 @keyframes disappear {
     0%, 100%{
@@ -233,8 +236,44 @@
         transform: scale(0);
     }
 }
+@-webkit-keyframes disappear {
+  0%, 100%{
+      transform: scale(1);
+  }
+  70% {
+      transform: scale(2);
+  }
+  90% {
+      transform: scale(0);
+  }
+}
+@-moz-keyframes disappear {
+  0%, 100%{
+      transform: scale(1);
+  }
+  70% {
+      transform: scale(2);
+  }
+  90% {
+      transform: scale(0);
+  }
+}
+@-o-keyframes disappear {
+  0%, 100%{
+      transform: scale(1);
+  }
+  70% {
+      transform: scale(2);
+  }
+  90% {
+      transform: scale(0);
+  }
+}
 .moveChar{
     animation: moveChar 3s;
+    -webkit-animation: moveChar 3s;
+    -moz-animation: moveChar 3s;
+    -o-animation: moveChar 3s;
 }
 @keyframes moveChar {
     0%, 100%{
@@ -245,9 +284,75 @@
       left: 23%; top: 40%;
     }
 }
+@-webkit-keyframes moveChar {
+  0%, 100%{
+    left: 38%; top: 55%;
+  }
+  50% {
+    transform: rotateY(180deg);
+    left: 23%; top: 40%;
+  }
+}
+@-moz-keyframes moveChar {
+  0%, 100%{
+    left: 38%; top: 55%;
+  }
+  50% {
+    transform: rotateY(180deg);
+    left: 23%; top: 40%;
+  }
+}
+@-o-keyframes moveChar {
+  0%, 100%{
+    left: 38%; top: 55%;
+  }
+  50% {
+    transform: rotateY(180deg);
+    left: 23%; top: 40%;
+  }
+}
 .popUp {
   animation: popUp 3s;
   animation-timing-function: cubic-bezier(0.42, 0, 0.58, 1);
+
+  -webkit-animation: popUp 3s;
+  -webkit-animation-timing-function: cubic-bezier(0.42, 0, 0.58, 1);
+
+  -moz-animation: popUp 3s;
+  -moz-animation-timing-function: cubic-bezier(0.42, 0, 0.58, 1);
+
+  -o-animation: popUp 3s;
+  -o-animation-timing-function: cubic-bezier(0.42, 0, 0.58, 1);
+}
+@-webkit-keyframes popUp {
+  0%, 100%{
+    transform: rotate(0deg) scale(1);
+    left: 60%; top: 55%;
+  }
+  50% {
+    transform: rotate(720deg) scale(5);
+    left: 40%; top: 40%;
+  }
+}
+@-moz-keyframes popUp {
+  0%, 100%{
+    transform: rotate(0deg) scale(1);
+    left: 60%; top: 55%;
+  }
+  50% {
+    transform: rotate(720deg) scale(5);
+    left: 40%; top: 40%;
+  }
+}
+@-o-keyframes popUp {
+  0%, 100%{
+    transform: rotate(0deg) scale(1);
+    left: 60%; top: 55%;
+  }
+  50% {
+    transform: rotate(720deg) scale(5);
+    left: 40%; top: 40%;
+  }
 }
 @keyframes popUp {
   0%, 100%{
@@ -259,11 +364,40 @@
     left: 40%; top: 40%;
   }
 }
-.rotateY {
-  animation: rotate-y 3s;
-  animation-timing-function: cubic-bezier(0.42, 0, 0.58, 1)
+.rotateChar {
+  animation: rotateChar 3s;
+
+  -webkit-animation: rotateChar 3s;
+  
+  -moz-animation: rotateChar 3s;
+  
+  -o-animation: rotateChar 3s;
 }
-@keyframes rotate-y {
+@keyframes rotateChar {
+  0%{
+    transform: rotateY(0deg);
+  }
+  100% {
+    transform: rotateY(1080deg);
+  }
+}
+@-webkit-keyframes rotateChar {
+  0%{
+    transform: rotateY(0deg);
+  }
+  100% {
+    transform: rotateY(1080deg);
+  }
+}
+@-moz-keyframes rotateChar {
+  0%{
+    transform: rotateY(0deg);
+  }
+  100% {
+    transform: rotateY(1080deg);
+  }
+}
+@-o-keyframes rotateChar {
   0%{
     transform: rotateY(0deg);
   }

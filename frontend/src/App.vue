@@ -5,7 +5,7 @@
       <div id="char1" class="char1 enlarge" @click="disappear"></div>
       <div id="char2" class="char2 shake" @click="move"></div>
       <div id="char3" class="char3 enlarge" @click="popUp"></div>
-      <div id="char4" class="char4 shake" @click="rotateY"></div>
+      <div id="char4" class="char4 shake" @click="rotateChar"></div>
       <div class="snow-wrapper">
         <transition-group @before-enter="randomPart">
           <div class="snow falling" v-for="snow in snowUnits" :key="snow">♩</div>
@@ -113,12 +113,12 @@ export default {
         }, 3000);
       },
 
-      rotateY: () => {
+      rotateChar: () => {
         const element = document.getElementById("char4");
         element.classList.remove("shake")
-        element.classList.add("rotateY");
+        element.classList.add("rotateChar");
         setTimeout(function() {
-          element.classList.remove('rotateY')
+          element.classList.remove('rotateChar')
           element.classList.add("shake")
         }, 3000);
       },
