@@ -14,6 +14,7 @@
                 <el-button @click="gameStart(); init()">Start</el-button>
                 <el-button class="solo-analyze-button" @click="goSoloAnalize">분석</el-button>
                 <el-button class="solo-out-button" @click="goSolo">나가기</el-button>
+                <div id="label-container"></div>
             </div>
         </el-col>
     </el-row>
@@ -49,7 +50,7 @@ for (let i=0; i<problem; i++) {
 
 pick_list.push('참 잘했어요')
 const total_problem = problem + 9;
-const URL = "https://teachablemachine.withgoogle.com/models/m6ms0qdPf/";
+const URL = "https://teachablemachine.withgoogle.com/models/eptQYA8MT/";
 
 // 음계 측정값 넣을 리스트 - 현재 7개의 음과 배경소음만 있고 나중에 삑사리 추가
 let grade_list = [[], [], [], [], [], [], []];
@@ -126,10 +127,11 @@ export default {
         async init () {
             const recognizer = await this.createModel() // 모델 생성
             const classLabels = recognizer.wordLabels() // get class labels, 학습 시킨 클래스들
-            const labelContainer = document.getElementById('label-container') // 데이터 라벨 생성
-            for (let i = 0; i < classLabels.length; i++) {
-                labelContainer.appendChild(document.createElement('div'))
-            }
+            // 실시간으로 점수 표시해주는 역할(필요없어서 지움)
+            // const labelContainer = document.getElementById('label-container') // 데이터 라벨 생성
+            // for (let i = 0; i < classLabels.length; i++) {
+            //     labelContainer.appendChild(document.createElement('div'))
+            // }
 
             // listen() takes two arguments:
             // 1. A callback function that is invoked anytime a word is recognized.
@@ -138,59 +140,58 @@ export default {
                 const scores = result.scores // eslint-disable-line no-unused-vars
                 // render the probability scores per class
                 for (let i = 0; i < classLabels.length; i++) {
-                    const classPrediction = classLabels[i] + ': ' + result.scores[i].toFixed(2) // 소숫점까지 표기(2자리)
+                    // const classPrediction = classLabels[i] + ': ' + result.scores[i].toFixed(2) // 소숫점까지 표기(2자리)
                     //   console.log('음계' + classLabels[i])
                     //   console.log('점수' + result.scores[i])
-                    // 도, 라, 레, 미, 배경소음, 솔, 시, 파
+                    // 도, 라, 레, 미, 바람빠지는소리, 배경소음, 솔, 시, 음이탈, 파
                     const index = result.scores.indexOf(Math.max(...result.scores));
-                    console.log(index)
                     switch(this.pitch_target) {
                         case '도':
                             if (index === 0) {
                                 grade_list[0].push(result.scores[index])
-                            } else if (index !== 4){
+                            } else if (index !== 9){
                                 grade_list[0].push(0)
                             }
                             break;
                         case '레':
-                            if (index === 2) {
+                            if (index === 1) {
                                 grade_list[1].push(result.scores[index])
-                            } else if (index !== 4){
+                            } else if (index !== 9){
                                 grade_list[1].push(0)
                             }
                             break;
                         case '미':
-                            if (index === 3) {
+                            if (index === 2) {
                                 grade_list[2].push(result.scores[index])
-                            } else if (index !== 4){
+                            } else if (index !== 9){
                                 grade_list[2].push(0)
                             }
                             break;
                         case '파':
-                            if (index === 7) {
+                            if (index === 3) {
                                 grade_list[3].push(result.scores[index])
-                            } else if (index !== 4){
+                            } else if (index !== 9){
                                 grade_list[3].push(0)
                             }
                             break;
                         case '솔':
-                            if (index === 5) {
+                            if (index === 4) {
                                 grade_list[4].push(result.scores[index])
-                            } else if (index !== 4){
+                            } else if (index !== 9){
                                 grade_list[4].push(0)
                             }
                             break;
                         case '라':
-                            if (index === 1) {
+                            if (index === 5) {
                                 grade_list[5].push(result.scores[index])
-                            } else if (index !== 4){
+                            } else if (index !== 9){
                                 grade_list[5].push(0)
                             }
                             break;
                         case '시':
                             if (index === 6) {
                                 grade_list[6].push(result.scores[index])
-                            } else if (index !== 4){
+                            } else if (index !== 9){
                                 grade_list[6].push(0)
                             }
                             break;
@@ -198,8 +199,8 @@ export default {
                             // code block for default case
                     }
 
-            
-                    labelContainer.childNodes[i].innerHTML = classPrediction
+                    // 실시간 점수 표시해주는 역할(필요없어서 지움)
+                    // labelContainer.childNodes[i].innerHTML = classPrediction
                 }
             }, {
                 includeSpectrogram: true, // in case listen should return result.spectrogram
