@@ -126,7 +126,7 @@ export default {
     },
     mounted() {
       this.generateSnow(50)
-    }
+    },
 }
 </script>
 <style>
