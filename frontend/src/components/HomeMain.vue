@@ -1,13 +1,7 @@
 <template>
   <div class="hello">
-    <div style="width:80%;  margin:auto; margin-top:5%; aspect-ratio: 16/9;">
-      <img src="../assets/logo.png" alt="logo img" style="width:60%;" > 
-      
-      <div style="padding-top:20%">
-        <img @click="nameSetVisible=true" style="cursor:pointer; width:20%;" class="start" src="../assets/start.png" alt="start img">
-      </div>
-    </div>
-
+    <img id="logo-img" class="logo-img" @click="rotateLogo" src="../assets/logo.png" alt="logo img"> 
+    <img class="start-img" @click="nameSetVisible=true" src="../assets/start.png" alt="start img">
 
     <el-dialog
       v-model="nameSetVisible"
@@ -63,6 +57,13 @@ export default {
         this.errorMessage = ''
         this.$router.push({ name: 'mode' })
       }
+    },
+    rotateLogo: () => {
+      const element = document.getElementById("logo-img");
+      element.classList.add("rotateLogo");
+      setTimeout(function() {
+        element.classList.remove("rotateLogo");
+      }, 3010);
     }
   },
 
@@ -71,9 +72,17 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
-.start{
-  position: relative;
-  z-index: 2;
+@import "@/components/homeMainAnimation.css";
+
+.hello {
+  height: 99%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.img-container{
+  border: 3px solid ;
+  flex-basis: 95%;
 }
 
 .el-dialog__header{
@@ -97,12 +106,15 @@ export default {
   margin-right: 2vw;
   margin-left: 1vw;
 }
-
+.el-input__inner{
+  cursor: url(../assets/cursor_pen.png), auto !important;
+}
 .nickname-input-button{
   width: 8vw !important;
   background-color: #3AD84A !important;
   font-family: 'JUA', serif;
   font-size: 1.5vw !important;
+  cursor: url(../assets/cursor_click.png), auto !important;
 }
 
 .errorMessage{
