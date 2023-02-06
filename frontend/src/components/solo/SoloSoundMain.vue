@@ -9,12 +9,16 @@
                 <img id="board-image" src="../../assets/board.png">
                 <span class="pitch-target" style="margin-top:">{{ pitch_target }}</span>
                 <span id="solo-sound-timer">{{ timer }}</span>
+                <span id="problem">{{ problem }}</span>
             </div>
-            <div class="game-content-button">
-                <el-button @click="gameStart(); init()">Start</el-button>
-                <el-button class="solo-analyze-button" @click="goSoloAnalize">분석</el-button>
-                <el-button class="solo-out-button" @click="goSolo">나가기</el-button>
-                <div id="label-container"></div>
+            <div class="button-container">
+                <div class="option-container">
+                    <el-button :class="{ 'solo-analyze-button': !playGame, 'solo-analyze-button-playgame': playGame }" :disabled="playGame" @click="goSoloAnalize">분석</el-button>
+                    <el-button class="solo-out-button" @click="goSolo">나가기</el-button>
+                </div>
+                <div class="solo-start-button-container">
+                    <el-button :class="{ 'solo-start-button': !playGame, 'solo-start-button-playgame': playGame }" :disabled="playGame" @click="gameStart(); init()">{{ gameState }}</el-button>
+                </div>
             </div>
         </el-col>
     </el-row>
@@ -60,6 +64,8 @@ axios.defaults.headers.post["Content-Type"] = "application/json";
 
 const APPLICATION_SERVER_URL = "http://localhost:5000/";
 
+// 타이머 텍스트 색상
+let color = 180; 
 
 export default {
     name: 'SoloSoundMain',
@@ -90,12 +96,12 @@ export default {
 
             //게임에 필요
             pitch_target: '',
-            timer: ''
+            timer: '',
+            gameState: '게임 시작!',
+            playGame: false,
+            problem: '',
         }
     },
-    // created() {
-    //     this.init();
-    // },
     methods: {
         ...mapActions(['saveGameResult', 'initMySessionId']),
 
@@ -143,7 +149,7 @@ export default {
                     // const classPrediction = classLabels[i] + ': ' + result.scores[i].toFixed(2) // 소숫점까지 표기(2자리)
                     //   console.log('음계' + classLabels[i])
                     //   console.log('점수' + result.scores[i])
-                    // 도, 라, 레, 미, 바람빠지는소리, 배경소음, 솔, 시, 음이탈, 파
+                    // 도, 레, 미, 파, 솔, 라, 시, 음이탈, 바람빠지는소리, 배경소음
                     const index = result.scores.indexOf(Math.max(...result.scores));
                     switch(this.pitch_target) {
                         case '도':
@@ -213,6 +219,8 @@ export default {
             // setTimeout(() => recognizer.stopListening(), 5000);
         },
         gameStart() {
+            this.gameState = '게임 진행중...'
+            this.playGame = true
             this.pitch_target = '준비하세요';
             let index = 0;
             grade_list = [[], [], [], [], [], [], []];
@@ -224,12 +232,19 @@ export default {
                     clearInterval(game);
                     this.startTimer();
                     this.timerRed();
+                    this.problem = '1' + '/' + (total_problem - 2)
                     game = setInterval(() => {
+                        this.problem = index + '/' + (total_problem - 2)
+                        if (index > 10) {
+                            this.problem = ''
+                        }
                         this.pitch_target = pick_list[index];
                         index = (index + 1) % total_problem;
                         if (index === 0) {
                             clearInterval(game)
                             this.saveGameResult(grade_list)
+                            this.gameState = '게임 시작!'
+                            this.playGame = false
                         }
                     }, 5000)
                 } 
@@ -244,6 +259,7 @@ export default {
                 count += 1
                 if (this.timer === -1) {
                     this.timer = 4
+                    color = 180;
                 }
                 if (count/5 === total_problem) {
                     clearInterval(timer)
@@ -253,15 +269,16 @@ export default {
         },
         timerRed() {
             const timer = document.getElementById("solo-sound-timer");
-            timer.style.color = "black"
-            let color = 0;
-            setInterval(() => {
-            color += 6;
-            if (color >= 300) {
-                timer.style.color = "black"
-                color = 0
-            } else {
-                timer.style.color = `rgb(${color}, 0, 0)`;
+            timer.style.color = `rgb(255, 180, 180)`;
+            let count = 0
+            const timerTextRed = setInterval(() => {
+            color -= 3.6;
+            timer.style.color = `rgb(255, ${color}, ${color})`;
+            if (color <= -10) {
+                count += 1;
+            }
+            if (count > total_problem-3) {
+                clearInterval(timerTextRed);
             }
             }, 100);
         },
@@ -405,8 +422,10 @@ export default {
     align-items: center;
 }
 
-.game-content-button{
-    margin-top: 13vh;
+.button-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 #board-image{
@@ -425,6 +444,7 @@ export default {
 .pitch-target{
     position: absolute;
     font-size: 3vw;
+    color: white;
 }
 
 #solo-sound-timer{
@@ -432,5 +452,23 @@ export default {
     left: 10%;
     top: 15%;
     font-size: 5vh;
+}
+
+.option-container{
+    width: 100%;
+    margin-top: 5%;
+}
+
+.solo-start-button-container{
+    width: 100%;
+    margin-top: 5%;
+}
+
+#problem{
+    position: absolute;
+    right: 10%;
+    top: 15%;
+    font-size: 5vh;
+    color: white;
 }
 </style>
