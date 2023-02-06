@@ -6,7 +6,8 @@ export default createStore({
 
   state: {
     myUserName: '',
-    mySessionId: ''
+    mySessionId: '',
+    gameResult: '',
   },
   getters: {
     getMyUserName: function(state) {
@@ -28,6 +29,9 @@ export default createStore({
     },
     SET_MY_SESSION_ID: (state, payload) => {
       state.mySessionId = payload
+    },
+    SAVE_GAME_RESULT: (state, payload) => {
+      state.gameResult = payload
     }
   },
   actions: {
@@ -42,6 +46,9 @@ export default createStore({
     },
     setMySessionId: ({ commit }, payload) => {
       commit('SET_MY_SESSION_ID', payload)
+    },
+    saveGameResult: ({ commit }, payload) => {
+      commit('SAVE_GAME_RESULT', payload)
     }
   },
   modules: {

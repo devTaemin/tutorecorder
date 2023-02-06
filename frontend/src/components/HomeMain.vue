@@ -1,31 +1,20 @@
 <template>
   <div class="hello">
-    <el-button 
-      type="success" 
-      :icon="Check" 
-      @click="nameSetVisible=true"
-    >
-    START</el-button>
+    <img id="logo-img" class="logo-img" @click="rotateLogo" src="../assets/logo.png" alt="logo img"> 
+    <img class="start-img" @click="nameSetVisible=true" src="../assets/start.png" alt="start img">
 
     <el-dialog
       v-model="nameSetVisible"
-      title=""
-      width="40%"
+      :show-close="false"
+      :class="{'modal-container': this.inputCorrect === true, 'modal-container-wrong': this.inputCorrect === false }"
+      :show-header="false"
+      :modal-append-to-body="true"
     >
       <!-- 입력 칸 -->
-      <el-form
-        label-width="100px"
-        style="max-width:300px"
-      >
-      <el-form-item label="Name">
-        <el-input v-model="userName" />
-      </el-form-item>
-
-      </el-form>
-      <template #footer>
-        <el-button @click="nameSetVisible=false">취소</el-button>
-        <el-button type="success" @click="setName">입장</el-button>
-      </template>
+      <span style="font-size:1.5vw">닉네임</span>
+      <el-input @keyup.enter="setName" v-model="userName" class="nickname-input"/>
+      <el-button @click="setName" class="nickname-input-button">입장</el-button>
+      <div class="errorMessage">{{ errorMessage }}</div>
     </el-dialog>
   </div>
 </template>
@@ -34,16 +23,16 @@
 import { Check } from '@element-plus/icons-vue'
 import { mapActions } from 'vuex'
 
+
 export default {
   name: 'HomeMain',
-  props: {
-    msg: String
-  },
   data() {
     return {
       Check: Check,
       nameSetVisible: false,
       userName: '',
+      inputCorrect: true,
+      errorMessage: '',
     }
   },
   computed: {
@@ -53,11 +42,28 @@ export default {
     ...mapActions(['setMyUserName']),
 
     setName: function() {
-      if (this.userName !== '') {
+      if (this.userName === '') {
+        this.inputCorrect = false
+        this.errorMessage = '닉네임을 입력해주세요!'
+        this.userName = ''
+      } else if (this.userName.length > 12) {
+        this.inputCorrect = false
+        this.errorMessage = '닉네임을 확인해 주세요!(12글자)'
+        this.userName = ''
+      } else {
+        this.inputCorrect = true
         this.nameSetVisible=false
         this.setMyUserName(this.userName)
+        this.errorMessage = ''
         this.$router.push({ name: 'mode' })
       }
+    },
+    rotateLogo: () => {
+      const element = document.getElementById("logo-img");
+      element.classList.add("rotateLogo");
+      setTimeout(function() {
+        element.classList.remove("rotateLogo");
+      }, 3010);
     }
   },
 
@@ -65,6 +71,54 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style>
+@import "@/components/homeMainAnimation.css";
 
+.hello {
+  height: 99%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.img-container{
+  border: 3px solid ;
+  flex-basis: 95%;
+}
+
+.el-dialog__header{
+  display: none;
+}
+
+.modal-container{
+  border-radius: 20px !important;
+  background-color: #B3F7A8 !important;
+  width: 40vw !important;
+}
+
+.modal-container-wrong{
+  border-radius: 20px !important;
+  background-color: #F2B2B2 !important;
+  width: 40vw !important;
+}
+
+.nickname-input{
+  width: 20vw !important;
+  margin-right: 2vw;
+  margin-left: 1vw;
+}
+.el-input__inner{
+  cursor: url(../assets/cursor_pen.png), auto !important;
+}
+.nickname-input-button{
+  width: 8vw !important;
+  background-color: #3AD84A !important;
+  font-family: 'JUA', serif;
+  font-size: 1.5vw !important;
+  cursor: url(../assets/cursor_click.png), auto !important;
+}
+
+.errorMessage{
+  color: red;
+  font-size: 20px;
+}
 </style>

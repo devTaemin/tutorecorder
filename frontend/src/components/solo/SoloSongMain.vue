@@ -1,27 +1,193 @@
 <template>
 <div class="container">
-    <el-row gutter="20" class="game-main-container">
-        <el-col :span="24" class="game-main-note">
+    <el-row class="game-main-container">
+        <el-col :span="22" class="game-main-note">
             문제 나오는 부분
         </el-col>
     </el-row>
-    <el-row :gutter="20" class="game-sub-container">
-        <el-col :span="16" class="game-sub-my-cam">
-            내 카메라
+    <el-row class="game-sub-container">
+        <el-col :span="15" class="game-sub-my-cam">
+            <user-video :stream-manager="mainStreamManager"/>
         </el-col>
-        <el-col :span="8" class="game-sub-info">
-            <h3>곡제목</h3>
+        <el-col :span="8" :offset="1" class="game-sub-info">
+            <div class="game-sub-title font">비 행 기</div>
             <div class="game-sub-img">
-                곡 이미지 들어갈 곳
+                <!-- 곡 이미지 배경 -->
+                <div class="game-sub-song-info">
+                    <h3 class="produce font">작곡가 : Sarah Josepha Hale & John Roulstone</h3><br>
+                    <h3 class="produce font">작사가 : 윤석중</h3><br>
+                    <!--곡 설명-->
+                    <h3 class="descTitle font">[곡 설명]</h3>
+                    <p class="description font">세 개의 음 도, 레, 미의 3음계로 되어있으며,<br>배우기 쉬운 노래이다.</p>
+                </div>
             </div>
             <div class="game-sub-button">
-                <el-button>분석</el-button>
-                <el-button>나가기</el-button>
+                <el-button class="solo-analyze-button" @click="goSoloAnalize">분석</el-button>
+                <el-button class="solo-out-button" @click="goSolo">나가기</el-button>
             </div>
         </el-col>
     </el-row>
 </div>
 </template>
+
+<script>
+
+import { OpenVidu } from "openvidu-browser";
+import axios from "axios";
+import UserVideo from "@/components/video/soloUserVideo.vue"
+import { mapActions } from 'vuex'
+
+axios.defaults.headers.post["Content-Type"] = "application/json";
+
+const APPLICATION_SERVER_URL = "http://localhost:5000/";
+
+export default {
+    name: 'SoloSongMain',
+    components: {
+        UserVideo,
+    },
+
+    computed: {
+        isSession() {
+            if (this.$store.state.mySessionId !== '') {
+                return this.$store.state.mySessionId
+            } else {
+                return 'SessionA'
+            }
+        }
+    },
+    data() {
+        return {
+            // OpenVidu Object
+            OV: undefined,
+            session: undefined,
+            mainStreamManager: undefined,
+            publisher: undefined,
+            subscribers: [],
+
+            // Join form
+            mySessionId: "SessionA",
+            myUserName: "Participant" + Math.floor(Math.random() * 100),
+        }
+    },
+    methods: {
+        goSoloAnalize() {
+            this.$router.push({ name: 'soloAnalize' })
+        },
+        goSolo() {
+            this.$router.push({ name: 'solo' })
+        },
+        
+        ...mapActions(['initMySessionId']),
+
+        joinSession() {
+            // 1. OpenVidu 객체 가져오기
+            this.OV = new OpenVidu();
+            
+            // 2. 세션 시작
+            this.session = this.OV.initSession();
+
+            // 3. 세션에서 일어나는 이벤트 
+            // 3-1. 새로운 스트림 생성시 사용자 등록
+            this.session.on("streamCreated", ({ stream }) => {
+                const subscriber = this.session.subscribe(stream);
+                this.subscribers.push(subscriber);
+            });
+
+            // 3-2. 스트림 말소시 사용자 제외
+            this.session.on("streamDestroyed", ({ stream }) => {
+                const index = this.subscribers.indexOf(stream.streamManager, 0);
+                if (index >= 0) {
+                this.subscribers.splice(index, 1);
+                }
+            })
+
+            // 3-3. 예외 발생 시
+            this.session.on("exception", ({ exception }) => {
+                console.warn(exception);
+            })
+
+            // 4. 유효한 사용자 토큰과 세션에 접속하기
+            this.getToken(this.$store.state.mySessionId).then((token) => {
+                this.session.connect(token, { clientData: this.$store.state.myUserName })
+                .then(() => {
+
+                    // 5. 카메라 설정
+                    let publisher = this.OV.initPublisher(undefined, {
+                    audioSource: undefined,
+                    videoSource: undefined,
+                    publishAudio: true,
+                    publishVideo: true,
+                    // ratio: 16/9,
+                    resolution: "240x160",
+                    framerate: 30,
+                    insertMode: "Append",
+                    mirror: false,
+                    });
+
+                    this.mainStreamManager = publisher;
+                    this.publisher = publisher;
+
+                    // 6. 스트림 퍼블리시
+                    this.session.publish(this.publisher);
+                })
+                .catch((error) => {
+                    console.log("ERROR: ", error.code, error.message);
+                });
+            });
+
+            window.addEventListener("beforeunload", this.leaveSession);
+        }, //joinSession 함수 끝
+
+        leaveSession() {
+            // 세션 종료
+            if (this.session) this.session.disconnect();
+
+            // 모든 요소 초기화
+            this.session = undefined;
+            this.mainStreamManager = undefined;
+            this.publisher = undefined;
+            this.subscribers = [];
+            this.OV = undefined;
+
+            this.initMySessionId(); // 세션 초기화, 닉네임은 유지
+            window.removeEventListener("beforeunload", this.leaveSession);
+            this.$router.push({ name: 'mode' }) // 모드 선택으로 이동
+        },
+
+        updateMainVideoStreamManager(stream) {
+            // 메인 비디오 적용
+            if (this.mainStreamManager === stream) return;
+            this.mainStreamManager = stream;
+        },
+
+        async getToken(mySessionId) {
+            const sessionId = await this.createSession(mySessionId);
+            return await this.createToken(sessionId);
+        },
+
+        async createSession(sessionId) {
+            const response = await axios.post(APPLICATION_SERVER_URL + 'api/sessions', { customSessionId: sessionId },{
+                headers: { 'Content-Type': 'application/json', },
+            });
+            return response.data;
+        },
+
+
+        async createToken(sessionId) {
+            const response = await axios.post(APPLICATION_SERVER_URL + 'api/sessions/' + sessionId + '/connections', {}, {
+                headers: { 'Content-Type': 'application/json' }
+            });
+            return response.data;
+        }
+
+    },
+    mounted() {
+        this.joinSession()
+    }
+}
+
+</script>
 
 <script setup>
 import { onMounted } from 'vue';
@@ -467,205 +633,204 @@ class x extends _ {
           })
           .forEach((e) => this._element.appendChild(e));
     }
-}
+  }
+  class U {
+    list = [];
+        constructor() {
+          this.list = j;
+        }
+        getLatest() {
+          return this.list.slice(0, 20);
+        }
+        save(e) {
+          e.idx ? this.edit(e) : this.add(e);
+        }
+        add(e) {
+          (e.idx = this.list.length), this.list.push(e);
+        }
+        edit(e) {
+          let t = this.list.find((r) => r.idx === e.idx);
+          (t.author = e.author), (t.score = e.score), (t.singer = e.singer), (t.title = e.title);
+        }
+  }
 
-class U {
-  list = [];
+  class C extends _ {
+    _wrapper;
+      _list = new x();
+      model = new U();
       constructor() {
-        this.list = j;
+        super();
+        (this._wrapper = document.createElement("div")),
+          this._wrapper.classList.add("sharer"),
+          this._wrapper.appendChild(this._list.render()),
+          this._list.on("click", this._listClick);
+          (this._list.list = this.model.getLatest());
       }
-      getLatest() {
-        return this.list.slice(0, 20);
+      render() {
+        return this._wrapper;
       }
-      save(e) {
-        e.idx ? this.edit(e) : this.add(e);
+      _listClick(e) {
+        this.emit("song-select", e);
       }
-      add(e) {
-        (e.idx = this.list.length), this.list.push(e);
-      }
-      edit(e) {
-        let t = this.list.find((r) => r.idx === e.idx);
-        (t.author = e.author), (t.score = e.score), (t.singer = e.singer), (t.title = e.title);
-      }
-}
+  }
 
-class C extends _ {
-   _wrapper;
-    _list = new x();
-    model = new U();
+  class N extends _ {
+    btnPlay;
+    btnStop;
+    chkMelody;
+    inVolume;
+    element;
     constructor() {
       super();
-      (this._wrapper = document.createElement("div")),
-        this._wrapper.classList.add("sharer"),
-        this._wrapper.appendChild(this._list.render()),
-        this._list.on("click", this._listClick);
-        (this._list.list = this.model.getLatest());
+      this.initElements();
     }
-    render() {
-      return this._wrapper;
-    }
-    _listClick(e) {
-      this.emit("song-select", e);
-    }
-}
-
-class N extends _ {
-  btnPlay;
-  btnStop;
-  chkMelody;
-  inVolume;
-  element;
-  constructor() {
-    super();
-    this.initElements();
-  }
-  initElements() {
-  (this.btnPlay = w("Play")),
-    (this.btnStop = w("Stop")),
-    (this.chkMelody = v("input", { type: "checkbox", checked: !0 }));
-  let e = v("label", {}, "play melody");
-  e.appendChild(this.chkMelody),
-    (this.inVolume = v("input", { type: "range", min: 0, max: 100, value: 30, step: 1 })),
-    (this.element = v("div", { class: "song-editor" }, [
-      e,
-      this.inVolume,
-      this.btnPlay,
-      this.btnStop,
-    ])),
-    this.btnPlay.addEventListener("click", () => {
-      this._clickHandler("play");
-    }),
-    this.btnStop.addEventListener("click", () => {
-      this._clickHandler("stop");
-    }),
-    this.chkMelody.addEventListener("input", () => {
-      this.emit("change", "melody", this.chkMelody.checked);
-    }),
-    this.inVolume.addEventListener("input", () => {
-      this.emit("change", "volume", parseInt(this.inVolume.value, 10) / 100);
-    });
-    }
-    set key(e) {
-      this.inKey.value = e.toString();
-    }
-    get key() {
-      return parseInt(this.inKey.value, 10);
-    }
-    _clickHandler(e) {
-      this.emit(e);
-    }
-    render() {
-      return this.element;
-    }
-}
-
-class P extends _ {
-  ctx;
-    analyser;
-    buf = new Float32Array(2048);
-    pitch = -1;
-    note = 0;
-    octav = 0;
-    inited = !1;
-    constructor(e) {
-      super();
-      this.ctx = e; // Audiocontext 생성
-    }
-    start() {
-      if (!this.inited) {
-        let e = this.ctx.createAnalyser(); // 변수 e에 Analysernode 선언
-        (this.analyser = e), (this.analyser.fftSize = 2048), this.getUserMedia();
-      }
-    }
-    getUserMedia() {
-      let e = navigator;
-      e.mediaDevices === void 0 && (e.mediaDevices = {}),
-        e.mediaDevices.getUserMedia === void 0 &&
-          (e.mediaDevices.getUserMedia = function (r) {
-            let i = e.getUserMedia || e.webkitGetUesrmedia || e.mozGetUserMedia || e.msGetUserMedia; // 브라우저 호환
-            return i
-              ? new Promise(function (c, s) {
-                  i.call(navigator, r, c, s);
-                })
-              : Promise.reject(new Error("getUserMedia is not supported"));
-          });
-      let t = { audio: !0 };
-      e.mediaDevices.getUserMedia(t).then((r) => {
-        this.ctx.createMediaStreamSource(r).connect(this.analyser),
-          (this.inited = !0),
-          this.emit("inited");
+    initElements() {
+    (this.btnPlay = w("Play")),
+      (this.btnStop = w("Stop")),
+      (this.chkMelody = v("input", { type: "checkbox", checked: !0 }));
+    let e = v("label", {}, "play melody");
+    e.appendChild(this.chkMelody),
+      (this.inVolume = v("input", { type: "range", min: 0, max: 100, value: 30, step: 1 })),
+      (this.element = v("div", { class: "song-editor" }, [
+        e,
+        this.inVolume,
+        this.btnPlay,
+        this.btnStop,
+      ])),
+      this.btnPlay.addEventListener("click", () => {
+        this._clickHandler("play");
+      }),
+      this.btnStop.addEventListener("click", () => {
+        this._clickHandler("stop");
+      }),
+      this.chkMelody.addEventListener("input", () => {
+        this.emit("change", "melody", this.chkMelody.checked);
+      }),
+      this.inVolume.addEventListener("input", () => {
+        this.emit("change", "volume", parseInt(this.inVolume.value, 10) / 100);
       });
-    }
-    update() {
-      this.ctx.resume();
-      if (!this.inited) return;
-      this.analyser.getFloatTimeDomainData(this.buf);
-      let t = this.correlate(this.buf, this.ctx.sampleRate);
-      (this.pitch = t),
-        t === -1
-          ? (this.note = -1)
-          : ((this.note = K(t)), (this.octav = Math.floor(this.note / 12) - 1)),
-          this.emit("note", this.note);
-    }
-    correlate(e, t) {
-      if (this.isSilentBuffer(e)) return -1;
-      let r = 0.2,
-        i = this.trimBuffer(e, r),
-        c = i.length,
-        s = new Array(c).fill(0);
-      for (let h = 0; h < c; h++) for (let T = 0; T < c - h; T++) s[h] = s[h] + i[T] * i[T + h];
-      let n = 0;
-      for (; s[n] > s[n + 1]; ) n++;
-      let y = -1,
-        d = -1;
-      for (let h = n; h < c; h++) s[h] > y && ((y = s[h]), (d = h));
-      let o = d,
-        p = s[o - 1],
-        m = s[o],
-        f = s[o + 1],
-        L = (p + f - 2 * m) / 2,
-        D = (f - p) / 2;
-      return L && (o = o - D / (2 * L)), t / o;
-    }
-    isSilentBuffer(e) {
-      let t = e.length,
-        r = 0;
-      for (let i = 0; i < t; i++) r += e[i] * e[i];
-      return (r = Math.sqrt(r / t)), r < 0.01;
-    }
-    trimBuffer(e) {
-      let r = e.length,
-        i = 0,
-        c = r - 1,
-        s = 0.2;
-      for (let n = 0; n < r / 2; n++)
-        if (Math.abs(e[n]) < s) {
-          i = n;
-          break;
-        }
-      for (let n = 1; n < r / 2; n++)
-        if (Math.abs(e[r - n]) < s) {
-          c = r - n;
-          break;
-        }
-      return e.slice(i, c);
-    }
-}
+      }
+      set key(e) {
+        this.inKey.value = e.toString();
+      }
+      get key() {
+        return parseInt(this.inKey.value, 10);
+      }
+      _clickHandler(e) {
+        this.emit(e);
+      }
+      render() {
+        return this.element;
+      }
+  }
 
-class I {
-  _ctx;
-      _oscillator;
-      _gain;
+  class P extends _ {
+    ctx;
+      analyser;
+      buf = new Float32Array(2048);
+      pitch = -1;
+      note = 0;
+      octav = 0;
+      inited = !1;
       constructor(e) {
-        (this._ctx = e),
-          (this._oscillator = this._ctx.createOscillator()),
-          (this._oscillator.type = "sine"),
-          this._oscillator.frequency.setValueAtTime(0, this._ctx.currentTime),
-          this._oscillator.start(),
-          (this._gain = this._ctx.createGain()),
-          this._oscillator.connect(this._gain),
-          (this._gain.gain.value = 0.5),
-          this._gain.connect(this._ctx.destination);
+        super();
+        this.ctx = e; // Audiocontext 생성
+      }
+      start() {
+        if (!this.inited) {
+          let e = this.ctx.createAnalyser(); // 변수 e에 Analysernode 선언
+          (this.analyser = e), (this.analyser.fftSize = 2048), this.getUserMedia();
+        }
+      }
+      getUserMedia() {
+        let e = navigator;
+        e.mediaDevices === void 0 && (e.mediaDevices = {}),
+          e.mediaDevices.getUserMedia === void 0 &&
+            (e.mediaDevices.getUserMedia = function (r) {
+              let i = e.getUserMedia || e.webkitGetUesrmedia || e.mozGetUserMedia || e.msGetUserMedia; // 브라우저 호환
+              return i
+                ? new Promise(function (c, s) {
+                    i.call(navigator, r, c, s);
+                  })
+                : Promise.reject(new Error("getUserMedia is not supported"));
+            });
+        let t = { audio: !0 };
+        e.mediaDevices.getUserMedia(t).then((r) => {
+          this.ctx.createMediaStreamSource(r).connect(this.analyser),
+            (this.inited = !0),
+            this.emit("inited");
+        });
+      }
+      update() {
+        this.ctx.resume();
+        if (!this.inited) return;
+        this.analyser.getFloatTimeDomainData(this.buf);
+        let t = this.correlate(this.buf, this.ctx.sampleRate);
+        (this.pitch = t),
+          t === -1
+            ? (this.note = -1)
+            : ((this.note = K(t)), (this.octav = Math.floor(this.note / 12) - 1)),
+            this.emit("note", this.note);
+      }
+      correlate(e, t) {
+        if (this.isSilentBuffer(e)) return -1;
+        let r = 0.2,
+          i = this.trimBuffer(e, r),
+          c = i.length,
+          s = new Array(c).fill(0);
+        for (let h = 0; h < c; h++) for (let T = 0; T < c - h; T++) s[h] = s[h] + i[T] * i[T + h];
+        let n = 0;
+        for (; s[n] > s[n + 1]; ) n++;
+        let y = -1,
+          d = -1;
+        for (let h = n; h < c; h++) s[h] > y && ((y = s[h]), (d = h));
+        let o = d,
+          p = s[o - 1],
+          m = s[o],
+          f = s[o + 1],
+          L = (p + f - 2 * m) / 2,
+          D = (f - p) / 2;
+        return L && (o = o - D / (2 * L)), t / o;
+      }
+      isSilentBuffer(e) {
+        let t = e.length,
+          r = 0;
+        for (let i = 0; i < t; i++) r += e[i] * e[i];
+        return (r = Math.sqrt(r / t)), r < 0.01;
+      }
+      trimBuffer(e) {
+        let r = e.length,
+          i = 0,
+          c = r - 1,
+          s = 0.2;
+        for (let n = 0; n < r / 2; n++)
+          if (Math.abs(e[n]) < s) {
+            i = n;
+            break;
+          }
+        for (let n = 1; n < r / 2; n++)
+          if (Math.abs(e[r - n]) < s) {
+            c = r - n;
+            break;
+          }
+        return e.slice(i, c);
+      }
+  }
+
+  class I {
+    _ctx;
+        _oscillator;
+        _gain;
+        constructor(e) {
+          (this._ctx = e),
+            (this._oscillator = this._ctx.createOscillator()),
+            (this._oscillator.type = "sine"),
+            this._oscillator.frequency.setValueAtTime(0, this._ctx.currentTime),
+            this._oscillator.start(),
+            (this._gain = this._ctx.createGain()),
+            this._oscillator.connect(this._gain),
+            (this._gain.gain.value = 0.5),
+            this._gain.connect(this._ctx.destination);
       }
       setVolume(e) {
         this._gain.gain.value = e;
@@ -691,27 +856,27 @@ class I {
         else if (i > 4) for (let s = 4; s < i; s++) c *= 2;
         return c;
       }
-}
+  }
 
-class E {
-  detector;
-  drawer;
-  player;
-  wrapper;
-  lastTime = 0;
-  elapsed = 0;
-  audio;
-  inited = !1;
-  key = 0;
-  playMusic = !0;
-  sharer = new C(); // 곡 선택 리스트
-  songEditor = new N();
-  constructor(e) {
-    console.log("E생성");
-    (this.drawer = new H()),
-      this.createElements(),
-      e.appendChild(this.wrapper),
-      requestAnimationFrame(this.loop); // loop 기능을 통해서 계속 갱신
+  class E {
+    detector;
+    drawer;
+    player;
+    wrapper;
+    lastTime = 0;
+    elapsed = 0;
+    audio;
+    inited = !1;
+    key = 0;
+    playMusic = !0;
+    sharer = new C(); // 곡 선택 리스트
+    songEditor = new N();
+    constructor(e) {
+      console.log("E생성");
+      (this.drawer = new H()),
+        this.createElements(),
+        e.appendChild(this.wrapper),
+        requestAnimationFrame(this.loop); // loop 기능을 통해서 계속 갱신
   }
   createElements() {
     let a = document.createElement("div");
@@ -772,91 +937,133 @@ class E {
   onNote(e) {
     this.drawer.pushNote(e);
   }
-  loop(e) {
-    this.lastTime === 0 && (this.lastTime = e);
-    let t = e - this.lastTime;
-    for (this.elapsed += t, this.lastTime = e; this.elapsed > O; )
-      this.update(O), (this.elapsed -= O);
-    this.render(), requestAnimationFrame(this.loop); 
-  }
-  update(e) {
-    if (!!this.inited && (this.detector.update(e), this.drawer.update(e), this.playMusic)) {
-      let t = this.drawer.getCurrentNote();
-      this.player.playNote(t, this.key);
+    loop(e) {
+      this.lastTime === 0 && (this.lastTime = e);
+      let t = e - this.lastTime;
+      for (this.elapsed += t, this.lastTime = e; this.elapsed > O; )
+        this.update(O), (this.elapsed -= O);
+      this.render(), requestAnimationFrame(this.loop); 
+    }
+    update(e) {
+      if (!!this.inited && (this.detector.update(e), this.drawer.update(e), this.playMusic)) {
+        let t = this.drawer.getCurrentNote();
+        this.player.playNote(t, this.key);
+      }
+    }
+    render() {
+      this.drawer.render();
+    }
+    setVolume(e) {
+      this.player.setVolume(e);
+    }
+    toggleSound(e) {
+      e === void 0 ? (this.playMusic = !this.playMusic) : (this.playMusic = e),
+        this.playMusic || this.player.playTone(0);
+    }
+    setKey(e) {
+      (this.key = e), (this.songEditor.key = e), (this.drawer.octav = this.key);
     }
   }
-  render() {
-    this.drawer.render();
-  }
-  setVolume(e) {
-    this.player.setVolume(e);
-  }
-  toggleSound(e) {
-    e === void 0 ? (this.playMusic = !this.playMusic) : (this.playMusic = e),
-      this.playMusic || this.player.playTone(0);
-  }
-  setKey(e) {
-    (this.key = e), (this.songEditor.key = e), (this.drawer.octav = this.key);
-  }
-}
 
-onMounted(() => {
-  g([b], H.prototype, "_resizeCallback", 1);
-  g([b], x.prototype, "_clickHandler", 1);
-  g([b], C.prototype, "_listClick", 1);
-  g([b], N.prototype, "_clickHandler", 1);
-  g([b], E.prototype, "songSelected", 1), 
-  g([b], E.prototype, "stopSong", 1), 
-  g([b], E.prototype, "onNote", 1), 
-  g([b], E.prototype, "loop", 1); 
-    new E(document.querySelector(".game-main-note"));
-  })
-
+  onMounted(() => {
+    g([b], H.prototype, "_resizeCallback", 1);
+    g([b], x.prototype, "_clickHandler", 1);
+    g([b], C.prototype, "_listClick", 1);
+    g([b], N.prototype, "_clickHandler", 1);
+    g([b], E.prototype, "songSelected", 1), 
+    g([b], E.prototype, "stopSong", 1), 
+    g([b], E.prototype, "onNote", 1), 
+    g([b], E.prototype, "loop", 1); 
+      new E(document.querySelector(".game-main-note"));
+    })
 </script>
 
-<style scoped>
-div {
-    border: 1px solid red
-}
+<style>
 .container{
-    width: 95vw;
-    height: 95vh;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 .game-main-container{
     border: 1px solid green;
     height: 20%;
-    width: 100%;
-    display: inline-block;
+    width: 95%;
+    margin-bottom: 10px;
+    border-radius: 3%;
 }
-.game-main-note{
-    margin: 0px;
-    padding : 0px;
-    border: 2px solid orange;
-    height: 100%;
-}
+
 .game-sub-container{
-    border: 1px solid purple;
-    height: 80%;
-    width : 100%;
-    display: inline-block;
+    height: 70%;
+    width : 95%;
 }
 
 .game-sub-my-cam{
-    margin: auto;
-    height: 90%;
-    border: 1px solid blue;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.374);
+    border-radius: 3%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .game-sub-info{
-    border: 1px solid black;
-    height: 90%;
+    background-color: rgba(0, 0, 0, 0.374);
+    border-radius: 3%;
+    height: 100%;
+}
+.game-sub-title{
+    font-size: 5vh;
+    color: white;
+    margin-top: 3vh;
+    margin-bottom: 10px;
 }
 .game-sub-img{
+    width: 90%;
+    height: 60%;
+    margin: auto;
+    aspect-ratio: 4 / 3;
+    background-image: url("../../assets/game/song/airplane.png");
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.game-sub-button{
+    margin-top: 5vh;
+}
+.game-sub-song-info{
     height: 50%;
+    width: 70%;
+    /* background-image: url("../../assets/game/song/airplane.png");
+    background-repeat: no-repeat;
+    background-size: 100% 100%; */
+    border-radius: 3%;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+.produce {
+    margin-bottom: 0;
+    margin-top: 3px;
+    font-size: 3vh;
+    /* color: rgb(236, 236, 128) */
+
+}
+.descTitle{
+    margin-top:0;
+    margin-bottom: 0;
+    font-size: 3vh;
+}
+.description{
+    margin-top: 0;
+    margin-bottom:0;
+    font-size: 2vh;
 }
 
-.game-sub-button{
-    margin-top: 30px;
-    height: 20%;
-}
 </style>
