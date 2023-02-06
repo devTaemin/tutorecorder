@@ -132,7 +132,7 @@ export default {
      height: 120%;
      display: flex;
      align-items: center;
-     cursor: pointer;
+     cursor: url(../assets/cursor_click.png), auto !important;
      border-radius: 20px;
      background-color: #F2E6E6;
  }
@@ -186,6 +186,7 @@ export default {
   background-color: #3AD84A !important;
   font-family: 'JUA', serif;
   font-size: 1.5vw !important;
+  cursor: url(../assets/cursor_click.png), auto !important;
 }
 
 .errorMessage{
