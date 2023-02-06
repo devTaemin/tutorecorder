@@ -16,7 +16,7 @@
                     </div>
                     <el-button class="carousel-button" :icon="ArrowDownBold" @click="goNext"></el-button>
                 </el-col>
-                <el-col :span="18" class="game-content-my-cam">
+                <el-col :span="17" class="game-content-my-cam">
                     <user-video :stream-manager="mainStreamManager"/>
                 </el-col>
             </el-col>
@@ -226,6 +226,8 @@ export default {
     border-radius: 20px;
     background-color: rgba(0, 0, 0, 0.374);
     height: 100%;
+    display: flex;
+    justify-content: space-between;
 }
 
 .game-sub-info{
@@ -275,7 +277,7 @@ export default {
     cursor: url(../../assets/cursor_click.png), auto !important;
 }
 #cam-carousel{
-    width: 90%;
+    width: 100%;
     height: 87%;
     overflow-y: auto;
     scroll-behavior: smooth;
@@ -285,7 +287,7 @@ export default {
 }
 .caroursel-item {
     height: 24.7%;
-    width: 99%;
+    width: 99.5%;
     background-color: #9fa1a4;
     overflow: hidden;
     border: 1px solid black;
