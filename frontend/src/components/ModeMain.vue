@@ -4,8 +4,6 @@
             <img id='logo' src="@/assets/logo_nocircle.png" alt="logo img" >
         </div>
 
-
-
         <div id="blueBoxContainer">
             <div id="redBoxComponent" @click="moveSoloPage">
                 <img id="iconImg" src="../assets/modeSelect-solo.png" alt="modeSelect-solo img" style="width:35%;">
@@ -257,12 +255,13 @@ export default {
     margin-left: 1vw;
     }
 
-    .enterCode-input-button{
-    width: 8vw !important;
-    background-color: #3AD84A !important;
-    font-family: 'JUA', serif;
-    font-size: 1.5vw !important;
-    }
+.enterCode-input-button{
+  width: 8vw !important;
+  background-color: #3AD84A !important;
+  font-family: 'JUA', serif;
+  font-size: 1.5vw !important;
+  cursor: url(../assets/cursor_click.png), auto !important;
+}
 
     .errorMessage{
     color: red;

@@ -6,25 +6,60 @@
         <el-col :span="8" class="game-content-info">
             <div class="game-content-title">소리내기</div>
             <div class="game-content-target">
-                <img id="board-image" src="../../assets/board.png" alt="">
+                <img id="board-image" src="../../assets/board.png">
+                <span class="pitch-target" style="margin-top:">{{ pitch_target }}</span>
+                <span id="solo-sound-timer">{{ timer }}</span>
             </div>
             <div class="game-content-button">
+                <el-button @click="gameStart(); init()">Start</el-button>
                 <el-button class="solo-analyze-button" @click="goSoloAnalize">분석</el-button>
                 <el-button class="solo-out-button" @click="goSolo">나가기</el-button>
+                <div id="label-container"></div>
             </div>
         </el-col>
     </el-row>
 </template>
 
-<script>
+<script type="text/javascript">
+import '@tensorflow/tfjs'
 import { OpenVidu } from "openvidu-browser";
 import axios from "axios";
 import UserVideo from "@/components/video/soloUserVideo.vue"
+import * as speechCommands from '@tensorflow-models/speech-commands'
 import { mapActions } from 'vuex'
+
+const pitch_list = ['도', '레', '미', '파', '솔', '라', '시'];
+const pitch_list2 = ['도', '레', '미', '파', '솔', '라', '시'];
+
+
+// pick_list에 나올 음계 저장
+// 최소 한 번씩 나오게 하는 구간
+let pick_list = ['시작!']
+for (let i=0; i<7; i++) {
+    const pick_index = Math.floor(Math.random() * pitch_list.length);
+    pick_list.push(pitch_list[pick_index]);
+    pitch_list.splice(pick_index, 1);
+}
+// 최소 한 번씩 나오게 하는 구간 끝
+
+const problem = 3
+// 랜덤으로 problem개 더 출력
+for (let i=0; i<problem; i++) {
+    pick_list.push(pitch_list2[Math.floor(Math.random() * 7)]);
+}
+
+pick_list.push('참 잘했어요')
+const total_problem = problem + 9;
+const URL = "https://teachablemachine.withgoogle.com/models/eptQYA8MT/";
+
+// 음계 측정값 넣을 리스트 - 현재 7개의 음과 배경소음만 있고 나중에 삑사리 추가
+let grade_list = [[], [], [], [], [], [], []];
+
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
 
 const APPLICATION_SERVER_URL = "http://localhost:5000/";
+
 
 export default {
     name: 'SoloSoundMain',
@@ -52,18 +87,184 @@ export default {
             // Join form
             mySessionId: "SessionA",
             myUserName: "Participant" + Math.floor(Math.random() * 100),
+
+            //게임에 필요
+            pitch_target: '',
+            timer: ''
         }
     },
+    // created() {
+    //     this.init();
+    // },
     methods: {
+        ...mapActions(['saveGameResult', 'initMySessionId']),
+
         goSoloAnalize() {
             this.$router.push({ name: 'soloAnalize' })
         },
         goSolo() {
             this.$router.push({ name: 'solo' })
         },
+        
+        async createModel () {
 
-        ...mapActions(['initMySessionId']),
+            
+            const checkpointURL = URL + 'model.json' // model topology
+            const metadataURL = URL + 'metadata.json' // model metadata
 
+            const recognizer = speechCommands.create(
+                'BROWSER_FFT', // fourier transform type, not useful to change
+                undefined, // speech commands vocabulary feature, not useful for your models
+                checkpointURL,
+                metadataURL
+            )
+
+            // check that model and metadata are loaded via HTTPS requests.
+            await recognizer.ensureModelLoaded()
+
+            return recognizer
+        },
+        async init () {
+            const recognizer = await this.createModel() // 모델 생성
+            const classLabels = recognizer.wordLabels() // get class labels, 학습 시킨 클래스들
+            // 실시간으로 점수 표시해주는 역할(필요없어서 지움)
+            // const labelContainer = document.getElementById('label-container') // 데이터 라벨 생성
+            // for (let i = 0; i < classLabels.length; i++) {
+            //     labelContainer.appendChild(document.createElement('div'))
+            // }
+
+            // listen() takes two arguments:
+            // 1. A callback function that is invoked anytime a word is recognized.
+            // 2. A configuration object with adjustable fields
+            recognizer.listen(result => {
+                const scores = result.scores // eslint-disable-line no-unused-vars
+                // render the probability scores per class
+                for (let i = 0; i < classLabels.length; i++) {
+                    // const classPrediction = classLabels[i] + ': ' + result.scores[i].toFixed(2) // 소숫점까지 표기(2자리)
+                    //   console.log('음계' + classLabels[i])
+                    //   console.log('점수' + result.scores[i])
+                    // 도, 라, 레, 미, 바람빠지는소리, 배경소음, 솔, 시, 음이탈, 파
+                    const index = result.scores.indexOf(Math.max(...result.scores));
+                    switch(this.pitch_target) {
+                        case '도':
+                            if (index === 0) {
+                                grade_list[0].push(result.scores[index])
+                            } else if (index !== 9){
+                                grade_list[0].push(0)
+                            }
+                            break;
+                        case '레':
+                            if (index === 1) {
+                                grade_list[1].push(result.scores[index])
+                            } else if (index !== 9){
+                                grade_list[1].push(0)
+                            }
+                            break;
+                        case '미':
+                            if (index === 2) {
+                                grade_list[2].push(result.scores[index])
+                            } else if (index !== 9){
+                                grade_list[2].push(0)
+                            }
+                            break;
+                        case '파':
+                            if (index === 3) {
+                                grade_list[3].push(result.scores[index])
+                            } else if (index !== 9){
+                                grade_list[3].push(0)
+                            }
+                            break;
+                        case '솔':
+                            if (index === 4) {
+                                grade_list[4].push(result.scores[index])
+                            } else if (index !== 9){
+                                grade_list[4].push(0)
+                            }
+                            break;
+                        case '라':
+                            if (index === 5) {
+                                grade_list[5].push(result.scores[index])
+                            } else if (index !== 9){
+                                grade_list[5].push(0)
+                            }
+                            break;
+                        case '시':
+                            if (index === 6) {
+                                grade_list[6].push(result.scores[index])
+                            } else if (index !== 9){
+                                grade_list[6].push(0)
+                            }
+                            break;
+                        default:
+                            // code block for default case
+                    }
+
+                    // 실시간 점수 표시해주는 역할(필요없어서 지움)
+                    // labelContainer.childNodes[i].innerHTML = classPrediction
+                }
+            }, {
+                includeSpectrogram: true, // in case listen should return result.spectrogram
+                probabilityThreshold: 0.75,
+                invokeCallbackOnNoiseAndUnknown: true,
+                overlapFactor: 0.50 // probably want between 0.5 and 0.75. More info in README
+            })
+
+            // Stop the recognition in 5 seconds.
+            // setTimeout(() => recognizer.stopListening(), 5000);
+        },
+        gameStart() {
+            this.pitch_target = '준비하세요';
+            let index = 0;
+            grade_list = [[], [], [], [], [], [], []];
+            let game = setInterval(() => {
+                this.pitch_target = pick_list[index];
+                // index에 몇 가지 나올지 저장
+                index = (index + 1) % total_problem;
+                if (index === 2) {
+                    clearInterval(game);
+                    this.startTimer();
+                    this.timerRed();
+                    game = setInterval(() => {
+                        this.pitch_target = pick_list[index];
+                        index = (index + 1) % total_problem;
+                        if (index === 0) {
+                            clearInterval(game)
+                            this.saveGameResult(grade_list)
+                        }
+                    }, 5000)
+                } 
+            }, 2000)
+        },
+        startTimer() {
+            this.timer = 4;
+            // count를 이용해서 문제 끝나면 타이머 사라지게 함
+            let count = 10
+            let timer = setInterval(() => {
+                this.timer -= 1;
+                count += 1
+                if (this.timer === -1) {
+                    this.timer = 4
+                }
+                if (count/5 === total_problem) {
+                    clearInterval(timer)
+                    this.timer = ''
+                }
+            }, 1000)
+        },
+        timerRed() {
+            const timer = document.getElementById("solo-sound-timer");
+            timer.style.color = "black"
+            let color = 0;
+            setInterval(() => {
+            color += 6;
+            if (color >= 300) {
+                timer.style.color = "black"
+                color = 0
+            } else {
+                timer.style.color = `rgb(${color}, 0, 0)`;
+            }
+            }, 100);
+        },
         joinSession() {
             // 1. OpenVidu 객체 가져오기
             this.OV = new OpenVidu();
@@ -164,12 +365,12 @@ export default {
             });
             return response.data;
         }
-
     },
     mounted() {
         this.joinSession()
     }
 }
+
 </script>
 
 <style>
@@ -198,6 +399,10 @@ export default {
     height: 50%;
     width: 90%;
     margin: 0px auto;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .game-content-button{
@@ -207,6 +412,7 @@ export default {
 #board-image{
     width: 100%;
     height: 100%;
+    
 }
 
 .game-content-title{
@@ -214,5 +420,17 @@ export default {
     font-size: 7vh;
     margin-bottom: 5vh;
     color: white;
+}
+
+.pitch-target{
+    position: absolute;
+    font-size: 3vw;
+}
+
+#solo-sound-timer{
+    position: absolute;
+    left: 10%;
+    top: 15%;
+    font-size: 5vh;
 }
 </style>

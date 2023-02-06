@@ -124,6 +124,7 @@ export default {
     width: 3vw;
     background-color: #F0CDCD;
     color: #6A6D71;
+    cursor: url(../../assets/cursor_click.png), auto !important;
 }
 #cam-carousel{
     width: 100%;
