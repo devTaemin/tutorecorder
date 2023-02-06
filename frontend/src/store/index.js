@@ -8,6 +8,7 @@ export default createStore({
     myUserName: '',
     mySessionId: '',
     gameResult: '',
+    videoIndex: 0,
   },
   getters: {
     getMyUserName: function(state) {
@@ -50,6 +51,7 @@ export default createStore({
     saveGameResult: ({ commit }, payload) => {
       commit('SAVE_GAME_RESULT', payload)
     }
+    
   },
   modules: {
   }
