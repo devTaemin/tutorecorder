@@ -60,7 +60,8 @@ export default {
             this.$router.push({ name: 'home' })
         }
 
-    },
+    },  
+    
 
 }
 </script>
