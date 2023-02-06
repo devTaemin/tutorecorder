@@ -178,12 +178,11 @@ export default {
         flex-direction: column;
         align-items: center;
         justify-content: center;
-
         background-color: #F2E6E6;   
         border-radius: 20px;
         margin-left: 2%;
         margin-right: 2%;
-        
+        cursor: url(../assets/cursor_click.png), auto !important;
     }
 
     #iconImg{
@@ -215,7 +214,7 @@ export default {
         /* border: 5px solid black; */
         width: 10%;
         min-width: 15vh;
-
+        cursor: url(../assets/cursor_click.png), auto !important;
     }
     #gobackImg{
         width: 40%;
