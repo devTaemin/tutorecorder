@@ -142,7 +142,7 @@ export default {
     cursor: url(../../assets/cursor_click.png), auto !important;
 }
 #cam-carousel{
-    width: 100%;
+    width: 90%;
     height: 87%;
     overflow-y: auto;
     scroll-behavior: smooth;
@@ -152,7 +152,7 @@ export default {
 }
 .caroursel-item {
     height: 24.7%;
-    width: 99.5%;
+    width: 99%;
     background-color: #9fa1a4;
     overflow: hidden;
     border: 1px solid black;
