@@ -3,11 +3,11 @@
         <el-col :span="15" class="game-content-cam-section">
             <el-col :span="6" class="game-content-others-cam">
                 <el-button class="carousel-button" :icon="ArrowUpBold" @click="goPrev"></el-button>
-                    <div class="carousel" id="cam-carousel">
-                        <div v-for="other in others" :key="other" class="caroursel-item">
-                            <h3>{{ other }}</h3>
-                        </div>
+                <div class="carousel" id="cam-carousel">
+                    <div v-for="other in others" :key="other" class="caroursel-item">
+                        <h3>{{ other }}</h3>
                     </div>
+                </div>
                 <el-button class="carousel-button" :icon="ArrowDownBold" @click="goNext"></el-button>
             </el-col>
             <el-col :span="18" class="game-content-my-cam">
