@@ -130,6 +130,11 @@ export default {
 
 
             this.$router.push({ name: 'test' })
+        },
+
+        goHome() {
+            console.log('go home')
+            this.$router.push({ name: 'home' })
         }
 
         }
