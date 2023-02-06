@@ -27,10 +27,14 @@
         <!-- 뒤로가기, 홈버튼 -->
         <!-- 이미지 방향은 놔두기 playroom branch 에서 수정함 -->
         <div id="iconContainer">
-            <span @click="goback" id="gobackIcon">
-                <img id="gobackImg" src="@/assets/goback.png" alt="돌아가기">
+            <span @click="goback" id="subIconContainer">
+                <img id="gobackImg" src="@/assets/goback.png" alt="돌아가기 img">
+                <img id="gobackText" src="@/assets/gobackText.png" alt="돌아가기">
+            </span>
+            <span @click="goHome" id="subIconContainer">
+                <img id="homeImg" src="@/assets/homeButton.png" alt="홈 img" >
+                <img id="homeText" src="@/assets/homeText.png" alt="홈">
             </span>            
-            <img id="homeImg" src="@/assets/homeButton.png" alt="홈" @click="goHome">
         </div>
         <!-- style="cursor: pointer; width: 5%; position: absolute; left: 48%; bottom: 5%;" -->
         <!-- 뒤로가기, 홈버튼  -->
@@ -116,17 +120,15 @@ export default {
 
 #iconImg{
     border: 5px solid violet;
-    /* height: 60%; */
     width: 60%;
 } 
 #textImg{
     border: 5px solid gold;
-    width: 40%;
+    width: 60%;
     margin-top: 10%;
 }
 
-.el-card{
-}
+
 /* 카드 끝 */
 
 
@@ -136,18 +138,27 @@ export default {
     width: 99%;
     margin-top: 2%;
     display: flex;
+    justify-content: space-between;
 }
-#gobackIcon{
-    width: 21%;
+#subIconContainer{
+    border: 5px solid black;
+    width: 10%;
 }
 #gobackImg{
-    width: 100%;
+    width: 40%;
     border: 2px solid greenyellow;
-    margin-right:2%;
+}
+#gobackText{
+    width: 50%;
+    border: 2px solid violet;
 }
 #homeImg{
-    width: 5%;
+    width: 40%;
     border: 2px solid blue;
+}
+#homeText{
+    width: 50%;
+    border: 2px solid red;
 }
 /* 하단 아이콘 끝 */
 
