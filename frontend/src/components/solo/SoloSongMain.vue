@@ -2,7 +2,7 @@
 <div class="container">
     <el-row class="game-main-container">
         <el-col :span="22" class="game-main-note">
-            문제 나오는 부분
+            <!-- 문제 나오는 부분 -->
         </el-col>
     </el-row>
     <el-row class="game-sub-container">
@@ -878,6 +878,7 @@ class x extends _ {
         e.appendChild(this.wrapper),
         requestAnimationFrame(this.loop); // loop 기능을 통해서 계속 갱신
   }
+  // 배치
   createElements() {
     let a = document.createElement("div");
     let b = document.createElement("div");
@@ -885,6 +886,7 @@ class x extends _ {
     let r = this.drawer.renderElement();
     let e = document.querySelector(".game-sub-img");
     b.appendChild(r);
+    // song-editoer
     c.appendChild(this.songEditor.render());
     c.appendChild(this.sharer.render());
     a.appendChild(b);
@@ -1019,6 +1021,10 @@ class x extends _ {
     color: white;
     margin-top: 3vh;
     margin-bottom: 10px;
+}
+
+.sharer {
+  border: 1px solid black;
 }
 .game-sub-img{
     width: 90%;
