@@ -37,25 +37,56 @@ body {
 }
 
 .solo-out-button{
-    background-color: #F0AFAF !important;
-    font-family: 'JUA', serif !important;
-    font-size: 4vh !important;
-    width: 10vw !important;
-    height: 6vh !important;
-    cursor: url(./assets/cursor_click.png), auto !important;
+  background-color: #F0AFAF !important;
+  color: white !important;
+  font-family: 'JUA', serif !important;
+  font-size: 2vw !important;
+  width: 35% !important;
+  height: 6vh !important;
+  margin-left: 0% !important;
+  cursor: url(./assets/cursor_click.png), auto !important;
 }
 
+.solo-start-button{
+  background-color: #DDB13E !important;
+  color: white !important;
+  font-family: 'JUA', serif !important;
+  font-size: 2vw !important;
+  width: 80% !important;
+  height: 6vh !important;
+  margin-left: 0 !important;
+  cursor: url(./assets/cursor_click.png), auto !important;
+}
 .solo-analyze-button{
-    background-color: #8684FF !important;
-    color: white !important;
-    font-family: 'JUA', serif !important;
-    font-size: 4vh !important;
-    width: 10vw !important;
-    height: 6vh !important;
-    margin-right: 3vw !important;
-    cursor: url(./assets/cursor_click.png), auto !important;
+  background-color: #8684FF !important;
+  color: white !important;
+  font-family: 'JUA', serif !important;
+  font-size: 2vw !important;
+  width: 35% !important;
+  height: 6vh !important;
+  margin-right: 10% !important;
+  cursor: url(./assets/cursor_click.png), auto !important;
 }
-
+.solo-start-button-playgame{
+  background-color: #DD5A3E !important;
+  color: white !important;
+  font-family: 'JUA', serif !important;
+  font-size: 2vw !important;
+  width: 80% !important;
+  height: 6vh !important;
+  margin-left: 0 !important;
+  cursor: url(./assets/cursor_gen.png), auto !important;
+}
+.solo-analyze-button-playgame{
+  background-color: #8684FF !important;
+  color: white !important;
+  font-family: 'JUA', serif !important;
+  font-size: 2vw !important;
+  width: 35% !important;
+  height: 6vh !important;
+  margin-right: 10% !important;
+  cursor: url(./assets/cursor_gen.png), auto !important;
+}
 .mode{
   position: relative;
   z-index: 3;
