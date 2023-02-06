@@ -59,7 +59,7 @@ const goodTextForm = '는 아주 잘하고 있어요. \n'
 const nomalTextForm = '는 조금만 더 연습 하면 지금보다 더 잘할 수 있어요. \n'
 const allBad = '전체적으로 많은 연습이 필요해요. 운지법을 다르게 알고 있는 것은 아닌지 튜토리얼을 확인해보세요. \n'
 const allNomal = '조금만 더 연습하면 더 빠르고 정확하게 연주할 수 있어요. 다시 한 번 해볼까요? \n'
-const allGood = '훌룡해요! 이제는 노래를 연주해 보는건 어떨까요? \n'
+const allGood = '훌륭해요! 이제는 노래를 연주해 보는건 어떨까요? \n'
 
 export default {
     name: 'SoloAnalizeMain',
