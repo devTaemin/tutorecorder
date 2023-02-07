@@ -73,9 +73,9 @@ export default {
         }
     },
     methods: {
-        // goMultiAnalize() {
-        //     this.$router.push({ name: 'MultiAnalize' })
-        // },
+        goMultiAnalize() {
+            this.$emit('goMultiAnalize')
+        },  
         // goMulti() {
         //     this.$router.push({ name: 'MultiRoom' })
         // }
