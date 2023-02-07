@@ -8,6 +8,7 @@ export default createStore({
     // Join Form
     myUserName: '',
     mySessionId: '',
+    gameResult: '',
 
     // OpenVidu Objects
     OV: undefined,
@@ -15,6 +16,7 @@ export default createStore({
     mainStreamManager: undefined,
     publisher: undefined,
     subscribers: [],
+    videoIndex: 0,
   },
   getters: {
     getMyUserName: function(state) {
@@ -84,6 +86,9 @@ export default createStore({
     },
     DELETE_SUBSCRIBERS: (state, payload) => {
       state.subscribers.splice(payload, 1)
+    },
+    SAVE_GAME_RESULT: (state, payload) => {
+      state.gameResult = payload
     }
   },
   actions: {
@@ -98,7 +103,11 @@ export default createStore({
     },
     setMySessionId: ({ commit }, payload) => {
       commit('SET_MY_SESSION_ID', payload)
+    },
+    saveGameResult: ({ commit }, payload) => {
+      commit('SAVE_GAME_RESULT', payload)
     }
+    
   },
   modules: {
     

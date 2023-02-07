@@ -1,0 +1,93 @@
+
+@font-face { /* JUA 폰트 */
+  font-family: "JUA";
+  src: url("./assets/fonts/Jua-Regular.ttf") format("truetype");
+  font-weight: normal;
+}
+body {
+  cursor: url(./assets/cursor_gen.png), auto;
+}
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  /* color: #2c3e50; */
+  height: 100vh;
+  font-family: 'JUA', serif;
+}
+#background-image{
+  background-image: url("./assets/Background/BackgroundImage.png");
+  width: 100vw;
+  height: 100vh;
+  background-size: 100vw 100vh;
+  display: flex;
+  justify-content: center;
+}
+
+
+.pink-container{
+  width: 95vw;
+  height: 95vh;
+  background-color: #F2E6E6;
+  margin: auto;
+  border-radius: 30px;
+  position: relative;
+  z-index: 3;
+}
+
+.solo-out-button{
+  background-color: #F0AFAF !important;
+  color: white !important;
+  font-family: 'JUA', serif !important;
+  font-size: 2vw !important;
+  width: 35% !important;
+  height: 6vh !important;
+  margin-left: 0% !important;
+  cursor: url(./assets/cursor_click.png), auto !important;
+}
+
+.solo-start-button{
+  background-color: #DDB13E !important;
+  color: white !important;
+  font-family: 'JUA', serif !important;
+  font-size: 2vw !important;
+  width: 80% !important;
+  height: 6vh !important;
+  margin-left: 0 !important;
+  cursor: url(./assets/cursor_click.png), auto !important;
+}
+.solo-analyze-button{
+  background-color: #8684FF !important;
+  color: white !important;
+  font-family: 'JUA', serif !important;
+  font-size: 2vw !important;
+  width: 35% !important;
+  height: 6vh !important;
+  margin-right: 10% !important;
+  cursor: url(./assets/cursor_click.png), auto !important;
+}
+.solo-start-button-playgame{
+  background-color: #DD5A3E !important;
+  color: white !important;
+  font-family: 'JUA', serif !important;
+  font-size: 2vw !important;
+  width: 80% !important;
+  height: 6vh !important;
+  margin-left: 0 !important;
+  cursor: url(./assets/cursor_gen.png), auto !important;
+}
+.solo-analyze-button-playgame{
+  background-color: #8684FF !important;
+  color: white !important;
+  font-family: 'JUA', serif !important;
+  font-size: 2vw !important;
+  width: 35% !important;
+  height: 6vh !important;
+  margin-right: 10% !important;
+  cursor: url(./assets/cursor_gen.png), auto !important;
+}
+.mode{
+  position: relative;
+  z-index: 3;
+}
