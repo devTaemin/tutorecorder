@@ -75,12 +75,12 @@ export default {
         }
     },
     methods: {
-        // goSoloAnalize() {
-        //     this.$router.push({ name: 'soloAnalize' })
-        // },
-        // goSolo() {
-        //     this.$router.push({ name: 'solo' })
-        // },
+        goMultiAnalize() {
+            this.$emit('goMultiAnalize')
+        },
+        goRoom() {
+            this.$emit('goRoom')
+        },
         goNext() {
             let height = document.getElementById('cam-carousel').clientHeight;
             document.getElementById('cam-carousel').scrollTop += height; 

@@ -21,7 +21,7 @@
             </div>
             <div class="game-content-button">
                 <el-button class="solo-analyze-button" @click="goMultiAnalize">분석</el-button>
-                <el-button class="solo-out-button" @click="goMulti">나가기</el-button>
+                <el-button class="solo-out-button" @click="goRoom">나가기</el-button>
             </div>
         </el-col>
     </el-row>
@@ -75,10 +75,10 @@ export default {
     methods: {
         goMultiAnalize() {
             this.$emit('goMultiAnalize')
-        },  
-        // goMulti() {
-        //     this.$router.push({ name: 'MultiRoom' })
-        // }
+        },
+        goRoom() {
+            this.$emit('goRoom')
+        },
         goNext() {
             let height = document.getElementById('cam-carousel').clientHeight;
             document.getElementById('cam-carousel').scrollTop += height; 
