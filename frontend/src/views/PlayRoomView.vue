@@ -1,8 +1,14 @@
 <template>
     <div id="pink-container">
 
+        <!-- 소리내기 게임 컴포넌트 -->
+        <MultiSoundMain v-if="isPlaySound"/>
+
+        <!-- 연주하기 게임 컴포넌트 -->
+        <MultiSongMain v-if="isPlaySong"/>
+
         <!-- 왼쪽 박스 -->
-        <div id="LeftBox">
+        <div id="LeftBox" v-if="!isPlayGame">
 
             <!-- 대기방 비디오 디스플레이 -->
             <div id="YellowBoxVideo">
@@ -32,7 +38,7 @@
                 <!-- 게임 시작/준비 전환 버튼 -->
                 <div id="OrangeBoxStart"> 
                     <div v-if="isOwner">
-                        <el-button :type="startButton" :disabled="!startButtonEnabled">시작하기</el-button>
+                        <el-button :type="startButton" :disabled="!startButtonEnabled" @click="startGame">시작하기</el-button>
                     </div>
                     <div v-if="!isOwner && !readyButtonOn">
                         <el-button class="button-flicker" type="warning" @click="this.readyButtonConfirm">준비하기</el-button>
@@ -49,7 +55,7 @@
 
 
         <!-- 오른쪽 박스 -->
-        <div id="RightBox">
+        <div id="RightBox" v-if="!isPlayGame">
 
             <!-- 게임 세팅 창 -->
             <div id="PurpleBoxGameSetting">
@@ -214,6 +220,8 @@ import { OpenVidu } from "openvidu-browser";
 import { mapState } from "vuex"
 import axios from "axios";
 import UserVideo from "@/components/video/UserVideo.vue"
+import MultiSongMain from "@/components/multi/MultiSongMain.vue";
+import MultiSoundMain from "@/components/multi/MultiSoundMain.vue";
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
 const APPLICATION_SERVER_URL = "http://localhost:5000/";
@@ -223,6 +231,8 @@ export default {
     name: 'PlayRoomView',
     components: {
         UserVideo,
+        MultiSongMain,
+        MultiSoundMain,
     },
     data() {
         return {
@@ -248,6 +258,9 @@ export default {
             readyButtonOn: false,
             cam: "on",
             mic: "on",
+            isPlaySound: false,
+            isPlaySong: false,
+            isPlayGame: false,
         }   
     },
     mounted() {
@@ -433,6 +446,17 @@ export default {
             this.chatMessage = '';
 
         }, 
+        startGame() {
+            if (this.gameMode === 'play') {
+                this.isPlayGame = true
+                this.isPlaySong = true
+                this.isPlaySound = false
+            } else if (this.gameMode === 'sound') {
+                this.isPlayGame = true
+                this.isPlaySong = false
+                this.isPlaySound = true
+            }
+        },
         createRoom: function() {
 
             // 1) Get an OpenVidu Object
