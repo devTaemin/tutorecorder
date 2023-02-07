@@ -2,10 +2,10 @@
     <div id="pink-container">
 
         <!-- 소리내기 게임 컴포넌트 -->
-        <MultiSoundMain v-if="isPlaySound"/>
+        <MultiSoundMain v-if="isPlaySound" @goMultiAnalize="goMultiAnalize" @goRoom="goRoom"/>
 
         <!-- 연주하기 게임 컴포넌트 -->
-        <MultiSongMain v-if="isPlaySong"/>
+        <MultiSongMain v-if="isPlaySong" @goMultiAnalize="goMultiAnalize" @goRoom="goRoom"/>
 
         <!-- 왼쪽 박스 -->
         <div id="LeftBox" v-if="!isPlayGame">
@@ -261,6 +261,7 @@ export default {
             isPlaySound: false,
             isPlaySong: false,
             isPlayGame: false,
+            analizeVisible: false,
         }   
     },
     mounted() {
@@ -456,6 +457,17 @@ export default {
                 this.isPlaySong = false
                 this.isPlaySound = true
             }
+        },
+        goRoom() {
+            this.isPlayGame = false
+            this.isPlaySong = false
+            this.isPlaySound = false
+        },
+        goMultiAnalize() {
+            this.isPlayGame = false
+            this.isPlaySong = false
+            this.isPlaySound = false
+            this.analizeVisible = true
         },
         createRoom: function() {
 

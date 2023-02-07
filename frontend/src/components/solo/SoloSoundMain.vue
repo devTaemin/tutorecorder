@@ -13,7 +13,7 @@
             </div>
             <div class="button-container">
                 <div class="option-container">
-                    <el-button :class="{ 'solo-analyze-button': !playGame, 'solo-analyze-button-playgame': playGame }" :disabled="playGame" @click="goSoloAnalize">분석</el-button>
+                    <el-button :class="{ 'solo-analyze-button': !playGameAnalize, 'solo-analyze-button-playgame': playGameAnalize }" :disabled="playGameAnalize" @click="goSoloAnalize">분석</el-button>
                     <el-button class="solo-out-button" @click="goSolo">나가기</el-button>
                 </div>
                 <div class="solo-start-button-container">
@@ -100,6 +100,7 @@ export default {
             gameState: '게임 시작!',
             playGame: false,
             problem: '',
+            playGameAnalize: true,
         }
     },
     methods: {
@@ -244,6 +245,7 @@ export default {
                             clearInterval(game)
                             this.saveGameResult(grade_list)
                             this.gameState = '게임 시작!'
+                            this.playGameAnalize = false
                             this.playGame = false
                         }
                     }, 5000)
