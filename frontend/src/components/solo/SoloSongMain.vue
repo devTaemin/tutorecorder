@@ -679,7 +679,9 @@ class x extends _ {
     btnStop;
     chkMelody;
     inVolume;
-    element;
+    // element;
+    settingVolume;
+    buttons;
     constructor() {
       super();
       this.initElements();
@@ -691,11 +693,13 @@ class x extends _ {
     let e = v("label", {}, "play melody");
     e.appendChild(this.chkMelody),
       (this.inVolume = v("input", { type: "range", min: 0, max: 100, value: 30, step: 1 })),
-      (this.element = v("div", { class: "song-editor" }, [
-        e,
-        this.inVolume,
+      (this.buttons = v("div", { class: "song-editor" }, [
         this.btnPlay,
         this.btnStop,
+      ])),
+      (this.settingVolume = v("div", {class : "setting-volume"},[
+        e,
+        this.inVolume,
       ])),
       this.btnPlay.addEventListener("click", () => {
         this._clickHandler("play");
@@ -719,8 +723,14 @@ class x extends _ {
       _clickHandler(e) {
         this.emit(e);
       }
-      render() {
-        return this.element;
+      // render() {
+      //   return this.element;
+      // }
+      renderSettingVolume() {
+        return this.settingVolume;
+      }
+      renderButtons() {
+        return this.buttons;
       }
   }
 
@@ -884,9 +894,12 @@ class x extends _ {
     let c = document.createElement("div");
     let r = this.drawer.renderElement();
     let e = document.querySelector(".game-sub-img");
+    let buttons = document.querySelector(".game-sub-button")
     b.appendChild(r);
-    c.appendChild(this.songEditor.render());
+    // c.appendChild(this.songEditor.render());
+    c.appendChild(this.songEditor.renderSettingVolume());
     c.appendChild(this.sharer.render());
+    buttons.appendChild(this.songEditor.renderButtons());
     a.appendChild(b);
     e.appendChild(c);
     this.wrapper = a;
