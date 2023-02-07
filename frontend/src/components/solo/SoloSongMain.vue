@@ -1,10 +1,10 @@
 <template>
 <div class="container">
     <el-row class="game-main-container">
-        <el-col v-if="gameStart" :span="22" class="game-main-note">
+        <el-col v-if="!gameStart" :span="22" class="game-main-note">
             <!-- 문제 나오는 부분 -->
         </el-col>
-        <el-col v-if="!gameStart" :span="22" class="game-prev-msg">
+        <el-col v-if="gameStart" :span="22" class="game-prev-msg">
           <!-- 게임 시작 전 안내 메세지 출력 -->
           <img src="../../assets/game/song/prev_msg.png" alt="">
         </el-col>
@@ -54,14 +54,10 @@ export default {
             } else {
                 return 'SessionA'
             }
-        },
-        isGameStart() {
-          return this.gameStart
         }
     },
     data() {
         return {
-            gameStart: false,
             // OpenVidu Object
             OV: undefined,
             session: undefined,
@@ -176,6 +172,7 @@ export default {
             });
             return response.data;
         },
+
 
         async createToken(sessionId) {
             const response = await axios.post(APPLICATION_SERVER_URL + 'api/sessions/' + sessionId + '/connections', {}, {
@@ -322,9 +319,13 @@ function v(a, e, t) {
         : t !== void 0 && r.appendChild(t);
     return r;
   }
-
+  // 버튼 만드는 함수
   function w(a) {
-    return v("button", {}, a);
+    let span = v("span", {style: "display: inline-flex; align-items: center;"}, a)
+    console.log(span)
+    let button = v("button", {class: "el-button", type: "button",id: "startBtn"}, span)
+    button.classList.add("solo-start-button")
+    return button
   }
 
   function V(a) {
@@ -455,7 +456,6 @@ class H {
   _inited = !1;
   _currentNote = null;
   constructor() {
-    console.log("H생성");
     (this._canvas = document.createElement("canvas")),
       (this._canvas.width = this._screenWidth), // 악보 가로
       (this._canvas.height = 140), // 악보 세로
@@ -479,9 +479,7 @@ class H {
   _fitToContainer() {
     this.updateScreenWidth();
     let e = this._screenWidth;
-    console.log(e);
     let r = Math.floor(e / 2); // 화면의 너비 2분의 1
-    console.log(this._notes.length);
     this._notes.length < r // canvas의 절반의 길이보다 _notes의 길이가 더 크다면
       ? this._notes.unshift(...new Array(r - this._notes.length).fill(-1))
       : this._notes.length > r && this._notes.splice(0, this._notes.length - r);
@@ -540,7 +538,6 @@ class H {
     this.updateScreenWidth();
     this.updateScreentime();
     this._canvas.width = this._screenWidth;
-    console.log(this._notes.length);
     let e = this._canvas.getContext("2d"); // 캔버스 생성
     e.save(),
       (e.font = "14px monospace"), // 캔버스 폰트 설정
@@ -588,7 +585,7 @@ class _ {
   _handlers = new Map();
   on(e, t, r = !1) {
     this._handlers.has(e) || this._handlers.set(e, []),
-      this._handlers.get(e).push({ handler: t, once: r });
+    this._handlers.get(e).push({ handler: t, once: r });
   }
   emit(e, ...t) {
     if (!this._handlers.has(e)) return;
@@ -606,8 +603,8 @@ class x extends _ {
     constructor() {
       super();
       (this._element = document.createElement("div")),
-        this._element.classList.add("song-list"),
-        this._element.addEventListener("click", this._clickHandler);
+      this._element.classList.add("song-list"),
+      this._element.addEventListener("click", this._clickHandler);
     }
     set list(e) {
       (this._list = e.slice()), this._update();
@@ -639,22 +636,22 @@ class x extends _ {
   }
   class U {
     list = [];
-        constructor() {
-          this.list = j;
-        }
-        getLatest() {
-          return this.list.slice(0, 20);
-        }
-        save(e) {
-          e.idx ? this.edit(e) : this.add(e);
-        }
-        add(e) {
-          (e.idx = this.list.length), this.list.push(e);
-        }
-        edit(e) {
-          let t = this.list.find((r) => r.idx === e.idx);
-          (t.author = e.author), (t.score = e.score), (t.singer = e.singer), (t.title = e.title);
-        }
+      constructor() {
+        this.list = j;
+      }
+      getLatest() {
+        return this.list.slice(0, 20);
+      }
+      save(e) {
+        e.idx ? this.edit(e) : this.add(e);
+      }
+      add(e) {
+        (e.idx = this.list.length), this.list.push(e);
+      }
+      edit(e) {
+        let t = this.list.find((r) => r.idx === e.idx);
+        (t.author = e.author), (t.score = e.score), (t.singer = e.singer), (t.title = e.title);
+      }
   }
 
   class C extends _ {
@@ -664,10 +661,10 @@ class x extends _ {
       constructor() {
         super();
         (this._wrapper = document.createElement("div")),
-          this._wrapper.classList.add("sharer"),
-          this._wrapper.appendChild(this._list.render()),
-          this._list.on("click", this._listClick);
-          (this._list.list = this.model.getLatest());
+        this._wrapper.classList.add("sharer"),
+        this._wrapper.appendChild(this._list.render()),
+        this._list.on("click", this._listClick);
+        (this._list.list = this.model.getLatest());
       }
       render() {
         return this._wrapper;
@@ -690,25 +687,30 @@ class x extends _ {
       this.initElements();
     }
     initElements() {
-    (this.btnPlay = w("Play")),
-      (this.btnStop = w("Stop")),
+      //버튼 생성하는 곳
+      (this.btnPlay = w("Play")),
       (this.chkMelody = v("input", { type: "checkbox", checked: !0 }));
-    let e = v("label", {}, "play melody");
-    e.appendChild(this.chkMelody),
+      let e = v("label", {}, "play melody");
+      e.appendChild(this.chkMelody),
       (this.inVolume = v("input", { type: "range", min: 0, max: 100, value: 30, step: 1 })),
       (this.buttons = v("div", { class: "song-editor" }, [
         this.btnPlay,
-        this.btnStop,
       ])),
       (this.settingVolume = v("div", {class : "setting-volume"},[
         e,
         this.inVolume,
       ])),
       this.btnPlay.addEventListener("click", () => {
-        this._clickHandler("play");
-      }),
-      this.btnStop.addEventListener("click", () => {
-        this._clickHandler("stop");
+        if (this.btnPlay.classList.contains("solo-start-button-playgame")){
+          this.btnPlay.classList.remove("solo-start-button-playgame")
+          this.btnPlay.classList.add("solo-start-button")
+          this._clickHandler("stop");
+          
+        } else {
+          this.btnPlay.classList.remove("solo-start-button")
+          this.btnPlay.classList.add("solo-start-button-playgame")
+          this._clickHandler("play");
+        }
       }),
       this.chkMelody.addEventListener("input", () => {
         this.emit("change", "melody", this.chkMelody.checked);
@@ -885,13 +887,11 @@ class x extends _ {
     sharer = new C(); // 곡 선택 리스트
     songEditor = new N();
     constructor(e) {
-      console.log("E생성");
       (this.drawer = new H()),
         this.createElements(),
         e.appendChild(this.wrapper),
         requestAnimationFrame(this.loop); // loop 기능을 통해서 계속 갱신
   }
-  // 배치
   createElements() {
     let a = document.createElement("div");
     let b = document.createElement("div");
@@ -1029,7 +1029,6 @@ class x extends _ {
   width: 100%;
   height: 100%;
 }
-
 .game-sub-container{
     height: 70%;
     width : 95%;
@@ -1075,7 +1074,29 @@ class x extends _ {
     align-items: center;
 }
 .game-sub-button{
-    margin-top: 5vh;
+    margin-top: 1vh;
+}
+.solo-start-button{
+  background-color: #DDB13E !important;
+  color: white !important;
+  font-family: 'JUA', serif !important;
+  font-size: 2vw !important;
+  width: 80% !important;
+  height: 6vh !important;
+  margin-left: 0 !important;
+  margin-top: 1.5vh;
+  cursor: url(../../assets/cursor_click.png), auto !important;
+}
+.solo-start-button-playgame{
+  background-color: #DD5A3E !important;
+  color: white !important;
+  font-family: 'JUA', serif !important;
+  font-size: 2vw !important;
+  width: 80% !important;
+  height: 6vh !important;
+  margin-left: 0 !important;
+  margin-top: 1.5vh;
+  cursor: url(../../assets/cursor_click.png), auto !important;
 }
 .game-sub-song-info{
     height: 50%;
