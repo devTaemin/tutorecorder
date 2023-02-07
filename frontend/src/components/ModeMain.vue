@@ -13,7 +13,7 @@
                 <img id="iconImg" src="../assets/modeSelect-multi.png" alt="modeSelect-multi img" style="width:83%; margin-bottom: 8%;">
                 <img id="textImg" src="../assets/text/multi_play.png" alt="같이하기">
             </div>
-            <div id="redBoxComponent" @click="roomMakeVisible=true">
+            <div id="redBoxComponent" @click="createRoom">
                 <img id="iconImg" src="../assets/modeSelect-makeRoom.png" alt="modeSelect-makeRoom img" style="width:45%;">
                 <img id="textImg" src="../assets/text/make_room.png" alt="방만들기">
             </div>
@@ -46,20 +46,6 @@
         </el-dialog>
         <!-- 같이하기 모달 끝-->
 
-
-        <!-- 방만들기 모달 -->
-        <el-dialog v-model="roomMakeVisible" title="" width="40%">
-            <el-form label-width="100px" style="max-width:500px">
-                <el-form-item label="방 코드 설정">
-                    <el-input v-model="roomCode" />
-                </el-form-item>
-            </el-form>
-            <template #footer>
-                <el-button @click="roomMakeVisible=false">취소</el-button>
-                <el-button type="success" @click="createRoom">생성</el-button>
-            </template>
-        </el-dialog>
-        <!-- 방만들기 모달 끝-->
 
     </div>
 </template>
@@ -99,9 +85,9 @@ export default {
                 this.inputCorrect = false
                 this.errorMessage = '참여코드를 입력해주세요!'
                 this.roomCode = ''
-            } else if (this.roomCode.length > 5) {
+            } else if (this.roomCode.length > 20) {
                 this.inputCorrect = false
-                this.errorMessage = '참여코드를 확인해 주세요!(5글자)'
+                this.errorMessage = '참여코드를 확인해 주세요!(20글자)'
                 this.roomCode = ''
             } else {
                 this.inputCorrect = true
