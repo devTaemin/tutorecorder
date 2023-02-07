@@ -17,10 +17,6 @@
             <div class="game-sub-title font">비 행 기</div>
             <div class="game-sub-img">
                 <!-- 곡 이미지 배경 -->
-                <div class="game-sub-song-info">
-                    <h3 class="produce font">작곡가 : Sarah Josepha Hale & John Roulstone</h3><br>
-                    <h3 class="produce font">작사가 : 윤석중</h3><br>
-                </div>
                 <div class="game-sub-setting">
                   <!-- setting -->
                 </div>
@@ -697,7 +693,7 @@ class x extends _ {
       (this.chkMelody = v("input", { type: "checkbox", checked: !0 }));
     let e = v("label", {}, "play melody");
     e.appendChild(this.chkMelody),
-      (this.inVolume = v("input", { type: "range", min: 0, max: 100, value: 30, step: 1 })),
+      (this.inVolume = v("input", { class:"volume", type: "range", min: 0, max: 100, value: 30, step: 1 })),
       (this.element = v("div", { class: "song-editor" }, [
         e,
         this.inVolume,
@@ -1081,23 +1077,6 @@ class x extends _ {
     justify-content: center;
     align-items: center;
     flex-direction: column;
-}
-.produce {
-    margin-bottom: 0;
-    margin-top: 3px;
-    font-size: 3vh;
-    /* color: rgb(236, 236, 128) */
-
-}
-.descTitle{
-    margin-top:0;
-    margin-bottom: 0;
-    font-size: 3vh;
-}
-.description{
-    margin-top: 0;
-    margin-bottom:0;
-    font-size: 2vh;
 }
 
 </style>
