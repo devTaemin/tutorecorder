@@ -1,8 +1,12 @@
 <template>
 <div class="container">
     <el-row class="game-main-container">
-        <el-col :span="22" class="game-main-note">
+        <el-col v-if="gameStart" :span="22" class="game-main-note">
             <!-- 문제 나오는 부분 -->
+        </el-col>
+        <el-col v-if="!gameStart" :span="22" class="game-prev-msg">
+          <!-- 게임 시작 전 안내 메세지 출력 -->
+          <img src="../../assets/game/song/prev_msg.png" alt="">
         </el-col>
     </el-row>
     <el-row class="game-sub-container">
@@ -16,9 +20,9 @@
                 <div class="game-sub-song-info">
                     <h3 class="produce font">작곡가 : Sarah Josepha Hale & John Roulstone</h3><br>
                     <h3 class="produce font">작사가 : 윤석중</h3><br>
-                    <!--곡 설명-->
-                    <h3 class="descTitle font">[곡 설명]</h3>
-                    <p class="description font">세 개의 음 도, 레, 미의 3음계로 되어있으며,<br>배우기 쉬운 노래이다.</p>
+                </div>
+                <div class="game-sub-setting">
+                  <!-- setting -->
                 </div>
             </div>
             <div class="game-sub-button">
@@ -54,10 +58,14 @@ export default {
             } else {
                 return 'SessionA'
             }
+        },
+        isGameStart() {
+          return this.gameStart
         }
     },
     data() {
         return {
+            gameStart: false,
             // OpenVidu Object
             OV: undefined,
             session: undefined,
@@ -172,7 +180,6 @@ export default {
             });
             return response.data;
         },
-
 
         async createToken(sessionId) {
             const response = await axios.post(APPLICATION_SERVER_URL + 'api/sessions/' + sessionId + '/connections', {}, {
@@ -990,11 +997,29 @@ class x extends _ {
     align-items: center;
 }
 .game-main-container{
-    border: 1px solid green;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.374);
     height: 20%;
     width: 95%;
     margin-bottom: 10px;
     border-radius: 3%;
+}
+
+.game-prev-msg{
+  width: 80%;
+  height: 80%;
+  border: 3px solid red;
+}
+.game-prev-msg > img{
+  width: 100%;
+  height: 100%;
+}
+
+.prev-img {
+  width: 100%;
+  height: 100%;
 }
 
 .game-sub-container{
@@ -1022,7 +1047,9 @@ class x extends _ {
     margin-top: 3vh;
     margin-bottom: 10px;
 }
+.game-sub-setting {
 
+}
 .sharer {
   border: 1px solid black;
 }
@@ -1035,6 +1062,7 @@ class x extends _ {
     background-size: 100% 100%;
     background-repeat: no-repeat;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
 }
