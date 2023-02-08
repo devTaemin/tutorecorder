@@ -17,7 +17,14 @@
             <div class="game-sub-img">
                 <!-- 곡 이미지 배경 -->
                 <div class="game-sub-setting">
-                  <!-- setting -->
+                  <el-select v-model="value" class="m-2" placeholder="Select" size="small">
+                    <el-option
+                      v-for="item in options"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                </el-select>
                 </div>
             </div>
             <div class="game-sub-button">
@@ -204,14 +211,14 @@ var g = (a, e, t, r) => {
   }
   var j = [
       {
-        title: "\uC560\uAD6D\uAC00",
+        title: "애국가",
         singer: "",
         author: "nobody",
         score: `t60 o3 l4
 d'동'g.'해'f+8'물'e'과' g'백'd'두'c-'산'd'이' g'마'a8'르'b8'고'b+.'닳'b8'도' a2'록'.r
->d.'\uD558'c8'\uB290'<b'\uB2D8'a'\uC774' g'\uBCF4'f+8'\uC6B0'e8d'\uD558'c-'\uC0AC' d'\uC6B0'g'\uB9AC'a8'\uB098'a8'\uB77C'b'\uB9CC' g2.'\uC138'r
-f+.'\uBB34'g8a'\uAD81'f+'\uD654' b.'\uC0BC'>c8d'\uCC9C'<b'\uB9AC' a'\uD654'g'\uB824'f+'\uAC15'g a2.'\uC0B0'r
->d.'\uB300'c8'\uD55C'<b'\uC0AC'a'\uB78C' g'\uB300'f+8'\uD55C'e8d'\uC73C'c-'\uB85C' d'\uAE38'g'\uC774'a8'\uBCF4'a8'\uC804'b'\uD558'g2.'\uC138'r`,
+>d.'하'c8'느'<b'님'a'이' g'보'f+8'우'e8d'하'c-'사' d'우'g'리'a8'나'a8'라'b'만' g2.'세'r
+f+.'무'g8a'궁1'f+'화' b.'삼'>c8d'천'<b'리' a'화'g'려'f+'강'g a2.'산'r
+>d.'대'c8'한'<b'사'a'람' g'대'f+8'한'e8d'으'c-'로' d'길'g'이'a8'보'a8'전'b'하'g2.'세'r`,
       },
       {
         title: "비행기",
@@ -313,7 +320,13 @@ function v(a, e, t) {
       (Object.keys(e).forEach((i) => {
         if (i === "class") {
           let c = e[i];
-          Array.isArray(c) || (c = [c]), r.classList.add(e[i]);
+          if (Array.isArray(c)) {
+            for (let j=0; j<c.length; j++) {
+              r.classList.add(c[j])
+            }
+          } else if (c == [c]) {
+            r.classList.add(e[i]);
+          }
         } else r.setAttribute(i, e[i]);
       }),
       typeof t == "string")
@@ -448,7 +461,26 @@ function v(a, e, t) {
     var e = 12 * (Math.log(a / 440) / Math.log(2));
     return Math.round(e) + 69;
   }
+  function makeSwitch() {
+    let outsideDiv = v("div", {class: ["el-switch", "is-checked", "mb-2"], style:"--el-switch-on-color:#13ce66; --el-switch-off-color:#ff4949;" , id: "outside-div"}, )
+    let inputPart = v("input", { class:"el-switch__input", type: "checkbox", role:"switch", "aria-checked": "true", "aria-disabled": "false", "true-value": "true", "false-value":"false", "id": "check-box"})
+    let exSpan_off = v("span", {class:["el-switch__label", "el-switch__label--left"], id: "ex-span-off"})
+    let inSpan_off = v("span", {"aria-hidden": "true", id:"in-span-off"}, "OFF")
+    let exter_core = v("span", {class: "el-switch__core", id: "exter-core"})
+    let inner_core = v("div", {class: "el-switch__action", id: "inner-core"})
+    let exSpan_on = v("span", {class: ["el-switch__label", "el-switch__label--right", "is-active"], id: "ex-span-on"})
+    let inSpan_on = v("span", {"aria-hidden": "false", id: "in-span-on"}, "ON")
 
+    exSpan_off.appendChild(inSpan_off)
+    exter_core.appendChild(inner_core)
+    exSpan_on.appendChild(inSpan_on)
+    outsideDiv.appendChild(inputPart)
+    outsideDiv.appendChild(exSpan_off)
+    outsideDiv.appendChild(exter_core)
+    outsideDiv.appendChild(exSpan_on)
+
+    return outsideDiv
+  }
   // ------------------- class -------------------------------
 class H {
   _canvas;
@@ -698,18 +730,18 @@ class x extends _ {
     initElements() {
       //버튼 생성하는 곳
       (this.btnPlay = w("시작하기")),
-      (this.chkMelody = v("input", { type: "checkbox", checked: !0 }));
-      let e = v("label", {}, "play melody");
-      e.appendChild(this.chkMelody),
+      // (this.chkMelody = v("input", { type: "checkbox", checked: !0 }));
+      (this.chkMelody = makeSwitch()),
       (this.inVolume = v("input", { type: "range", min: 0, max: 100, value: 30, step: 1 })),
       (this.buttons = v("div", { class: "song-editor" }, [
         this.btnPlay,
       ])),
       (this.settingVolume = v("div", {class : "setting-volume"},[
-        e,
+        this.chkMelody,
         this.inVolume,
       ])),
 
+      // 버튼 누르면 일어나는 동작
       (this.gamePart=document.getElementById("game-part")),
       (this.imgPart=document.getElementById("img-ready")),
       this.btnPlay.addEventListener("click", () => {
@@ -734,8 +766,33 @@ class x extends _ {
           this._clickHandler("play");
         }
       }),
-      this.chkMelody.addEventListener("input", () => {
-        this.emit("change", "melody", this.chkMelody.checked);
+
+      //스위치 누르면 일어나는 동작
+      this.chkMelody.addEventListener("click", () => {
+        this.outsideDiv = document.getElementById("outside-div")
+        this.chkBox = document.getElementById("check-box")
+        this.exSpanOff = document.getElementById("ex-span-off")
+        this.inSpanOff = document.getElementById("in-span-off")
+        this.exSpanOn = document.getElementById("ex-span-on")
+        this.inSpanOn = document.getElementById("in-span-on")
+
+        if (this.chkBox.getAttribute('aria-checked')=='true') {
+          this.outsideDiv.classList.remove("is-checked")
+          this.chkBox.setAttribute('aria-checked', false)
+          this.exSpanOff.classList.add("is-active")
+          this.inSpanOff.setAttribute('aria-hidden', false)
+          this.exSpanOn.classList.remove("is-active")
+          this.inSpanOn.setAttribute('aria-hidden', true)
+          
+        } else{
+          this.outsideDiv.classList.add("is-checked")
+          this.chkBox.setAttribute('aria-checked', true)
+          this.exSpanOff.classList.remove("is-active")
+          this.inSpanOff.setAttribute('aria-hidden', true)
+          this.exSpanOn.classList.add("is-active")
+          this.inSpanOn.setAttribute('aria-hidden', false)
+        }
+        this.emit("change", "melody", this.chkBox.getAttribute('aria-checked')=='true');
       }),
       this.inVolume.addEventListener("input", () => {
         this.emit("change", "volume", parseInt(this.inVolume.value, 10) / 100);
