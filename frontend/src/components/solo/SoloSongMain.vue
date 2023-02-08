@@ -219,10 +219,20 @@ f+.'\uBB34'g8a'\uAD81'f+'\uD654' b.'\uC0BC'>c8d'\uCC9C'<b'\uB9AC' a'\uD654'g'\uB
         singer: "",
         author: "nobody",
         score: `t80 o3 l4
-e'떴' d'다' c'떴' d'다' e'비' e'행' e'기'.r
-d'날' d'아' d'라' e'날' g'아' g'라'.r
-e'높' d'이' c'높' d'이' e'날' e'아' e'라'.r
-d'우' d'리' e'비' d'행' c'기'.r`,
+e8.'떴' d16'다' c8'떴' d+8'다' e8'비' e8'행' e'기'r
+d8'날' d8'아' d'라' e8'날' e8'아' e'라'r
+e8.'높' d16'이' c8'높' d+8'이' e8'날' e8'아' e'라'r
+d8'우' d8'리' e8.'비' d16'행' c2'기'r`,
+      },
+      {
+        title: "구슬비",
+        singer: "",
+        author: "nobody",
+        score: `t80 o3 l4
+e8.'송' g8'알' g8'송' f8'알' e8'싸' g8'리' g'잎' f'에' e'은' g'구' f.'슬'r
+d8'조' f8'롱' f8'조' e8'롱' d8'거' f8'미' f8'줄' e8'에' d'옥' f'구' e.'슬'r
+c8.'대' c8'롱' e8'대' g8'롱' c.'풀' a8'잎' g8'마' g8'다' a'총' a.'총'r
+e8'방' g8'긋' g8.'웃' f8'는' e8'꽃' g8'잎' g8'마' f8'다' e8'송' d8'송' c8.'송'r`,
       },
     ]
 
@@ -673,6 +683,7 @@ class x extends _ {
         this.emit("song-select", e);
       }
   }
+
 
   class N extends _ {
     btnPlay;
