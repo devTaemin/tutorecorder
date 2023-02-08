@@ -44,7 +44,8 @@ import { mapActions } from 'vuex'
 import '@tensorflow/tfjs'
 import * as speechCommands from '@tensorflow-models/speech-commands'
 
-const APPLICATION_SERVER_URL = "http://localhost:5000/";
+// const APPLICATION_SERVER_URL = "http://localhost:5000/";
+const APPLICATION_SERVER_URL = "https://i8c206.p.ssafy.io/";
 
 const pitch_list = ['도', '레', '미', '파', '솔', '라', '시'];
 const pitch_list2 = ['도', '레', '미', '파', '솔', '라', '시'];
