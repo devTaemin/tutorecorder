@@ -46,7 +46,7 @@
                 <!-- 게임 시작/준비 전환 버튼 -->
                 <div id="OrangeBoxStart"> 
                     <div v-if="isOwner">
-                        <el-button :type="startButton" :disabled="!startButtonEnabled" @click="startGame" class="can-push-button">시작하기</el-button>
+                        <el-button :type="startButton" :disabled="!startButtonEnabled" @click="startGame" :class="{ 'can-push-button': startButtonEnabled, 'cannot-push-button': !startButtonEnabled }">시작하기</el-button>
                     </div>
                     <div v-if="!isOwner && !readyButtonOn">
                         <el-button class="button-flicker can-push-button" type="warning" @click="this.readyButtonConfirm">준비하기</el-button>
@@ -990,5 +990,8 @@ button {
 
 .can-push-button{
     cursor: url(../assets/cursor_click.png), auto !important;
+}
+.cannot-push-button{
+    cursor: url(../assets/cursor_disable.png), auto !important;
 }
 </style>
