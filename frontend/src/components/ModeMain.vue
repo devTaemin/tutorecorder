@@ -1,28 +1,39 @@
 <template>
-    <div id="background">
-        <img src="../assets/logo_nocircle.png" alt="logo img" style="width:20%;" > 
+    <div id="backgroundContainer">
+        <div id="logoContainter">
+            <img id='logo' src="@/assets/logo_nocircle.png" alt="logo img" >
+        </div>
 
-        <el-row :gutter="20" style="padding-left:5%;">
-            <!-- 아이콘은 각자의 크기가 달라 크기를 각자 설정 -->
-            <el-col :span="8">
-                <el-card shadow="hover" @click="moveSoloPage">
-                    <div><img id="iconImg" src="../assets/modeSelect-solo.png" alt="modeSelect-solo img" style="width:50%"></div>
-                    <div><img id="textImg" src="../assets/text/solo_play.png" alt="혼자하기"></div>
-                </el-card>
-            </el-col>
-            <el-col :span="8">
-                <el-card shadow="hover" @click="roomEnterVisible=true">
-                    <div><img id="iconImg" src="../assets/modeSelect-multi.png" alt="modeSelect-multi img" style="width:100%;"></div>
-                    <div><img id="textImg" src="../assets/text/multi_play.png" alt="같이하기" style="margin-top: 20%;"></div>
-                </el-card>
-            </el-col>
-            <el-col :span="8">
-                <el-card shadow="hover" @click="roomMakeVisible=true">
-                    <div><img id="iconImg" src="../assets/modeSelect-makeRoom.png" alt="modeSelect-makeRoom img" style="width:60%"></div>
-                    <div><img id="textImg" src="../assets/text/make_room.png" alt="방만들기"></div>
-                </el-card>
-            </el-col>
-        </el-row>
+        <div id="blueBoxContainer">
+            <div id="redBoxComponent" @click="moveSoloPage">
+                <img id="iconImg" src="../assets/modeSelect-solo.png" alt="modeSelect-solo img" style="width:35%;">
+                <img id="textImg" src="../assets/text/solo_play.png" alt="혼자하기">
+            </div>
+            <div id="redBoxComponent" @click="roomEnterVisible=true">
+                <img id="iconImg" src="../assets/modeSelect-multi.png" alt="modeSelect-multi img" style="width:83%; margin-bottom: 8%;">
+                <img id="textImg" src="../assets/text/multi_play.png" alt="같이하기">
+            </div>
+            <div id="redBoxComponent" @click="createRoom">
+                <img id="iconImg" src="../assets/modeSelect-makeRoom.png" alt="modeSelect-makeRoom img" style="width:45%;">
+                <img id="textImg" src="../assets/text/make_room.png" alt="방만들기">
+            </div>
+        </div>
+
+
+        
+        <!-- 뒤로가기, 홈버튼 -->
+        <!-- 이미지 방향은 놔두기 playroom branch 에서 수정함 -->
+        <div id="iconContainer">
+            <span @click="goback" id="subIconContainer" style="visibility:hidden">
+                <img id="gobackImg" src="@/assets/goback.png" alt="돌아가기 img">
+                <img id="gobackText" src="@/assets/gobackText.png" alt="돌아가기">
+            </span>
+            <span @click="goHome" id="subIconContainer">
+                <img id="homeImg" src="@/assets/homeButton.png" alt="홈 img" >
+                <img id="homeText" src="@/assets/homeText.png" alt="홈">
+            </span>            
+        </div>
+        <!-- 뒤로가기, 홈버튼  -->
 
         <!-- 같이하기 모달 -->
         <el-dialog v-model="roomEnterVisible" :show-close="false" :show-header="false" :modal-append-to-body="true"
@@ -36,20 +47,6 @@
         <!-- 같이하기 모달 끝-->
 
 
-        <!-- 방만들기 모달 -->
-        <el-dialog v-model="roomMakeVisible" title="" width="40%">
-            <el-form label-width="100px" style="max-width:500px">
-                <el-form-item label="방 코드 설정">
-                    <el-input v-model="roomCode" />
-                </el-form-item>
-            </el-form>
-            <template #footer>
-                <el-button @click="roomMakeVisible=false">취소</el-button>
-                <el-button type="success" @click="createRoom">생성</el-button>
-            </template>
-        </el-dialog>
-        <!-- 방만들기 모달 끝-->
-
     </div>
 </template>
 <script>
@@ -57,11 +54,14 @@ import { mapActions } from 'vuex'
 
 export default {
     name: 'ModeMain',
+    components: {
+
+    },
     data() {
         return {
             roomEnterVisible: false,
-            roomMakeVisible: false,
             roomCode: '',
+            roomMakeVisible: false,
 
             inputCorrect: true,
             errorMessage: '',
@@ -85,9 +85,9 @@ export default {
                 this.inputCorrect = false
                 this.errorMessage = '참여코드를 입력해주세요!'
                 this.roomCode = ''
-            } else if (this.roomCode.length > 5) {
+            } else if (this.roomCode.length > 20) {
                 this.inputCorrect = false
-                this.errorMessage = '참여코드를 확인해 주세요!(5글자)'
+                this.errorMessage = '참여코드를 확인해 주세요!(20글자)'
                 this.roomCode = ''
             } else {
                 this.inputCorrect = true
@@ -105,81 +105,158 @@ export default {
                 this.$router.push({ name: 'test' })
             }
         },
-
+        // 여기부터 추가한 거
+        enterRoomCancel: function() {
+            this.roomEnterVisible = false;
+            this.roomCode = '';
+        },
+        enterRoomConfirm: function() {
+            this.$router.push('/playroom/#' + this.roomCode);
+            this.roomCode 
+        },
+        // 여기까지
 
         createRoom: function() {
             // 방 생성
+            console.log("방 생성");
             this.setMySessionId(this.roomCode)
 
-            console.log("방 생성");
+
             this.roomCode='';
             this.roomMakeVisible=false;
 
             // DEBUG
 
 
-            this.$router.push({ name: 'test' })
+            this.$router.push({ name: 'playRoom' });
+        },
+
+        goHome() {
+            console.log('go home')
+            this.$router.push({ name: 'home' })
         }
 
         }
 }
 </script>
 
-<style scoped>
- .el-card{
-     /* border: 5px solid red; */
-     width: 80%;
-     height: 120%;
-     display: flex;
-     align-items: center;
-     cursor: url(../assets/cursor_click.png), auto !important;
-     border-radius: 20px;
-     background-color: #F2E6E6;
- }
-.tutorial-modal{
-    background-color: #6624c9;;
-}
+<style scoped>    
+    #backgroundContainer{
+        border-radius: 30px;
+        width: 90vw;  
+        height: 90vh;
+        background-color: rgba(0, 0, 0, 0.374);
+        display: flex;
+        flex-direction: column;
+        justify-items: center;
+        align-items: center;
+        margin-top: 5vh;
+    }
+    #logoContainter{
+        width: 40%;
+    }
 
-#background{
-    border-radius: 30px;
-    width: 100%;  
-    height: 99%;
-    background-color: rgba(0, 0, 0, 0.374);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 5px;
+    #logo{
+        /* border: 5px solid yellow; */
+        width: 60%;
+        margin-top: 2%;
+    }
 
-    aspect-ratio: 16/9;
-}
+    /* 카드 */
+    #blueBoxContainer{
+        /* border: 5px solid blue; */
+        display: flex;
+        width: 80%;
+        height: 60%;
+    }
+    #redBoxComponent{
+        /* border: 5px solid red; */
+        width: 40%;
+        height: 99%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background-color: #F2E6E6;   
+        border-radius: 20px;
+        margin-left: 2%;
+        margin-right: 2%;
+        cursor: url(../assets/cursor_click.png), auto !important;
+    }
 
- #textImg{
-    width:70%;
- }
+    #iconImg{
+        /* border: 5px solid violet; */
+        /* width: 50%; */
+        /* 비중이 달라 각자 적용 */
+    } 
+    #textImg{
+        /* border: 5px solid gold; */
+        width: 60%;
+        margin-top: 10%;
+    }
 
 
- /* 모달 css */
-.el-dialog__header{
-  display: none;
-}
+    /* 카드 끝 */
 
-.modal-container{
-  border-radius: 20px !important;
-  background-color: #B3F7A8 !important;
-  width: 40vw !important;
-}
 
-.modal-container-wrong{
-  border-radius: 20px !important;
-  background-color: #F2B2B2 !important;
-  width: 40vw !important;
-}
+    /* 하단 아이콘 */
+    #iconContainer{
+        /* border: 5px solid  white; */
+        width: 99%;
+        margin-top: 2%;
+        display: flex;
+        justify-content: space-between;
+        position: absolute;
+        bottom: 5vh;
+    }
+    #subIconContainer{
+        /* border: 5px solid black; */
+        width: 10%;
+        min-width: 15vh;
+        cursor: url(../assets/cursor_click.png), auto !important;
+    }
+    #gobackImg{
+        width: 40%;
+        /* border: 2px solid greenyellow; */
+    }
+    #gobackText{
+        width: 50%;
+        /* border: 2px solid violet; */
+    }
+    #homeImg{
+        width: 40%;
+        /* border: 2px solid blue; */
+    }
+    #homeText{
+        width: 50%;
+        /* border: 2px solid red; */
+    }
+    /* 하단 아이콘 끝 */
 
-.enterCode-input{
-  width: 20vw !important;
-  margin-right: 2vw;
-  margin-left: 1vw;
-}
+
+
+    /* 모달 css */
+    .el-dialog__header{
+    display: none;
+    }
+
+    .modal-container{
+    border-radius: 20px !important;
+    background-color: #B3F7A8 !important;
+    width: 40vw !important;
+    }
+
+    .modal-container-wrong{
+    border-radius: 20px !important;
+    background-color: #F2B2B2 !important;
+    width: 40vw !important;
+    }
+
+    .enterCode-input{
+    width: 20vw !important;
+    margin-right: 2vw;
+    margin-left: 1vw;
+    }
 
 .enterCode-input-button{
   width: 8vw !important;
@@ -189,8 +266,8 @@ export default {
   cursor: url(../assets/cursor_click.png), auto !important;
 }
 
-.errorMessage{
-  color: red;
-  font-size: 20px;
-}
+    .errorMessage{
+    color: red;
+    font-size: 20px;
+    }
 </style>

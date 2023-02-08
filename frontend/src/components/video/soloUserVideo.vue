@@ -8,7 +8,7 @@
 import OvVideo from '@/components/video/OvVideo'
 
 export default {
-  name: 'UserVideo',
+  name: 'soloUserVideo',
   components: {
     OvVideo,
   },
@@ -52,6 +52,7 @@ export default {
   flex-basis: 100%;
   max-height: 100%;
   border-radius: 3%;
+  transform: scaleX(-1);
 }
 
 </style>
