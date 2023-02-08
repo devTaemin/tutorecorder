@@ -112,7 +112,9 @@ export default {
             gameState: '게임 시작!',
             playGame: false,
             problem: '',
-            playGameAnalize: true,
+            
+            // playGameAnalize: true,
+            playGameAnalize: false,
         }
     },
     computed: {
