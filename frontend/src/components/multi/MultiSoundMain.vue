@@ -46,27 +46,27 @@ import * as speechCommands from '@tensorflow-models/speech-commands'
 
 const APPLICATION_SERVER_URL = "http://localhost:5000/";
 
-const pitch_list = ['도', '레', '미', '파', '솔', '라', '시'];
+let pitch_list = ['도', '레', '미', '파', '솔', '라', '시'];
 const pitch_list2 = ['도', '레', '미', '파', '솔', '라', '시'];
 
 
 // pick_list에 나올 음계 저장
 // 최소 한 번씩 나오게 하는 구간
-let pick_list = ['시작!']
-for (let i=0; i<7; i++) {
-    const pick_index = Math.floor(Math.random() * pitch_list.length);
-    pick_list.push(pitch_list[pick_index]);
-    pitch_list.splice(pick_index, 1);
-}
+let pick_list
+// for (let i=0; i<7; i++) {
+//     const pick_index = Math.floor(Math.random() * pitch_list.length);
+//     pick_list.push(pitch_list[pick_index]);
+//     pitch_list.splice(pick_index, 1);
+// }
 // 최소 한 번씩 나오게 하는 구간 끝
 
 const problem = 3
-// 랜덤으로 problem개 더 출력
-for (let i=0; i<problem; i++) {
-    pick_list.push(pitch_list2[Math.floor(Math.random() * 7)]);
-}
+// // 랜덤으로 problem개 더 출력
+// for (let i=0; i<problem; i++) {
+//     pick_list.push(pitch_list2[Math.floor(Math.random() * 7)]);
+// }
 
-pick_list.push('참 잘했어요')
+// pick_list.push('참 잘했어요')
 const total_problem = problem + 9;
 const URL = "https://teachablemachine.withgoogle.com/models/eptQYA8MT/";
 
@@ -86,7 +86,7 @@ export default {
         UserVideo,
     },
     props: {
-        
+        difficulty: String,
     },
     data() {
         return {
@@ -125,12 +125,13 @@ export default {
         }
     },
     methods: {
-        ...mapActions(['saveGameResult', 'initMySessionId']),
+        ...mapActions(['saveGameResult', 'initMySessionId', 'initGameResult']),
 
         goMultiAnalize() {
             this.$emit('goMultiAnalize')
         },
         goRoom() {
+            this.startTimer().timer
             this.$emit('goRoom')
         },
         goNext() {
@@ -164,7 +165,7 @@ export default {
         async init () {
             const recognizer = await this.createModel() // 모델 생성
             const classLabels = recognizer.wordLabels() // get class labels, 학습 시킨 클래스들
-            // 실시간으로 점수 표시해주는 역할(필요없어서 지움)
+            // 실시간으로 계이름 전체 점수 표시해주는 역할(필요없어서 지움)
             // const labelContainer = document.getElementById('label-container') // 데이터 라벨 생성
             // for (let i = 0; i < classLabels.length; i++) {
             //     labelContainer.appendChild(document.createElement('div'))
@@ -236,7 +237,7 @@ export default {
                             // code block for default case
                     }
 
-                    // 실시간 점수 표시해주는 역할(필요없어서 지움)
+                    // 실시간 전체 점수 표시해주는 역할(필요없어서 지움)
                     // labelContainer.childNodes[i].innerHTML = classPrediction
                 }
             }, {
@@ -250,6 +251,23 @@ export default {
             // setTimeout(() => recognizer.stopListening(), 5000);
         },
         gameStart() {
+            this.initGameResult()
+            pitch_list = ['도', '레', '미', '파', '솔', '라', '시'];
+            pick_list = ['시작!']
+            // 랜덤으로 문제 10개 뽑음
+            // 최소 한 번씩 나오도록 하는 부분
+            for (let i=0; i<7; i++) {
+                const pick_index = Math.floor(Math.random() * pitch_list.length);
+                pick_list.push(pitch_list[pick_index]);
+                pitch_list.splice(pick_index, 1);
+            }
+            // 랜덤으로 problem개 더 출력
+            for (let i=0; i<problem; i++) {
+                pick_list.push(pitch_list2[Math.floor(Math.random() * 7)]);
+            }
+            pick_list.push('참 잘했어요')
+
+            this.playGameAnalize = true
             this.gameState = '게임 진행중...'
             this.playGame = true
             this.pitch_target = '준비하세요';
@@ -278,33 +296,34 @@ export default {
                             this.playGameAnalize = false
                             this.playGame = false
                         }
-                    }, 5000)
+                    }, (this.difficulty * 1000))
                 } 
             }, 2000)
         },
         startTimer() {
-            this.timer = 4;
+            this.timer = this.difficulty - 1;
             // count를 이용해서 문제 끝나면 타이머 사라지게 함
-            let count = 10
+            let count = this.difficulty * 2
             let timer = setInterval(() => {
                 this.timer -= 1;
                 count += 1
                 if (this.timer === -1) {
-                    this.timer = 4
+                    this.timer = this.difficulty - 1
                     color = 180;
                 }
-                if (count/5 === total_problem) {
+                if (count/this.difficulty === total_problem) {
                     clearInterval(timer)
                     this.timer = ''
                 }
             }, 1000)
         },
         timerRed() {
+            // 5초일때 -3.6, 4초일때 -4.5 , 3초일때 -6
             const timer = document.getElementById("solo-sound-timer");
             timer.style.color = `rgb(255, 180, 180)`;
             let count = 0
             const timerTextRed = setInterval(() => {
-                color -= 3.6;
+                color -= 18/this.difficulty;
                 timer.style.color = `rgb(255, ${color}, ${color})`;
                 if (color <= -10) {
                     count += 1;

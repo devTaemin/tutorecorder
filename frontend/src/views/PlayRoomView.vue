@@ -2,7 +2,7 @@
     <div id="pink-container">
 
         <!-- 소리내기 게임 컴포넌트 -->
-        <MultiSoundMain v-if="isPlaySound" @goMultiAnalize="goMultiAnalize" @goRoom="goRoom"/>
+        <MultiSoundMain v-if="isPlaySound" @goMultiAnalize="goMultiAnalize" @goRoom="goRoom" :difficulty="difficulty"/>
         
 
         
@@ -174,9 +174,9 @@
 
             <h2>난이도 선택 - 소리내기, 운지법</h2>
             <el-radio-group v-model="difficulty" class="ml-4">
-                <el-radio label="level1" size="large" border :disabled="!optionEnabler">1단계(5초)</el-radio>
-                <el-radio label="level2" size="large" border :disabled="!optionEnabler">2단계(3초)</el-radio>
-                <el-radio label="level3" size="large" border :disabled="!optionEnabler">3단계(2초)</el-radio>
+                <el-radio label="5" size="large" border :disabled="!optionEnabler">1단계(5초)</el-radio>
+                <el-radio label="4" size="large" border :disabled="!optionEnabler">2단계(4초)</el-radio>
+                <el-radio label="3" size="large" border :disabled="!optionEnabler">3단계(3초)</el-radio>
             </el-radio-group>
             <hr>
         
@@ -350,7 +350,7 @@ export default {
             this.optionEnabler = true;
             this.gameMode = "sound";
             this.basicSong = undefined;
-            this.difficulty = "level1";
+            this.difficulty = "5";
         },
         gameSettingConfirm: function() {
             this.gameSettingVisible = false;
