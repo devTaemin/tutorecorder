@@ -499,15 +499,30 @@ export default {
             }
         },
         goRoom() {
-            this.isPlayGame = false
-            this.isPlaySong = false
-            this.isPlaySound = false
+            this.publisher.session.signal({
+                data: '',
+                to: [],
+                type: 'go-room'
+            })
+            .then(() => {
+                console.log("집가자");
+            })
+            .catch(error => {
+                console.log(error)
+            })
         },
         goMultiAnalize() {
-            this.isPlayGame = false
-            this.isPlaySong = false
-            this.isPlaySound = false
-            this.analizeVisible = true
+            this.publisher.session.signal({
+                data: this.chatMessage,
+                to: [],
+                type: 'multi-anal'
+            })
+            .then(() => {
+                console.log("분석 결과");
+            })
+            .catch(error => {
+                console.error(error);
+            })
         },
         createRoom: function() {
 
@@ -614,7 +629,23 @@ export default {
                 console.log("사운드 게임 신호를 받았다");
                 this.soundGame = true;
             })
+
+            // 3-11) multi-anal
+            this.session.on('signal:multi-anal', () => {
+                console.log("분석 결과");
+                this.isPlayGame = false
+                this.isPlaySong = false
+                this.isPlaySound = false
+                this.analizeVisible = true
+            })
         
+            // 3-12) go-room
+            this.session.on('signal:go-room', () => {
+                console.log("집가는 신호");
+                this.isPlayGame = false
+                this.isPlaySong = false
+                this.isPlaySound = false
+            })
 
 
 
@@ -750,6 +781,24 @@ export default {
             this.session.on('signal:start-sound-game', () => {
                 console.log("사운드 게임 신호를 받았다");
                 this.soundGame = true;
+            })
+
+            
+            // 3-9) multi-anal
+            this.session.on('signal:multi-anal', () => {
+                console.log("분석 결과");
+                this.isPlayGame = false
+                this.isPlaySong = false
+                this.isPlaySound = false
+                this.analizeVisible = true
+            })
+        
+            // 3-10) go-room
+            this.session.on('signal:go-room', () => {
+                console.log("집가는 신호");
+                this.isPlayGame = false
+                this.isPlaySong = false
+                this.isPlaySound = false
             })
         
 
