@@ -35,9 +35,9 @@ export default {
 
 <style scoped>
   #video-div{
-    border: 5px solid pink;
+    border: 5px solid blue ;
     display: inline-block;
-    margin: 0;
+    margin: 2%;
     padding: 0;  
   }
 
