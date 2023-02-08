@@ -43,6 +43,36 @@ import axios from "axios";
 import UserVideo from "@/components/video/soloUserVideo.vue"
 import { mapActions } from 'vuex'
 
+// 아래 자료 삭제 필요
+import { ref } from 'vue'
+
+const value = ref('')
+
+const options = [
+  {
+    value: 'Option1',
+    label: 'Option1',
+  },
+  {
+    value: 'Option2',
+    label: 'Option2',
+  },
+  {
+    value: 'Option3',
+    label: 'Option3',
+  },
+  {
+    value: 'Option4',
+    label: 'Option4',
+  },
+  {
+    value: 'Option5',
+    label: 'Option5',
+  },
+]
+
+
+
 axios.defaults.headers.post["Content-Type"] = "application/json";
 
 const APPLICATION_SERVER_URL = "http://localhost:5000/";
