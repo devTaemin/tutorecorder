@@ -32,27 +32,27 @@ import UserVideo from "@/components/video/soloUserVideo.vue"
 import * as speechCommands from '@tensorflow-models/speech-commands'
 import { mapActions } from 'vuex'
 
-const pitch_list = ['도', '레', '미', '파', '솔', '라', '시'];
+let pitch_list = ['도', '레', '미', '파', '솔', '라', '시'];
 const pitch_list2 = ['도', '레', '미', '파', '솔', '라', '시'];
 
 
 // pick_list에 나올 음계 저장
 // 최소 한 번씩 나오게 하는 구간
-let pick_list = ['시작!']
-for (let i=0; i<7; i++) {
-    const pick_index = Math.floor(Math.random() * pitch_list.length);
-    pick_list.push(pitch_list[pick_index]);
-    pitch_list.splice(pick_index, 1);
-}
+// let pick_list = ['시작!']
+// for (let i=0; i<7; i++) {
+//     const pick_index = Math.floor(Math.random() * pitch_list.length);
+//     pick_list.push(pitch_list[pick_index]);
+//     pitch_list.splice(pick_index, 1);
+// }
 // 최소 한 번씩 나오게 하는 구간 끝
 
 const problem = 3
 // 랜덤으로 problem개 더 출력
-for (let i=0; i<problem; i++) {
-    pick_list.push(pitch_list2[Math.floor(Math.random() * 7)]);
-}
+// for (let i=0; i<problem; i++) {
+//     pick_list.push(pitch_list2[Math.floor(Math.random() * 7)]);
+// }
 
-pick_list.push('참 잘했어요')
+// pick_list.push('참 잘했어요')
 const total_problem = problem + 9;
 const URL = "https://teachablemachine.withgoogle.com/models/eptQYA8MT/";
 
@@ -62,7 +62,8 @@ let grade_list = [[], [], [], [], [], [], []];
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
 
-const APPLICATION_SERVER_URL = "http://localhost:5000/";
+// const APPLICATION_SERVER_URL = "http://localhost:5000/";
+const APPLICATION_SERVER_URL = "https://i8c206.p.ssafy.io/";
 
 // 타이머 텍스트 색상
 let color = 180; 
@@ -104,7 +105,7 @@ export default {
         }
     },
     methods: {
-        ...mapActions(['saveGameResult', 'initMySessionId']),
+        ...mapActions(['saveGameResult', 'initMySessionId', 'initGameResult']),
 
         goSoloAnalize() {
             this.$router.push({ name: 'soloAnalize' })
@@ -220,6 +221,25 @@ export default {
             // setTimeout(() => recognizer.stopListening(), 5000);
         },
         gameStart() {
+            this.initGameResult()
+            pitch_list = ['도', '레', '미', '파', '솔', '라', '시'];
+            // pick_list에 나올 음계 저장
+            // 최소 한 번씩 나오게 하는 구간
+            let pick_list = ['시작!']
+            for (let i=0; i<7; i++) {
+                const pick_index = Math.floor(Math.random() * pitch_list.length);
+                pick_list.push(pitch_list[pick_index]);
+                pitch_list.splice(pick_index, 1);
+            }
+            // 최소 한 번씩 나오게 하는 구간 끝
+            // 랜덤으로 problem개 더 출력
+            for (let i=0; i<problem; i++) {
+                pick_list.push(pitch_list2[Math.floor(Math.random() * 7)]);
+            }
+
+            pick_list.push('참 잘했어요')
+
+            this.playGameAnalize = true
             this.gameState = '게임 진행중...'
             this.playGame = true
             this.pitch_target = '준비하세요';
