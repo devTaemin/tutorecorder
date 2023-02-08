@@ -34,11 +34,11 @@
             </div>
             <div class="button-container">
                 <div class="option-container">
-                    <el-button :class="{ 'solo-analyze-button': !playGameAnalize, 'solo-analyze-button-playgame': playGameAnalize }" :disabled="playGameAnalize" @click="goMultiAnalize">분석</el-button>
+                    <el-button :class="{ 'solo-analyze-button': !playGameAnalize, 'solo-analyze-button-playgame': playGameAnalize, 'is-owner': !isOwner }" :disabled="playGameAnalize" @click="goMultiAnalize">분석</el-button>
                     <el-button class="solo-out-button" @click="goRoom">나가기</el-button>
                 </div>
                 <div class="solo-start-button-container">
-                    <el-button :class="{ 'solo-start-button': !playGame, 'solo-start-button-playgame': playGame }" :disabled="playGame" @click="gameStart(); init()">{{ gameState }}</el-button>
+                    <el-button :class="{ 'solo-start-button': !playGame, 'solo-start-button-playgame': playGame, 'is-owner': !isOwner }" :disabled="playGame" @click="init(); emitGameStart()">{{ gameState }}</el-button>
                 </div>
             </div>
         </el-col>
@@ -100,6 +100,8 @@ export default {
         difficulty: String,
         publisher: Object,
         subscribers: Array,
+        isOwner: Boolean,
+        soundGame: Boolean,
     },
     data() {
         return {
@@ -136,6 +138,15 @@ export default {
                 return this.$store.state.mySessionId
             } else {
                 return 'SessionA'
+            }
+        },
+    },
+    watch: {
+        soundGame() {
+            console.log(this.soundGame);
+            if(this.soundGame) {
+                this.init();
+                this.gameStart();
             }
         }
     },
@@ -264,6 +275,9 @@ export default {
             // Stop the recognition in 5 seconds.
             // setTimeout(() => recognizer.stopListening(), 5000);
         },
+        emitGameStart() {
+            this.$emit('emitGameStart');
+        },
         gameStart() {
             this.initGameResult()
             pitch_list = ['도', '레', '미', '파', '솔', '라', '시'];
@@ -309,6 +323,8 @@ export default {
                             this.gameState = '게임 시작!'
                             this.playGameAnalize = false
                             this.playGame = false
+                            
+                            this.$emit('soundGameStop');
                         }
                     }, (this.difficulty * 1000))
                 } 
@@ -598,5 +614,9 @@ export default {
     font-size: 5vh;
     color: white;
     font-family: 'JUA', serif;
+}
+
+.is-owner{
+    display: none;
 }
 </style>

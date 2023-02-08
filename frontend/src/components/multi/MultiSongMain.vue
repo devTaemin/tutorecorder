@@ -26,7 +26,7 @@
                     <!-- 곡 이미지 들어갈 곳 -->
                 </div>
                 <div class="game-sub-button">
-                    <el-button class="solo-analyze-button" @click="goMultiAnalize">분석</el-button>
+                    <el-button :class="{'solo-analyze-button': true, 'is-owner': !isOwner}" @click="goMultiAnalize">분석</el-button>
                     <el-button class="solo-out-button" @click="goRoom">방으로</el-button>
                 </div>
             </el-col>
@@ -51,6 +51,7 @@ export default {
     props: {
         publisher: Object,
         subscribers: Array,
+        isOwner: Boolean,
     },
     data() {
         return {
@@ -298,5 +299,9 @@ export default {
     overflow: hidden;
     border: 1px solid black;
     border-radius: 10px;
+}
+
+.is-owner{
+    display: none;
 }
 </style>

@@ -2,7 +2,7 @@
     <div id="pink-container">
 
         <!-- 소리내기 게임 컴포넌트 -->
-        <MultiSoundMain v-if="isPlaySound" @goMultiAnalize="goMultiAnalize" @goRoom="goRoom" :difficulty="difficulty" :publisher="publisher" :subscribers="subscribers"/>
+        <MultiSoundMain v-if="isPlaySound" @soundGameStop="soundGameStop" @emitGameStart="emitGameStart" @goMultiAnalize="goMultiAnalize" @goRoom="goRoom" :isOwner="isOwner" :difficulty="difficulty" :publisher="publisher" :subscribers="subscribers" :soundGame="soundGame"/>
         
 
         
@@ -13,7 +13,7 @@
         <!-- 소리내기 게임 분석 끝 -->
 
         <!-- 연주하기 게임 컴포넌트 -->
-        <MultiSongMain v-if="isPlaySong" @goMultiAnalize="goMultiAnalize" @goRoom="goRoom" :publisher="publisher" :subscribers="subscribers"/>
+        <MultiSongMain v-if="isPlaySong" @goMultiAnalize="goMultiAnalize" @goRoom="goRoom" :isOwner="isOwner" :publisher="publisher" :subscribers="subscribers"/>
 
         <!-- 왼쪽 박스 -->
         <div id="LeftBox" v-if="!isPlayGame">
@@ -272,6 +272,7 @@ export default {
             isPlaySong: false,
             isPlayGame: false,
             analizeVisible: false,
+            soundGame: false,
         }   
     },
     mounted() {
@@ -287,6 +288,22 @@ export default {
 
     },
     methods: {
+        soundGameStop: function() {
+            this.soundGame = false;
+        },
+        emitGameStart: function() {
+            this.publisher.session.signal({
+                    data: "",
+                    to: [],
+                    type: 'start-sound-game'
+                })
+                .then(() => {
+                    console.log('game start!');
+                })
+                .catch(error => {
+                    console.log(error);
+                })
+        },
         startButtonConfirm: function() {
             this.publisher.session.signal({
                     data: "",
@@ -591,6 +608,12 @@ export default {
             this.session.on('signal:start-game', () => {
                 this.startGame();
             })
+
+            // 3-10) start sound game
+            this.session.on('signal:start-sound-game', () => {
+                console.log("사운드 게임 신호를 받았다");
+                this.soundGame = true;
+            })
         
 
 
@@ -721,6 +744,12 @@ export default {
             // 3-7) start game
             this.session.on('signal:start-game', () => {
                 this.startGame();
+            })
+
+            // 3-8) start sound game
+            this.session.on('signal:start-sound-game', () => {
+                console.log("사운드 게임 신호를 받았다");
+                this.soundGame = true;
             })
         
 
