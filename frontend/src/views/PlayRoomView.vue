@@ -2,13 +2,13 @@
     <div id="pink-container">
 
         <!-- 소리내기 게임 컴포넌트 -->
-        <MultiSoundMain v-if="isPlaySound" @goMultiAnalize="goMultiAnalize" @goRoom="goRoom" :difficulty="difficulty"/>
+        <MultiSoundMain v-if="isPlaySound" @goMultiAnalize="goMultiAnalize" @goRoom="goRoom" :difficulty="difficulty" :isOwner="isOwner"/>
         
 
         
         
         <!-- 소리내기 게임 분석 -->
-        <MultiAnalizeMain v-if="analizeVisible" @close-modal="analizeVisible=false"/>
+        <MultiAnalizeMain v-if="analizeVisible" @close-modal="analizeVisible=false" :isOwner="isOwner"/>
 
         <!-- 소리내기 게임 분석 끝 -->
 
@@ -46,13 +46,13 @@
                 <!-- 게임 시작/준비 전환 버튼 -->
                 <div id="OrangeBoxStart"> 
                     <div v-if="isOwner">
-                        <el-button :type="startButton" :disabled="!startButtonEnabled" @click="startGame">시작하기</el-button>
+                        <el-button :type="startButton" :disabled="!startButtonEnabled" @click="startGame" class="can-push-button">시작하기</el-button>
                     </div>
                     <div v-if="!isOwner && !readyButtonOn">
-                        <el-button class="button-flicker" type="warning" @click="this.readyButtonConfirm">준비하기</el-button>
+                        <el-button class="button-flicker can-push-button" type="warning" @click="this.readyButtonConfirm">준비하기</el-button>
                     </div>
                     <div v-if="!isOwner && readyButtonOn">
-                        <el-button type="success" @click="this.readyButtonConfirm">준비완료</el-button>
+                        <el-button type="success" @click="this.readyButtonConfirm" class="can-push-button">준비완료</el-button>
                     </div>
                 </div>
                 <!-- 게임 시작/준비 전환 버튼 끝 -->
@@ -73,6 +73,7 @@
                      alt="game setting img" 
                      style="width:100%; cursor:pointer;" 
                      @click="gameSettingVisible=true"
+                     class="can-push-button"
                 >
                 <!-- 방장이 아닌 경우 게임 정보를 볼 수 있도록 한다-->
                 <div v-if="!isOwner">
@@ -127,18 +128,20 @@
                     alt="game setting img" 
                     @click="leaveSession" 
                     style="cursor:pointer; 
-                    width: 45px; "
+                    width: 45px;"
+                    class="can-push-button"
                 >
                 <img src="../assets/share.png" 
                     alt="share img" 
                     style="cursor:pointer; 
                     width: 45px; height: 45px;"
-                    
+                    class="can-push-button"
                 >
                 <img src="../assets/confsetting.png" 
                     alt="configuration setting img" 
                     @click="envSettingVisible=true" 
                     style="cursor:pointer; width: 45px;"
+                    class="can-push-button"
                 >
             </div>
         </div>
@@ -233,8 +236,8 @@ import MultiSoundMain from "@/components/multi/MultiSoundMain.vue";
 import MultiAnalizeMain from "@/components/multi/MultiAnalizeMain.vue";
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
-// const APPLICATION_SERVER_URL = "http://localhost:5000/";
-const APPLICATION_SERVER_URL = "https://i8c206.p.ssafy.io/";
+const APPLICATION_SERVER_URL = "http://localhost:5000/";
+// const APPLICATION_SERVER_URL = "https://i8c206.p.ssafy.io/";
 
 export default {
     name: 'PlayRoomView',
@@ -248,11 +251,13 @@ export default {
         return {
             OV: undefined,
             session: undefined,
+            //
             publisher: undefined,
             roomCode: '',
             audioEnabled: true,
             videoEnabled: true,
             subscribers: [],
+            //
             isOwner: false,
             gameSettingVisible: false,
             envSettingVisible: false,
@@ -981,5 +986,9 @@ button {
    -moz-animation: flickerAnimation 1s infinite;
    -o-animation: flickerAnimation 1s infinite;
     animation: flickerAnimation 1s infinite;
+}
+
+.can-push-button{
+    cursor: url(../assets/cursor_click.png), auto !important;
 }
 </style>

@@ -24,10 +24,10 @@
             </div>
             <div class="button-container">
                 <div class="option-container">
-                    <el-button :class="{ 'solo-analyze-button': !playGameAnalize, 'solo-analyze-button-playgame': playGameAnalize }" :disabled="playGameAnalize" @click="goMultiAnalize">분석</el-button>
+                    <el-button v-if="isOwner" :class="{ 'solo-analyze-button': !playGameAnalize, 'solo-analyze-button-playgame': playGameAnalize }" :disabled="playGameAnalize" @click="goMultiAnalize">분석</el-button>
                     <el-button class="solo-out-button" @click="goRoom">나가기</el-button>
                 </div>
-                <div class="solo-start-button-container">
+                <div class="solo-start-button-container" v-if="isOwner">
                     <el-button :class="{ 'solo-start-button': !playGame, 'solo-start-button-playgame': playGame }" :disabled="playGame" @click="gameStart(); init()">{{ gameState }}</el-button>
                 </div>
             </div>
@@ -44,8 +44,8 @@ import { mapActions } from 'vuex'
 import '@tensorflow/tfjs'
 import * as speechCommands from '@tensorflow-models/speech-commands'
 
-// const APPLICATION_SERVER_URL = "http://localhost:5000/";
-const APPLICATION_SERVER_URL = "https://i8c206.p.ssafy.io/";
+const APPLICATION_SERVER_URL = "http://localhost:5000/";
+// const APPLICATION_SERVER_URL = "https://i8c206.p.ssafy.io/";
 
 let pitch_list = ['도', '레', '미', '파', '솔', '라', '시'];
 const pitch_list2 = ['도', '레', '미', '파', '솔', '라', '시'];
@@ -88,6 +88,7 @@ export default {
     },
     props: {
         difficulty: String,
+        isOwner: Boolean,
     },
     data() {
         return {
@@ -113,6 +114,7 @@ export default {
             gameState: '게임 시작!',
             playGame: false,
             problem: '',
+            functionTimer: '',
             
             // playGameAnalize: true,
             playGameAnalize: false,
@@ -134,7 +136,7 @@ export default {
             this.$emit('goMultiAnalize')
         },
         goRoom() {
-            this.startTimer().timer
+            clearInterval(this.functionTimer)
             this.$emit('goRoom')
         },
         goNext() {
@@ -307,7 +309,7 @@ export default {
             this.timer = this.difficulty - 1;
             // count를 이용해서 문제 끝나면 타이머 사라지게 함
             let count = this.difficulty * 2
-            let timer = setInterval(() => {
+            this.functionTimer = setInterval(() => {
                 this.timer -= 1;
                 count += 1
                 if (this.timer === -1) {
@@ -315,13 +317,13 @@ export default {
                     color = 180;
                 }
                 if (count/this.difficulty === total_problem) {
-                    clearInterval(timer)
+                    clearInterval(this.functionTimer)
                     this.timer = ''
                 }
             }, 1000)
         },
         timerRed() {
-            // 5초일때 -3.6, 4초일때 -4.5 , 3초일때 -6
+            color = 180;
             const timer = document.getElementById("solo-sound-timer");
             timer.style.color = `rgb(255, 180, 180)`;
             let count = 0

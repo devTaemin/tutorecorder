@@ -493,4 +493,25 @@ export default {
     font-size: 5vh;
     color: white;
 }
+
+.solo-start-button{
+  background-color: #DDB13E !important;
+  color: white !important;
+  font-family: 'JUA', serif !important;
+  font-size: 2vw !important;
+  width: 80% !important;
+  height: 6vh !important;
+  margin-left: 0 !important;
+  cursor: url(../../assets/cursor_click.png), auto !important;
+  -webkit-animation: flickerAnimation 1s infinite;
+  -moz-animation: flickerAnimation 1s infinite;
+  -o-animation: flickerAnimation 1s infinite;
+  animation: flickerAnimation 1s infinite;
+}
+.solo-start-button:hover {
+  -webkit-animation: false;
+  -moz-animation: false;
+  -o-animation: false;
+  animation: false;
+}
 </style>
