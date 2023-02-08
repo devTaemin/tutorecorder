@@ -1,6 +1,9 @@
 <template>
 <div class="container">
     <el-row class="game-main-container">
+        <div class="start" id="img-ready">
+          <img class="ready-img" src="../../assets/game/song/prev_msg.png" alt="">
+        </div>
         <el-col :span="22" class="game-main-note ready" id="game-part">
             <!-- 문제 나오는 부분 -->
         </el-col>
@@ -708,20 +711,25 @@ class x extends _ {
       ])),
 
       (this.gamePart=document.getElementById("game-part")),
+      (this.imgPart=document.getElementById("img-ready")),
       this.btnPlay.addEventListener("click", () => {
         if (this.btnPlay.classList.contains("solo-start-button-playgame")){
           this.btnPlay.classList.remove("solo-start-button-playgame")
           this.gamePart.classList.remove("start")
+          this.imgPart.classList.remove("ready")
           this.btnPlay.classList.add("solo-start-button")
           this.gamePart.classList.add("ready")
+          this.imgPart.classList.add("start")
           document.getElementById("innerSpan").innerHTML = "시작하기"
           this._clickHandler("stop");
           
         } else {
           this.btnPlay.classList.remove("solo-start-button")
           this.gamePart.classList.remove("ready")
+          this.imgPart.classList.remove("start")
           this.btnPlay.classList.add("solo-start-button-playgame")
           this.gamePart.classList.add("start")
+          this.imgPart.classList.add("ready")
           document.getElementById("innerSpan").innerHTML = "그만하기"
           this._clickHandler("play");
         }
@@ -1030,6 +1038,17 @@ class x extends _ {
 }
 .ready {
   display: none;
+}
+.start {
+  display: block;
+}
+#img-ready{
+  height: 100%;
+  width: 100%;
+}
+.ready-img {
+  height: 100%;
+  width: 100%;
 }
 .game-prev-msg{
   width: 80%;
