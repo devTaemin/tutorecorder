@@ -1,12 +1,8 @@
 <template>
 <div class="container">
     <el-row class="game-main-container">
-        <el-col v-if="!gameStart" :span="22" class="game-main-note">
+        <el-col :span="22" class="game-main-note ready" id="game-part">
             <!-- 문제 나오는 부분 -->
-        </el-col>
-        <el-col v-if="gameStart" :span="22" class="game-prev-msg">
-          <!-- 게임 시작 전 안내 메세지 출력 -->
-          <img src="../../assets/game/song/prev_msg.png" alt="">
         </el-col>
     </el-row>
     <el-row class="game-sub-container">
@@ -77,7 +73,7 @@ export default {
         goSolo() {
             this.$router.push({ name: 'solo' })
         },
-        
+
         ...mapActions(['initMySessionId']),
 
         joinSession() {
@@ -331,8 +327,7 @@ function v(a, e, t) {
   }
   // 버튼 만드는 함수
   function w(a) {
-    let span = v("span", {style: "display: inline-flex; align-items: center;"}, a)
-    console.log(span)
+    let span = v("span", {id: "innerSpan", style: "display: inline-flex; align-items: center;"}, a)
     let button = v("button", {class: "el-button", type: "button",id: "startBtn"}, span)
     button.classList.add("solo-start-button")
     return button
@@ -699,7 +694,7 @@ class x extends _ {
     }
     initElements() {
       //버튼 생성하는 곳
-      (this.btnPlay = w("Play")),
+      (this.btnPlay = w("시작하기")),
       (this.chkMelody = v("input", { type: "checkbox", checked: !0 }));
       let e = v("label", {}, "play melody");
       e.appendChild(this.chkMelody),
@@ -711,15 +706,23 @@ class x extends _ {
         e,
         this.inVolume,
       ])),
+
+      (this.gamePart=document.getElementById("game-part")),
       this.btnPlay.addEventListener("click", () => {
         if (this.btnPlay.classList.contains("solo-start-button-playgame")){
           this.btnPlay.classList.remove("solo-start-button-playgame")
+          this.gamePart.classList.remove("start")
           this.btnPlay.classList.add("solo-start-button")
+          this.gamePart.classList.add("ready")
+          document.getElementById("innerSpan").innerHTML = "시작하기"
           this._clickHandler("stop");
           
         } else {
           this.btnPlay.classList.remove("solo-start-button")
+          this.gamePart.classList.remove("ready")
           this.btnPlay.classList.add("solo-start-button-playgame")
+          this.gamePart.classList.add("start")
+          document.getElementById("innerSpan").innerHTML = "그만하기"
           this._clickHandler("play");
         }
       }),
@@ -1025,7 +1028,9 @@ class x extends _ {
     margin-bottom: 10px;
     border-radius: 3%;
 }
-
+.ready {
+  display: none;
+}
 .game-prev-msg{
   width: 80%;
   height: 80%;
@@ -1094,6 +1099,16 @@ class x extends _ {
   margin-left: 0 !important;
   margin-top: 1.5vh;
   cursor: url(../../assets/cursor_click.png), auto !important;
+  -webkit-animation: flickerAnimation 1s infinite;
+  -moz-animation: flickerAnimation 1s infinite;
+  -o-animation: flickerAnimation 1s infinite;
+  animation: flickerAnimation 1s infinite;
+}
+.solo-start-button:hover {
+  -webkit-animation: false;
+  -moz-animation: false;
+  -o-animation: false;
+  animation: false;
 }
 .solo-start-button-playgame{
   background-color: #DD5A3E !important;
