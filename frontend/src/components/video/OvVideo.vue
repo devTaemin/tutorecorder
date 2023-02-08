@@ -1,5 +1,5 @@
 <template>
-    <video autoplay />
+        <video autoplay />
 </template>
 <script>
 export default ({
@@ -14,3 +14,9 @@ export default ({
     }
 })
 </script>
+
+<style>
+
+</style>
+
+
