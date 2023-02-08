@@ -13,7 +13,7 @@
         <!-- 소리내기 게임 분석 끝 -->
 
         <!-- 연주하기 게임 컴포넌트 -->
-        <MultiSongMain v-if="isPlaySong" @goMultiAnalize="goMultiAnalize" @goRoom="goRoom"/>
+        <MultiSongMain v-if="isPlaySong" @goMultiAnalize="goMultiAnalize" @goRoom="goRoom" :publisher="publisher" :subscribers="subscribers"/>
 
         <!-- 왼쪽 박스 -->
         <div id="LeftBox" v-if="!isPlayGame">
