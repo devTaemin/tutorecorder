@@ -8,11 +8,6 @@ const routes = [
     component: HomeView
   },
   {
-    path: '/test',
-    name: 'test',
-    component: () => import(/* webpackChunkName: "test" */ '../views/OpenViduTestView.vue')
-  },
-  {
     path: '/mode',
     name: 'mode',
     component: () => import(/* webpackChunkName: "mode" */ '../views/ModeView.vue'),
@@ -48,15 +43,12 @@ const routes = [
     component: () => import(/* webpackChunkName: "solo" */ '../views/solo/SoloAnalizeView.vue')
   },
   {
-    path: '/multi/sound',
-    name: 'multiSound',
-    component: () => import(/* webpackChunkName: "mulit" */ '../views/multi/MultiSoundView.vue')
+    path: '/playroom',
+    name: 'playRoom',
+    // component: Playroom,
+    component: () => import(/* webpackChunkName: "play" */ '../views/PlayRoomView.vue')    
   },
-  {
-    path: '/multi/song',
-    name: 'multiSong',
-    component: () => import(/* webpackChunkName: "multi" */ '../views/multi/MultiSongView.vue')
-  }
+
 ]
 
 
