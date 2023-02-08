@@ -40,8 +40,8 @@ import axios from "axios";
 import UserVideo from "@/components/video/soloUserVideo.vue"
 import { mapActions } from 'vuex'
 
-// const APPLICATION_SERVER_URL = "http://localhost:5000/";
-const APPLICATION_SERVER_URL = "https://i8c206.p.ssafy.io/";
+const APPLICATION_SERVER_URL = "http://localhost:5000/";
+// const APPLICATION_SERVER_URL = "https://i8c206.p.ssafy.io/";
 
 export default {
     name: 'MultiSongMain',

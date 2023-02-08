@@ -46,7 +46,7 @@
                 <!-- 게임 시작/준비 전환 버튼 -->
                 <div id="OrangeBoxStart"> 
                     <div v-if="isOwner">
-                        <el-button :type="startButton" :disabled="!startButtonEnabled" @click="startGame">시작하기</el-button>
+                        <el-button :type="startButton" :disabled="!startButtonEnabled" @click="startButtonConfirm">시작하기</el-button>
                     </div>
                     <div v-if="!isOwner && !readyButtonOn">
                         <el-button class="button-flicker" type="warning" @click="this.readyButtonConfirm">준비하기</el-button>
@@ -233,8 +233,8 @@ import MultiSoundMain from "@/components/multi/MultiSoundMain.vue";
 import MultiAnalizeMain from "@/components/multi/MultiAnalizeMain.vue";
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
-// const APPLICATION_SERVER_URL = "http://localhost:5000/";
-const APPLICATION_SERVER_URL = "https://i8c206.p.ssafy.io/";
+const APPLICATION_SERVER_URL = "http://localhost:5000/";
+// const APPLICATION_SERVER_URL = "https://i8c206.p.ssafy.io/";
 
 export default {
     name: 'PlayRoomView',
@@ -287,6 +287,19 @@ export default {
 
     },
     methods: {
+        startButtonConfirm: function() {
+            this.publisher.session.signal({
+                    data: "",
+                    to: [],
+                    type: 'start-game'
+                })
+                .then(() => {
+                    console.log('game start!');
+                })
+                .catch(error => {
+                    console.log(error);
+                })
+        },
         envSettingConfirm: function() {
             if (this.mic == "on") {
                 this.publisher.publishAudio(true);
@@ -573,6 +586,11 @@ export default {
                 console.log("owner에서 ready-minus를 받았다: ", this.countReady);
                 console.log("현재 subscribers의 수: ", this.subscribers.length);
             })
+
+            // 3-9) start game
+            this.session.on('signal:start-game', () => {
+                this.startGame();
+            })
         
 
 
@@ -698,6 +716,11 @@ export default {
                     this.basicSong = undefined;
                     this.difficulty = difficulty;
                 }
+            })
+
+            // 3-7) start game
+            this.session.on('signal:start-game', () => {
+                this.startGame();
             })
         
 
