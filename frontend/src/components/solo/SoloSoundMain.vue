@@ -62,7 +62,8 @@ let grade_list = [[], [], [], [], [], [], []];
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
 
-const APPLICATION_SERVER_URL = "http://localhost:5000/";
+// const APPLICATION_SERVER_URL = "http://localhost:5000/";
+const APPLICATION_SERVER_URL = "https://i8c206.p.ssafy.io/";
 
 // 타이머 텍스트 색상
 let color = 180; 
