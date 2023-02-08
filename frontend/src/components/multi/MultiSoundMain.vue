@@ -17,11 +17,19 @@
         <el-col :span="8" class="game-content-info">
             <div class="game-content-title">소리내기</div>
             <div class="game-content-target">
-                <img id="board-image" src="../../assets/board.png" alt="">
+                <img id="board-image" src="../../assets/board.png">
+                <span class="pitch-target" style="margin-top:">{{ pitch_target }}</span>
+                <span id="solo-sound-timer">{{ timer }}</span>
+                <span id="problem">{{ problem }}</span>
             </div>
-            <div class="game-content-button">
-                <el-button class="solo-analyze-button" @click="goMultiAnalize">분석</el-button>
-                <el-button class="solo-out-button" @click="goMulti">나가기</el-button>
+            <div class="button-container">
+                <div class="option-container">
+                    <el-button :class="{ 'solo-analyze-button': !playGameAnalize, 'solo-analyze-button-playgame': playGameAnalize }" :disabled="playGameAnalize" @click="goMultiAnalize">분석</el-button>
+                    <el-button class="solo-out-button" @click="goRoom">나가기</el-button>
+                </div>
+                <div class="solo-start-button-container">
+                    <el-button :class="{ 'solo-start-button': !playGame, 'solo-start-button-playgame': playGame }" :disabled="playGame" @click="gameStart(); init()">{{ gameState }}</el-button>
+                </div>
             </div>
         </el-col>
     </el-row>
@@ -33,8 +41,44 @@ import { OpenVidu } from "openvidu-browser";
 import axios from "axios";
 import UserVideo from "@/components/video/soloUserVideo.vue"
 import { mapActions } from 'vuex'
+import '@tensorflow/tfjs'
+import * as speechCommands from '@tensorflow-models/speech-commands'
 
 const APPLICATION_SERVER_URL = "http://localhost:5000/";
+
+const pitch_list = ['도', '레', '미', '파', '솔', '라', '시'];
+const pitch_list2 = ['도', '레', '미', '파', '솔', '라', '시'];
+
+
+// pick_list에 나올 음계 저장
+// 최소 한 번씩 나오게 하는 구간
+let pick_list = ['시작!']
+for (let i=0; i<7; i++) {
+    const pick_index = Math.floor(Math.random() * pitch_list.length);
+    pick_list.push(pitch_list[pick_index]);
+    pitch_list.splice(pick_index, 1);
+}
+// 최소 한 번씩 나오게 하는 구간 끝
+
+const problem = 3
+// 랜덤으로 problem개 더 출력
+for (let i=0; i<problem; i++) {
+    pick_list.push(pitch_list2[Math.floor(Math.random() * 7)]);
+}
+
+pick_list.push('참 잘했어요')
+const total_problem = problem + 9;
+const URL = "https://teachablemachine.withgoogle.com/models/eptQYA8MT/";
+
+// 음계 측정값 넣을 리스트 - 현재 7개의 음과 배경소음만 있고 나중에 삑사리 추가
+let grade_list = [[], [], [], [], [], [], []];
+
+
+axios.defaults.headers.post["Content-Type"] = "application/json";
+
+
+// 타이머 텍스트 색상
+let color = 180; 
 
 export default {
     name: 'MultiSoundMain',
@@ -61,6 +105,14 @@ export default {
             // Join form
             mySessionId: "SessionA",
             myUserName: "Participant" + Math.floor(Math.random() * 100),
+
+            // 게임에 필요
+            pitch_target: '',
+            timer: '',
+            gameState: '게임 시작!',
+            playGame: false,
+            problem: '',
+            playGameAnalize: true,
         }
     },
     computed: {
@@ -73,12 +125,14 @@ export default {
         }
     },
     methods: {
-        // goMultiAnalize() {
-        //     this.$router.push({ name: 'MultiAnalize' })
-        // },
-        // goMulti() {
-        //     this.$router.push({ name: 'MultiRoom' })
-        // }
+        ...mapActions(['saveGameResult', 'initMySessionId']),
+
+        goMultiAnalize() {
+            this.$emit('goMultiAnalize')
+        },
+        goRoom() {
+            this.$emit('goRoom')
+        },
         goNext() {
             let height = document.getElementById('cam-carousel').clientHeight;
             document.getElementById('cam-carousel').scrollTop += height; 
@@ -87,8 +141,181 @@ export default {
             let height = document.getElementById('cam-carousel').clientHeight;
             document.getElementById('cam-carousel').scrollTop -= height; 
         },
-        // openVidu
-        ...mapActions(['initMySessionId']),
+
+        // 게임에 필요한 스크립트
+        async createModel () {
+
+            
+            const checkpointURL = URL + 'model.json' // model topology
+            const metadataURL = URL + 'metadata.json' // model metadata
+
+            const recognizer = speechCommands.create(
+                'BROWSER_FFT', // fourier transform type, not useful to change
+                undefined, // speech commands vocabulary feature, not useful for your models
+                checkpointURL,
+                metadataURL
+            )
+
+            // check that model and metadata are loaded via HTTPS requests.
+            await recognizer.ensureModelLoaded()
+
+            return recognizer
+        },
+        async init () {
+            const recognizer = await this.createModel() // 모델 생성
+            const classLabels = recognizer.wordLabels() // get class labels, 학습 시킨 클래스들
+            // 실시간으로 점수 표시해주는 역할(필요없어서 지움)
+            // const labelContainer = document.getElementById('label-container') // 데이터 라벨 생성
+            // for (let i = 0; i < classLabels.length; i++) {
+            //     labelContainer.appendChild(document.createElement('div'))
+            // }
+
+            // listen() takes two arguments:
+            // 1. A callback function that is invoked anytime a word is recognized.
+            // 2. A configuration object with adjustable fields
+            recognizer.listen(result => {
+                const scores = result.scores // eslint-disable-line no-unused-vars
+                // render the probability scores per class
+                for (let i = 0; i < classLabels.length; i++) {
+                    // const classPrediction = classLabels[i] + ': ' + result.scores[i].toFixed(2) // 소숫점까지 표기(2자리)
+                    //   console.log('음계' + classLabels[i])
+                    //   console.log('점수' + result.scores[i])
+                    // 도, 레, 미, 파, 솔, 라, 시, 음이탈, 바람빠지는소리, 배경소음
+                    const index = result.scores.indexOf(Math.max(...result.scores));
+                    switch(this.pitch_target) {
+                        case '도':
+                            if (index === 0) {
+                                grade_list[0].push(result.scores[index])
+                            } else if (index !== 9){
+                                grade_list[0].push(0)
+                            }
+                            break;
+                        case '레':
+                            if (index === 1) {
+                                grade_list[1].push(result.scores[index])
+                            } else if (index !== 9){
+                                grade_list[1].push(0)
+                            }
+                            break;
+                        case '미':
+                            if (index === 2) {
+                                grade_list[2].push(result.scores[index])
+                            } else if (index !== 9){
+                                grade_list[2].push(0)
+                            }
+                            break;
+                        case '파':
+                            if (index === 3) {
+                                grade_list[3].push(result.scores[index])
+                            } else if (index !== 9){
+                                grade_list[3].push(0)
+                            }
+                            break;
+                        case '솔':
+                            if (index === 4) {
+                                grade_list[4].push(result.scores[index])
+                            } else if (index !== 9){
+                                grade_list[4].push(0)
+                            }
+                            break;
+                        case '라':
+                            if (index === 5) {
+                                grade_list[5].push(result.scores[index])
+                            } else if (index !== 9){
+                                grade_list[5].push(0)
+                            }
+                            break;
+                        case '시':
+                            if (index === 6) {
+                                grade_list[6].push(result.scores[index])
+                            } else if (index !== 9){
+                                grade_list[6].push(0)
+                            }
+                            break;
+                        default:
+                            // code block for default case
+                    }
+
+                    // 실시간 점수 표시해주는 역할(필요없어서 지움)
+                    // labelContainer.childNodes[i].innerHTML = classPrediction
+                }
+            }, {
+            includeSpectrogram: true, // in case listen should return result.spectrogram
+            probabilityThreshold: 0.75,
+            invokeCallbackOnNoiseAndUnknown: true,
+            overlapFactor: 0.50 // probably want between 0.5 and 0.75. More info in README
+            })
+
+            // Stop the recognition in 5 seconds.
+            // setTimeout(() => recognizer.stopListening(), 5000);
+        },
+        gameStart() {
+            this.gameState = '게임 진행중...'
+            this.playGame = true
+            this.pitch_target = '준비하세요';
+            let index = 0;
+            grade_list = [[], [], [], [], [], [], []];
+            let game = setInterval(() => {
+                this.pitch_target = pick_list[index];
+                // index에 몇 가지 나올지 저장
+                index = (index + 1) % total_problem;
+                if (index === 2) {
+                    clearInterval(game);
+                    this.startTimer();
+                    this.timerRed();
+                    this.problem = '1' + '/' + (total_problem - 2)
+                    game = setInterval(() => {
+                        this.problem = index + '/' + (total_problem - 2)
+                        if (index > 10) {
+                            this.problem = ''
+                        }
+                        this.pitch_target = pick_list[index];
+                        index = (index + 1) % total_problem;
+                        if (index === 0) {
+                            clearInterval(game)
+                            this.saveGameResult(grade_list)
+                            this.gameState = '게임 시작!'
+                            this.playGameAnalize = false
+                            this.playGame = false
+                        }
+                    }, 5000)
+                } 
+            }, 2000)
+        },
+        startTimer() {
+            this.timer = 4;
+            // count를 이용해서 문제 끝나면 타이머 사라지게 함
+            let count = 10
+            let timer = setInterval(() => {
+                this.timer -= 1;
+                count += 1
+                if (this.timer === -1) {
+                    this.timer = 4
+                    color = 180;
+                }
+                if (count/5 === total_problem) {
+                    clearInterval(timer)
+                    this.timer = ''
+                }
+            }, 1000)
+        },
+        timerRed() {
+            const timer = document.getElementById("solo-sound-timer");
+            timer.style.color = `rgb(255, 180, 180)`;
+            let count = 0
+            const timerTextRed = setInterval(() => {
+                color -= 3.6;
+                timer.style.color = `rgb(255, ${color}, ${color})`;
+                if (color <= -10) {
+                    count += 1;
+                }
+                if (count > total_problem-3) {
+                    clearInterval(timerTextRed);
+                }
+            }, 100);
+        },
+
+        // OpenVidu
 
         joinSession() {
             // 1. OpenVidu 객체 가져오기
@@ -200,10 +427,13 @@ export default {
 <style>
 .game-content-container{
     height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .game-content-cam-section{
-    margin: auto;
     height: 95%;
     background-color: rgba(0, 0, 0, 0.374);
     border-radius: 20px;
@@ -230,10 +460,7 @@ export default {
 .game-content-info{
     background-color: rgba(0, 0, 0, 0.374);
     height: 95%;
-    margin-top: auto;
-    margin-bottom: auto;
     border-radius: 20px;
-    margin-right: 10px;
 }
 
 .game-content-target{
@@ -251,11 +478,6 @@ export default {
     height: 100%;
 }
 
-.game-content-title{
-    margin-top: 5vh;
-    font-size: 7vh;
-    margin-bottom: 5vh;
-}
 .carousel-button {
     width: 3vw;
     background-color: #F0CDCD;
@@ -280,5 +502,68 @@ export default {
     overflow: hidden;
     border: 1px solid black;
     border-radius: 10px;
+}
+.game-content-target{
+    height: 50%;
+    width: 90%;
+    margin: 0px auto;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.button-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#board-image{
+    width: 100%;
+    height: 100%;
+    
+}
+
+.game-content-title{
+    margin-top: 5vh;
+    font-size: 7vh;
+    margin-bottom: 5vh;
+    color: white;
+    font-family: 'JUA', serif;
+}
+
+.pitch-target{
+    position: absolute;
+    font-size: 3vw;
+    color: white;
+    font-family: 'JUA', serif;
+}
+
+#solo-sound-timer{
+    position: absolute;
+    left: 10%;
+    top: 15%;
+    font-size: 5vh;
+    font-family: 'JUA', serif;
+}
+
+.option-container{
+    width: 100%;
+    margin-top: 5%;
+}
+
+.solo-start-button-container{
+    width: 100%;
+    margin-top: 5%;
+}
+
+#problem{
+    position: absolute;
+    right: 10%;
+    top: 15%;
+    font-size: 5vh;
+    color: white;
+    font-family: 'JUA', serif;
 }
 </style>
