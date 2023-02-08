@@ -1070,9 +1070,6 @@ class x extends _ {
     margin-top: 3vh;
     margin-bottom: 10px;
 }
-.game-sub-setting {
-
-}
 .sharer {
   border: 1px solid black;
 }
