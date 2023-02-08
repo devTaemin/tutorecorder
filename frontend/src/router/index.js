@@ -8,35 +8,47 @@ const routes = [
     component: HomeView
   },
   {
-    path: '/test',
-    name: 'test',
-    component: () => import(/* webpackChunkName: "test" */ '../views/OpenViduTestView.vue')
-  },
-  {
     path: '/mode',
     name: 'mode',
-    component: () => import(/* webpackChunkName: "mode" */ '../views/ModeView.vue')
+    component: () => import(/* webpackChunkName: "mode" */ '../views/ModeView.vue'),
   },
   {
     path: '/solo',
     name: 'solo',
-    component: () => import(/* webpackChunkName: "solo" */ '../views/SoloView.vue')
+    component: () => import(/* webpackChunkName: "solo" */ '../views/solo/SoloView.vue')
   },
   {
     path: '/solo/sound',
     name: 'soloSound',
-    component: () => import(/* webpackChunkName: "solo" */ '../views/SoloSoundView.vue')
+    component: () => import(/* webpackChunkName: "solo" */ '../views/solo/SoloSoundView.vue')
   },
   {
-    path: '/solo/fingering',
-    name: 'soloFingering',
-    component: () => import(/* webpackChunkName: "solo" */ '../views/SoloFingeringView.vue')
+    path: '/solo/tutorial',
+    name: 'soloTutorial',
+    component: () => import(/* webpackChunkName: "solo" */ '../views/solo/SoloTutorialView.vue')
+  },
+  {
+    path: '/solo/tutorialselect',
+    name: 'soloTutorialSelect',
+    component: () => import(/* webpackChunkName: "solo" */ '../views/solo/SoloTutorialSelectView.vue')
   },
   {
     path: '/solo/song',
     name: 'soloSong',
-    component: () => import(/* webpackChunkName: "solo" */ '../views/SoloSongView.vue')
-  }
+    component: () => import(/* webpackChunkName: "solo" */ '../views/solo/SoloSongView.vue')
+  },
+  {
+    path: '/solo/analize',
+    name: 'soloAnalize',
+    component: () => import(/* webpackChunkName: "solo" */ '../views/solo/SoloAnalizeView.vue')
+  },
+  {
+    path: '/playroom',
+    name: 'playRoom',
+    // component: Playroom,
+    component: () => import(/* webpackChunkName: "play" */ '../views/PlayRoomView.vue')    
+  },
+
 ]
 
 

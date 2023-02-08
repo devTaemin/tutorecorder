@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <HomeMain msg="홈페이지"/>
+    <HomeMain/>
   </div>
 </template>
 
@@ -10,7 +10,7 @@ import HomeMain from '@/components/HomeMain'
 export default {
   name: 'HomeView',
   components: {
-    HomeMain
-  }
+    HomeMain,
+  },
 }
 </script>
