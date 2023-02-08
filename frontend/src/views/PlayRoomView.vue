@@ -39,7 +39,8 @@
                             {{ message }}
                         </p>
                     </div>
-                    <input v-model="chatMessage" clearable @keyup.enter="this.sendMessage" style="width:98.5%; margin-top:3px;" />
+                    <input v-model="chatMessage" clearable @keyup.enter="this.sendMessage" style="width:98.5%; margin-top:3px;
+                        background-color:rgb(219,206,206); color:rgb(0,0,0);" />
                 </div>
                 <!-- 대기방 채팅창 끝-->
                 
@@ -814,13 +815,14 @@ export default {
     padding: 0;
   }
   #GreenBoxChat{
-    border: 2px solid green;
+    border: 5px solid green;
     display: inline-block;
     width: 98.5%; 
     height: 160px;
     margin: 0; 
     padding: 0;
-    
+    background-color: rgb(142, 140, 140);
+    color: rgb(219,206,206);
   }
   #OrangeBoxStart{
     border: 5px solid orange;
@@ -829,7 +831,6 @@ export default {
     height: 180px;
     margin-top: 3px;
     margin-right: 10px;
-    float: right;
   }
 
   #RightBox{
