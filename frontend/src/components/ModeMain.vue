@@ -40,8 +40,8 @@
             :class="{'modal-container': this.inputCorrect === true, 'modal-container-wrong': this.inputCorrect === false }">
             <!-- 입력 칸 -->
             <span style="font-size:1.5vw">참여코드</span>
-            <el-input v-model="roomCode" @keyup.enter="enterRoom" class="nickname-input"/>
-            <el-button @click="enterRoom" class="enterCode-input-button">입장</el-button>
+            <el-input v-model="roomCode" @keyup.enter="enterRoomConfirm" class="nickname-input"/>
+            <el-button @click="enterRoomConfirm" class="enterCode-input-button">입장</el-button>
             <div class="errorMessage">{{ errorMessage }}</div>
         </el-dialog>
         <!-- 같이하기 모달 끝-->
@@ -76,10 +76,11 @@ export default {
         moveSoloPage: function() {
             this.$router.push({ name: 'solo' })
         },
-
-
-        enterRoom: function() {
-            // 세션 코드 검사 후 예외 처리 (일치하는 방 정보 유무)
+        enterRoomCancel: function() {
+            this.roomEnterVisible = false;
+            this.roomCode = '';
+        },
+        enterRoomConfirm: function() {
             // 유효성 검사  - 수정 필요!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             if (this.roomCode === '') {
                 this.inputCorrect = false
@@ -89,54 +90,23 @@ export default {
                 this.inputCorrect = false
                 this.errorMessage = '참여코드를 확인해 주세요!(20글자)'
                 this.roomCode = ''
-            } else {
-                this.inputCorrect = true
-                this.roomEnterVisible=false
-                this.errorMessage = ''
-            // 유효성 검사 끝
-    
-                // 방에 접속하는 코드
-                this.setMySessionId(this.roomCode)
-                console.log("방 입장");
-                this.roomCode='';
-                this.roomEnterVisible=false;
-    
-                // DEBUG
-                this.$router.push({ name: 'test' })
             }
-        },
-        // 여기부터 추가한 거
-        enterRoomCancel: function() {
-            this.roomEnterVisible = false;
-            this.roomCode = '';
-        },
-        enterRoomConfirm: function() {
+            // 유효성 검사 끝
             this.$router.push('/playroom/#' + this.roomCode);
             this.roomCode 
         },
-        // 여기까지
-
         createRoom: function() {
-            // 방 생성
-            console.log("방 생성");
-            this.setMySessionId(this.roomCode)
-
-
-            this.roomCode='';
-            this.roomMakeVisible=false;
-
-            // DEBUG
-
-
             this.$router.push({ name: 'playRoom' });
         },
+
+        // 여기부터 추가한 거
 
         goHome() {
             console.log('go home')
             this.$router.push({ name: 'home' })
         }
 
-        }
+    }
 }
 </script>
 
@@ -237,37 +207,37 @@ export default {
 
     /* 모달 css */
     .el-dialog__header{
-    display: none;
+        display: none;
     }
 
     .modal-container{
-    border-radius: 20px !important;
-    background-color: #B3F7A8 !important;
-    width: 40vw !important;
+        border-radius: 20px !important;
+        background-color: #B3F7A8 !important;
+        width: 40vw !important;
     }
 
     .modal-container-wrong{
-    border-radius: 20px !important;
-    background-color: #F2B2B2 !important;
-    width: 40vw !important;
+        border-radius: 20px !important;
+        background-color: #F2B2B2 !important;
+        width: 40vw !important;
     }
 
     .enterCode-input{
-    width: 20vw !important;
-    margin-right: 2vw;
-    margin-left: 1vw;
+        width: 20vw !important;
+        margin-right: 2vw;
+        margin-left: 1vw;
     }
 
-.enterCode-input-button{
-  width: 8vw !important;
-  background-color: #3AD84A !important;
-  font-family: 'JUA', serif;
-  font-size: 1.5vw !important;
-  cursor: url(../assets/cursor_click.png), auto !important;
-}
+    .enterCode-input-button{
+        width: 8vw !important;
+        background-color: #3AD84A !important;
+        font-family: 'JUA', serif;
+        font-size: 1.5vw !important;
+        cursor: url(../assets/cursor_click.png), auto !important;
+    }
 
     .errorMessage{
-    color: red;
-    font-size: 20px;
+        color: red;
+        font-size: 20px;
     }
 </style>
