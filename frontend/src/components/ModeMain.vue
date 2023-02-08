@@ -40,8 +40,8 @@
             :class="{'modal-container': this.inputCorrect === true, 'modal-container-wrong': this.inputCorrect === false }">
             <!-- 입력 칸 -->
             <span style="font-size:1.5vw">참여코드</span>
-            <el-input v-model="roomCode" @keyup.enter="enterRoom" class="nickname-input"/>
-            <el-button @click="enterRoom" class="enterCode-input-button">입장</el-button>
+            <el-input v-model="roomCode" @keyup.enter="enterRoomConfirm" class="nickname-input"/>
+            <el-button @click="enterRoomConfirm" class="enterCode-input-button">입장</el-button>
             <div class="errorMessage">{{ errorMessage }}</div>
         </el-dialog>
         <!-- 같이하기 모달 끝-->
