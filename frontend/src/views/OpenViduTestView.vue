@@ -60,6 +60,13 @@
       </div>
       <!-- 오른쪽 박스 끝 -->
 
+<!-- <<<<<<< HEAD
+  <div id="session" v-if="session">
+    <div id="session-header">
+      <h1 id="session-title">{{ mySessionId }}</h1>
+      <el-button type="sucess" plain @click="printSession">세션 정보</el-button>
+      <input type="button" id="buttonLeaveSession" @click="leaveSession" value="Leave session" />
+======= -->
 
       <!-- 게임설정 모달 창 -->
       <el-dialog v-model="SettingVisible2" title="" width="20%" 
@@ -139,6 +146,7 @@
         </template>
       </el-dialog>
       <!-- 환경설정 모달 창 끝-->
+<!-- >>>>>>> f9ae546332c2dfbc3fdd2bc6e06a22e89800cc59 -->
     </div>
 </template>
 
@@ -214,8 +222,14 @@ export default {
   },
 
   methods: {
+// <<<<<<< HEAD
+//     printSession() {
+//       console.log(this.session);
+//     }, 
+// =======
     ...mapActions(['initMySessionId']),
 
+// >>>>>>> f9ae546332c2dfbc3fdd2bc6e06a22e89800cc59
     joinSession() {
       // 1. OpenVidu 객체 가져오기
       this.OV = new OpenVidu();
@@ -268,6 +282,9 @@ export default {
 
             // 6. 스트림 퍼블리시
             this.session.publish(this.publisher);
+
+            // 세션 디버스
+            this.printSession();
           })
           .catch((error) => {
             console.log("ERROR: ", error.code, error.message);
@@ -313,7 +330,6 @@ export default {
       return response.data;
     },
 
-
     async createToken(sessionId) {
       const response = await axios.post(APPLICATION_SERVER_URL + 'api/sessions/' + sessionId + '/connections', {}, {
         headers: { 'Content-Type': 'application/json' }
@@ -328,7 +344,7 @@ export default {
 </script>
 
 
-<style scoped>
+<!-- <style scoped>
 
   li {
     text-align: left;;
@@ -343,9 +359,6 @@ export default {
     padding:0;
     display: flex;
   }
-
-
-
 
   #BlackBoxLargestBox{
     display: flex;
@@ -429,4 +442,4 @@ export default {
   }
   /* volume slider */
 
-</style>
+</style> -->

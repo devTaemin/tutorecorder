@@ -1,51 +1,72 @@
 <template>
-    <div id="analize-total-container">
-        <div id="analize-container">
-            <div class="analize-result-title">분석결과</div>
-            <div class="demo-progress">
-                <div class="pitch-container">
-                    <span style="color:#F44336" class="pitch">도</span>
-                    <el-progress :text-inside="true" :stroke-width="20" :percentage="gameResult[0]" :color="doRed"/>
-                    <img :src=gradeImg[0] alt="" class="grade-img">
+    <div class="modal" >   
+        <div class="overlay">
+
+            
+            <!--  -->
+            <div id="container">
+                
+                <!-- 랭크 -->
+                <div id="redBoxLeft" >
+                    <div class="analize-result-title">분석결과</div>
+                    <p style="visibility:hidden;">11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111</p>
+                    <img id="captureImg" src="../../assets/multi/rankcapture.png" alt="캡쳐" style="left:40%; top: 5%;">
+                    <img id="captureImg" src="../../assets/multi/rankcapture.png" alt="캡쳐" style="left:15%; top: 20%;">
+                    <img id="captureImg" src="../../assets/multi/rankcapture.png" alt="캡쳐" style="left:65%; top: 19%;">
+                    <p style="border:5px solid red; margin-top:50%; z-index:123456;">종합점수</p>
                 </div>
-                <div class="pitch-container">
-                    <span style="color:#FF5722" class="pitch">레</span>
-                    <el-progress :text-inside="true" :stroke-width="20" :percentage="gameResult[1]" :color="reOrange"/>
-                    <img :src=gradeImg[1] alt="" class="grade-img">
+                <!-- 랭크 끝 -->
+
+                <!-- 게임 분석 그래프 -->
+                <div id="analize-container">
+                    <div class="demo-progress">
+                        <div class="pitch-container">
+                            <span style="color:#F44336" class="pitch">도</span>
+                            <el-progress :text-inside="true" :stroke-width="20" :percentage="gameResult[0]" :color="doRed"/>
+                            <img :src=gradeImg[0] alt="" class="grade-img">
+                        </div>
+                        <div class="pitch-container">
+                            <span style="color:#FF5722" class="pitch">레</span>
+                            <el-progress :text-inside="true" :stroke-width="20" :percentage="gameResult[1]" :color="reOrange"/>
+                            <img :src=gradeImg[1] alt="" class="grade-img">
+                        </div>
+                        <div class="pitch-container">
+                            <span style="color:#FFEB3B" class="pitch">미</span>
+                            <el-progress :text-inside="true" :stroke-width="20" :percentage="gameResult[2]" :color="miYellow"/>
+                            <img :src=gradeImg[2] alt="" class="grade-img">
+                        </div>
+                        <div class="pitch-container">
+                            <span style="color:#4CAF50" class="pitch">파</span>
+                            <el-progress :text-inside="true" :stroke-width="20" :percentage="gameResult[3]" :color="paGreen"/>
+                            <img :src=gradeImg[3] alt="" class="grade-img">
+                        </div>
+                        <div class="pitch-container">
+                            <span style="color:#03A9F4" class="pitch">솔</span>
+                            <el-progress :text-inside="true" :stroke-width="20" :percentage="gameResult[4]" :color="solBlue"/>
+                            <img :src=gradeImg[4] alt="" class="grade-img">
+                        </div>
+                        <div class="pitch-container">
+                            <span style="color:#3F51B5" class="pitch">라</span>
+                            <el-progress :text-inside="true" :stroke-width="20" :percentage="gameResult[5]" :color="laIndigo"/>
+                            <img :src=gradeImg[5] alt="" class="grade-img">
+                        </div>
+                        <div class="pitch-container">
+                            <span style="color:#9C27B0" class="pitch">시</span>
+                            <el-progress :text-inside="true" :stroke-width="20" :percentage="gameResult[6]" :color="siPurple"/>
+                            <img :src=gradeImg[6] alt="" class="grade-img">
+                        </div>
+                    </div>
+                    <div class="analize-result">
+                        <div style="font-size: 2vw; margin-bottom:4%; height:30%">요약</div>
+                            <div style="font-size: 1vw">{{ analizeResultText }}</div>
+                    </div>
                 </div>
-                <div class="pitch-container">
-                    <span style="color:#FFEB3B" class="pitch">미</span>
-                    <el-progress :text-inside="true" :stroke-width="20" :percentage="gameResult[2]" :color="miYellow"/>
-                    <img :src=gradeImg[2] alt="" class="grade-img">
-                </div>
-                <div class="pitch-container">
-                    <span style="color:#4CAF50" class="pitch">파</span>
-                    <el-progress :text-inside="true" :stroke-width="20" :percentage="gameResult[3]" :color="paGreen"/>
-                    <img :src=gradeImg[3] alt="" class="grade-img">
-                </div>
-                <div class="pitch-container">
-                    <span style="color:#03A9F4" class="pitch">솔</span>
-                    <el-progress :text-inside="true" :stroke-width="20" :percentage="gameResult[4]" :color="solBlue"/>
-                    <img :src=gradeImg[4] alt="" class="grade-img">
-                </div>
-                <div class="pitch-container">
-                    <span style="color:#3F51B5" class="pitch">라</span>
-                    <el-progress :text-inside="true" :stroke-width="20" :percentage="gameResult[5]" :color="laIndigo"/>
-                    <img :src=gradeImg[5] alt="" class="grade-img">
-                </div>
-                <div class="pitch-container">
-                    <span style="color:#9C27B0" class="pitch">시</span>
-                    <el-progress :text-inside="true" :stroke-width="20" :percentage="gameResult[6]" :color="siPurple"/>
-                    <img :src=gradeImg[6] alt="" class="grade-img">
-                </div>
+                <!-- 게임 분석 그래프 -->
             </div>
-            <div class="analize-result">
-                <div style="font-size: 2vw; margin-bottom:4%; height:30%">요약</div>
-                    <div style="font-size: 1vw">{{ analizeResultText }}</div>
+            <div>
+                <el-button class="solo-out-button" @click="$emit('close-modal')" style="margin-top:1%;">나가기</el-button>
             </div>
-        </div>
-        <div>
-            <el-button class="solo-out-button" @click="goSolo">나가기</el-button>
+            
         </div>
     </div>
 </template>
@@ -62,7 +83,7 @@ const allNomal = '조금만 더 연습하면 더 빠르고 정확하게 연주�
 const allGood = '훌륭해요! 이제는 노래를 연주해 보는건 어떨까요? \n'
 
 export default {
-    name: 'SoloAnalizeMain',
+    name: 'MultiAnalizeMain',
     created() {
         this.analizeResultText = ''
         const badList = [];
@@ -200,9 +221,6 @@ export default {
         }
     },
     methods: {
-        goSolo() {
-            this.$router.push({ name: 'solo' })
-        },
         goSoloSound() {
             this.$router.push({ name: 'soloSound' })
         }
@@ -213,24 +231,69 @@ export default {
 
 </script>
 
-<style>
+<style scoped>
+
+.modal{
+    width: 90%;
+    height: 90%;
+    position: fixed;
+    z-index: 123;
+    left:7%;
+    /*  border-radius는 어디에 들어가지? */
+}
+.overlay{
+    margin-top:2%;
+    background-color: #F2E6E6;
+    border-radius: 40px;
+    border: 5px solid black;
+    /* opacity:0.5 */
+}
+
+
+
+#container{
+    display: flex;
+    justify-content: space-evenly;
+    /* border: 5px solid  gray;     */
+}
+#redBoxLeft{
+    /* border: 5px solid red; */
+    border-radius: 40px;
+    background-image: url("../../assets/multi/rank.png");
+    background-repeat: no-repeat;
+    background-size: 60% 40%;
+    background-position: center center;
+    
+    position: relative;
+}
+.analize-result-title{
+    font-size: 2.5rem;
+    text-align: start;
+    margin-left: 5%;
+    /* border: 5px solid gold; */
+}
+
+#captureImg{
+    /* border: 5px solid brown; */
+    width:20%;
+    position: absolute;
+}
+
 #analize-container{
+    /* border: 5px solid blue; */
+
     background-color: rgba(0, 0, 0, 0.374);
     height: 80vh;
     width: 45vw;
-    margin: auto;
+
     border-radius: 20px;
-    margin-top: 3%;
-    margin-bottom: 3%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
 }
 
-.analize-result-title{
-    font-size: 2.5rem;
-}
+
 
 .demo-progress{
     margin-top: 3vh;
