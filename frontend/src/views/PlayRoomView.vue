@@ -18,7 +18,7 @@
 
             <!-- 대기방 비디오 디스플레이 -->
             <div id="YellowBoxVideo">
-                <span id="video-container">
+                <span>
                     <user-video :stream-manager="publisher"/>
                     <user-video v-for="sub in subscribers" 
                                 :key="sub.stream.connection.connectionId" 
@@ -35,20 +35,21 @@
                             {{ message }}
                         </p>
                     </div>
-                    <input v-model="chatMessage" clearable @keyup.enter="this.sendMessage" style="width:98.5%; margin-top:3px;" />
+                    <input v-model="chatMessage" clearable @keyup.enter="this.sendMessage" style="width:98.5%; height:10%; margin-top:3px;
+                        background-color:rgb(219,206,206); color:rgb(0,0,0);" />
                 </div>
                 <!-- 대기방 채팅창 끝-->
                 
                 <!-- 게임 시작/준비 전환 버튼 -->
                 <div id="OrangeBoxStart"> 
                     <div v-if="isOwner">
-                        <el-button :type="startButton" :disabled="!startButtonEnabled" @click="startButtonConfirm" :class="{ 'can-push-button': startButtonEnabled, 'cannot-push-button': !startButtonEnabled }">시작하기</el-button>
+                        <el-button id="fontValue" :type="startButton" :disabled="!startButtonEnabled" @click="startButtonConfirm" :class="{ 'can-push-button': startButtonEnabled, 'cannot-push-button': !startButtonEnabled }">시작하기</el-button>
                     </div>
                     <div v-if="!isOwner && !readyButtonOn">
-                        <el-button class="button-flicker can-push-button" type="warning" @click="this.readyButtonConfirm">준비하기</el-button>
+                        <el-button id="fontValue" class="button-flicker can-push-button" type="warning" @click="this.readyButtonConfirm">준비하기</el-button>
                     </div>
                     <div v-if="!isOwner && readyButtonOn">
-                        <el-button type="success" @click="this.readyButtonConfirm" class="can-push-button">준비완료</el-button>
+                        <el-button id="fontValue" type="success" @click="this.readyButtonConfirm" class="can-push-button">준비완료</el-button>
                     </div>
                 </div>
                 <!-- 게임 시작/준비 전환 버튼 끝 -->
@@ -72,27 +73,30 @@
                      class="can-push-button"
                 >
                 <!-- 방장이 아닌 경우 게임 정보를 볼 수 있도록 한다-->
-                <div v-if="!isOwner">
-                    <h1> 게임 정보 </h1>
-                    <div v-if='gameMode=="play"'>
-                        게임 모드: {{ gameMode }} <br/>
-                        곡 이름: {{ basicSong }}
-                    </div>
-                    <div v-if='gameMode=="sound"'>
-                        게임 모드: {{ gameMode }} <br/>
-                        난이도: {{ difficulty }}
+                <div  v-if="!isOwner" style="background-color: rgb(134,132,255); width:100%; height: 25vh; border-radius:20px">
+                    <div >
+                        <h1 id="fontValue" style="margin:0;"> 게임 정보 </h1>
+                        <div id="fontValue" v-if='gameMode=="play"'>
+                            게임 모드: {{ gameMode }} <br/>
+                            곡 이름: {{ basicSong }}
+                        </div>
+                        <div id="fontValue" v-if='gameMode=="sound"'>
+                            게임 모드: {{ gameMode }} <br/>
+                            난이도: {{ difficulty }}
+                        </div>
                     </div>
                 </div>
+
             </div>
             <!-- 게임 세팅 창 끝 -->
 
 
-            <!-- 사용자 리스트 -->
+            <!-- 사용자 목록 -->
             <div id="BlueBoxUserList">
-                <h1>유저 리스트</h1>
+                <h1 id="fontValue" >사용자 목록</h1>
 
                 <!-- 방장인 경우 참가자 확인 및 추방 기능을 추가한다 -->
-                <div v-if="this.isOwner">
+                <div id="fontValue" v-if="this.isOwner">
                     <el-scrollbar height="250px">
                         <div class="user-scrollbar-item">{{ this.myUserName }}</div>
                         <div class="user-scrollbar-item" v-for="sub in subscribers" :key="sub.stream.connection.connectionId">
@@ -107,7 +111,7 @@
                 </div>
 
                 <!-- 참가자인 경우 사용자 목록을 확인한다-->
-                <div v-if="!this.isOwner">
+                <div id="fontValue" v-if="!this.isOwner">
                     <el-scrollbar height="250px">
                         <div class="user-scrollbar-item">{{ this.myUserName }}</div>
                         <div class="user-scrollbar-item" v-for="sub in subscribers" :key="sub.stream.connection.connectionId">
@@ -116,7 +120,7 @@
                     </el-scrollbar>
                 </div>
             </div>
-            <!-- 사용자 리스트 끝 -->
+            <!-- 사용자 목록 끝 -->
 
 
             <div id="RedBoxRightBottom">
@@ -153,34 +157,34 @@
         >
             <span>
                 <img src="../assets/gamesetting.png" alt="game setting img in modal" style="width: 25px;">
-                <h1>게임설정</h1>
+                <h1 id="fontValue" >게임설정</h1>
             </span>
             <hr>
 
-            <h2>게임선택</h2>
-            <el-radio-group v-model="gameMode" class="ml-4">
+            <h2 id="fontValue" >게임선택</h2>
+            <el-radio-group  id="fontValue" v-model="gameMode" class="ml-4">
                 <el-radio label="play" size="large" border="true" @click="this.choosePlay">연주하기</el-radio>
                 <el-radio label="sound" size="large" border @click="this.chooseSound">소리내기</el-radio>
             </el-radio-group>
             <hr>
 
-            <h2>곡 선택 - 곡 연주</h2>
+            <h2 id="fontValue" >곡 선택 - 곡 연주</h2>
             <el-radio-group v-model="basicSong" class="ml-4">
-                <el-radio label="airplane" size="large" border :disabled="optionEnabler">비행기</el-radio>
-                <el-radio label="anthem" size="large" border :disabled="optionEnabler">애국가</el-radio>
+                <el-radio id="fontValue"  label="airplane" size="large" border :disabled="optionEnabler">비행기</el-radio>
+                <el-radio id="fontValue" label="anthem" size="large" border :disabled="optionEnabler">애국가</el-radio>
             </el-radio-group>
             <hr>
 
-            <h2>난이도 선택 - 소리내기, 운지법</h2>
+            <h2 id="fontValue" >난이도 선택 - 소리내기, 운지법</h2>
             <el-radio-group v-model="difficulty" class="ml-4">
-                <el-radio label="5" size="large" border :disabled="!optionEnabler">1단계(5초)</el-radio>
-                <el-radio label="4" size="large" border :disabled="!optionEnabler">2단계(4초)</el-radio>
-                <el-radio label="3" size="large" border :disabled="!optionEnabler">3단계(3초)</el-radio>
+                <el-radio id="fontValue" label="5" size="large" border :disabled="!optionEnabler">1단계(5초)</el-radio>
+                <el-radio id="fontValue" label="4" size="large" border :disabled="!optionEnabler">2단계(4초)</el-radio>
+                <el-radio id="fontValue" label="3" size="large" border :disabled="!optionEnabler">3단계(3초)</el-radio>
             </el-radio-group>
             <hr>
         
             <template #footer>
-                <el-button type="success" @click="this.gameSettingConfirm">설정완료</el-button>
+                <el-button id="settingComplete" type="success" @click="this.gameSettingConfirm">설정완료</el-button>
             </template>
         </el-dialog>
         <!-- 게임설정 모달 창 끝-->
@@ -194,29 +198,29 @@
             <span>
                 <img 
                     src="../assets/confsetting.png" 
-                    alt="configuration setting img in modal" 
+                    alt="configuration setting img in modal"
                     style="width: 45px;"
                 >
-                <h1>환경설정</h1>
+                <h1 id="fontValue" >환경설정</h1>
             </span>
             <hr>
 
-            <h2>카메라</h2>
+            <h2 id="fontValue" >카메라</h2>
             <el-radio-group v-model="cam" class="ml-4">
-                <el-radio label="on" size="large">켜기</el-radio>
-                <el-radio label="off" size="large">끄기</el-radio>
+                <el-radio id="fontValue" label="on" size="large">켜기</el-radio>
+                <el-radio id="fontValue" label="off" size="large">끄기</el-radio>
             </el-radio-group>
             <hr>
 
-            <h2>마이크</h2>
+            <h2 id="fontValue" >마이크</h2>
             <el-radio-group v-model="mic" class="ml-4">
-                <el-radio label="on" size="large">켜기</el-radio>
-                <el-radio label="off" size="large">끄기</el-radio>
+                <el-radio id="fontValue" label="on" size="large">켜기</el-radio>
+                <el-radio id="fontValue" label="off" size="large">끄기</el-radio>
             </el-radio-group>
             <hr>
         
             <template #footer>
-                <el-button type="success" @click="this.envSettingConfirm">설정완료</el-button>
+                <el-button id="settingComplete" type="success" @click="this.envSettingConfirm">설정완료</el-button>
             </template>
         </el-dialog>
         <!-- 환경설정 모달 창 끝-->
@@ -895,64 +899,88 @@ export default {
   }
 
   #LeftBox{
-    border: 5px solid gray;
+    /* border: 5px solid gray; */
     margin: 0;
     padding: 0;
     width: 85%;
     
   }
   #YellowBoxVideo{
-    border: 5px solid yellow;
+    /* border: 5px solid yellow; */
     display: flex;
+    justify-content: flex-start;
     width:99%;
     height:65%;
     margin: 0;
     padding: 0;
   }
   #GreenBoxChat{
-    border: 2px solid green;
+    /* border: 5px solid green; */
+    border: 5px solid rgba(191, 180, 180, 0.6);
+    border-radius: 10px;
     display: inline-block;
     width: 98.5%; 
-    height: 160px;
-    margin: 0; 
+    height: 180px;
+    margin: 0;      
     padding: 0;
-    
+    left: 20%;
+    background-color: rgb(142, 140, 140);
+    color: rgb(219,206,206);
   }
   #OrangeBoxStart{
-    border: 5px solid orange;
+    /* border: 5px solid orange; */
     display: inline-block;
-    width: 400px; 
-    height: 180px;
-    margin-top: 3px;
-    margin-right: 10px;
-    float: right;
+    width: 35%; 
+    height: 22%;
+    padding-top: 0.5%;
+
   }
 
   #RightBox{
-    border: 5px solid hotpink;
+    /* border: 5px solid hotpink; */
     margin: 0;
     padding: 0;
     width: 15%;
   }
   #PurpleBoxGameSetting{
-    border : 5px solid purple;
+    /* border : 5px solid purple; */
     padding: 0;
-    margin: 0;
-    height: 25%;
+    margin: auto;
+    /* height: 25%; */
+    /* background-color: rgb(134,132,255); */
+    /* border-radius: 10px; */
   }
   #BlueBoxUserList{
     margin: 0;
+    margin-bottom: 4%;
     padding: 0;
-    border: 5px solid blue;
-    height: 63%;
+    /* border: 5px solid blue; */
+    height: 61%;
+    background-color: rgb(142, 140, 140);
+    border-radius: 10px;
   }
   #RedBoxRightBottom{
     margin: 0;
     padding: 0;
-    border: 5px solid red;
+    /* border: 5px solid red; */
     display: flex;
     justify-content: space-between;
   }
+
+  #fontValue{
+    font-family: 'JUA', serif;
+  }
+
+  #settingComplete{
+    display: flex;
+    justify-items: center;
+    width: 40%;
+    height: 20%;
+    margin: auto;
+    font-size: 1.5vw;
+    font-family: 'JUA', serif;  
+}
+
 
   /* User List Scrollbar*/
   .user-scrollbar-item {

@@ -45,7 +45,6 @@ import { mapActions } from 'vuex'
 import '@tensorflow/tfjs'
 import * as speechCommands from '@tensorflow-models/speech-commands'
 
-
 let pitch_list = ['도', '레', '미', '파', '솔', '라', '시'];
 const pitch_list2 = ['도', '레', '미', '파', '솔', '라', '시'];
 
