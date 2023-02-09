@@ -2,18 +2,18 @@
     <div id="pink-container">
 
         <!-- 소리내기 게임 컴포넌트 -->
-        <MultiSoundMain v-if="isPlaySound" @soundGameStop="soundGameStop" @emitGameStart="emitGameStart" @goMultiAnalize="goMultiAnalize" @goRoom="goRoom" :isOwner="isOwner" :difficulty="difficulty" :publisher="publisher" :subscribers="subscribers" :soundGame="soundGame"/>
+        <MultiSoundMain v-if="isPlaySound" @soundGameStop="soundGameStop" @emitGameStart="emitGameStart" @goMultiAnalize="goMultiAnalize" @goRoom="goRoom" @goRoomAlone="goRoomAlone" :isOwner="isOwner" :difficulty="difficulty" :publisher="publisher" :subscribers="subscribers" :soundGame="soundGame"/>
         
 
         
         
         <!-- 소리내기 게임 분석 -->
-        <MultiAnalizeMain v-if="analizeVisible" @close-modal="closeAnal" :isOwner="isOwner"/>
+        <MultiAnalizeMain v-if="analizeVisible" @closeAnal="closeAnal" @closeAnalAlone="closeAnalAlone" :isOwner="isOwner"/>
 
         <!-- 소리내기 게임 분석 끝 -->
 
         <!-- 연주하기 게임 컴포넌트 -->
-        <MultiSongMain v-if="isPlaySong" @goMultiAnalize="goMultiAnalize" @goRoom="goRoom" :isOwner="isOwner" :publisher="publisher" :subscribers="subscribers"/>
+        <MultiSongMain v-if="isPlaySong" @goMultiAnalize="goMultiAnalize" @goRoom="goRoom" @goRoomAlone="goRoomAlone" :isOwner="isOwner" :publisher="publisher" :subscribers="subscribers"/>
 
         <!-- 왼쪽 박스 -->
         <div id="LeftBox" v-if="!isPlayGame">
@@ -516,6 +516,11 @@ export default {
                 console.log(error)
             })
         },
+        goRoomAlone() {
+            this.isPlayGame = false
+            this.isPlaySong = false
+            this.isPlaySound = false
+        },
         goMultiAnalize() {
             this.publisher.session.signal({
                 data: '',
@@ -541,6 +546,9 @@ export default {
             .catch(error => {
                 console.error(error);
             })
+        },
+        closeAnalAlone() {
+            this.analizeVisible = false
         },
         createRoom: function() {
 
@@ -824,7 +832,7 @@ export default {
                 this.isPlaySong = false
                 this.isPlaySound = false
             })
-            
+
             // 3-13) close-anal
             this.session.on('signal:close-anal', () => {
                 console.log('분석 닫는 신호');

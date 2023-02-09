@@ -61,7 +61,7 @@
                 <!-- 게임 분석 그래프 -->
             </div>
             <div>
-                <el-button class="solo-out-button" @click="$emit('close-modal')" style="margin-top:0%;">나가기</el-button>
+                <el-button class="solo-out-button" @click="closeAnal" style="margin-top:0%;">나가기</el-button>
             </div>
             
         </div>
@@ -218,9 +218,19 @@ export default {
             totalgrade: 0
         }
     },
+    props: {
+        isOwner: Boolean,
+    },
     methods: {
         goSoloSound() {
             this.$router.push({ name: 'soloSound' })
+        },
+        closeAnal() {
+            if (this.isOwner === true) {
+                this.$emit('closeAnal')
+            } else {
+                this.$emit('closeAnalAlone')
+            }
         }
     }
 }

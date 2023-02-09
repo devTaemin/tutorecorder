@@ -158,7 +158,12 @@ export default {
             this.$emit('goMultiAnalize')
         },
         goRoom() {
-            this.$emit('goRoom')
+            if (this.isOwner === true) {
+                this.$emit('goRoom')
+            } else {
+                this.$emit('goRoomAlone')
+            }
+
         },
         goNext() {
             let height = document.getElementById('cam-carousel').clientHeight;
