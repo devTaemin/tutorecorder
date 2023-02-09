@@ -18,12 +18,10 @@
 
             <!-- 대기방 비디오 디스플레이 -->
             <div id="YellowBoxVideo">
-                <span>
-                    <user-video :stream-manager="publisher"/>
-                    <user-video v-for="sub in subscribers" 
-                                :key="sub.stream.connection.connectionId" 
-                                :stream-manager="sub" />
-                </span>
+                <user-video :stream-manager="publisher"/>
+                <user-video v-for="sub in subscribers" 
+                            :key="sub.stream.connection.connectionId" 
+                            :stream-manager="sub" />
             </div>
             <!-- 대기방 비디오 디스플레이 끝 -->
 
@@ -907,7 +905,8 @@ export default {
   }
   #YellowBoxVideo{
     /* border: 5px solid yellow; */
-    display: flex;
+    display: flex;  
+    flex-wrap: wrap;
     justify-content: flex-start;
     width:99%;
     height:65%;

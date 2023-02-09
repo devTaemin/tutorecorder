@@ -42,6 +42,7 @@ export default {
     margin-top: 1.5%;
     margin-bottom: 1.5%;
     padding: 0;  
+    height: 40%;
   }
 
   #video-box {
