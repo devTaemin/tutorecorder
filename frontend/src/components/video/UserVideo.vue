@@ -36,8 +36,11 @@ export default {
 <style scoped>
   #video-div{
     border: 5px solid blue ;
+    border-radius: 10px;
     display: inline-block;
     margin: 2%;
+    margin-top: 1.5%;
+    margin-bottom: 1.5%;
     padding: 0;  
   }
 
