@@ -2,18 +2,18 @@
     <div id="pink-container">
 
         <!-- 소리내기 게임 컴포넌트 -->
-        <MultiSoundMain v-if="isPlaySound" @goMultiAnalize="goMultiAnalize" @goRoom="goRoom" :difficulty="difficulty" :isOwner="isOwner"/>
+        <MultiSoundMain v-if="isPlaySound" @soundGameStop="soundGameStop" @emitGameStart="emitGameStart" @goMultiAnalize="goMultiAnalize" @goRoom="goRoom" :isOwner="isOwner" :difficulty="difficulty" :publisher="publisher" :subscribers="subscribers" :soundGame="soundGame"/>
         
 
         
         
         <!-- 소리내기 게임 분석 -->
-        <MultiAnalizeMain v-if="analizeVisible" @close-modal="analizeVisible=false" :isOwner="isOwner"/>
+        <MultiAnalizeMain v-if="analizeVisible" @close-modal="closeAnal" :isOwner="isOwner"/>
 
         <!-- 소리내기 게임 분석 끝 -->
 
         <!-- 연주하기 게임 컴포넌트 -->
-        <MultiSongMain v-if="isPlaySong" @goMultiAnalize="goMultiAnalize" @goRoom="goRoom"/>
+        <MultiSongMain v-if="isPlaySong" @goMultiAnalize="goMultiAnalize" @goRoom="goRoom" :isOwner="isOwner" :publisher="publisher" :subscribers="subscribers"/>
 
         <!-- 왼쪽 박스 -->
         <div id="LeftBox" v-if="!isPlayGame">
@@ -46,7 +46,7 @@
                 <!-- 게임 시작/준비 전환 버튼 -->
                 <div id="OrangeBoxStart"> 
                     <div v-if="isOwner">
-                        <el-button :type="startButton" :disabled="!startButtonEnabled" @click="startGame" :class="{ 'can-push-button': startButtonEnabled, 'cannot-push-button': !startButtonEnabled }">시작하기</el-button>
+                        <el-button :type="startButton" :disabled="!startButtonEnabled" @click="startButtonConfirm" :class="{ 'can-push-button': startButtonEnabled, 'cannot-push-button': !startButtonEnabled }">시작하기</el-button>
                     </div>
                     <div v-if="!isOwner && !readyButtonOn">
                         <el-button class="button-flicker can-push-button" type="warning" @click="this.readyButtonConfirm">준비하기</el-button>
@@ -277,6 +277,7 @@ export default {
             isPlaySong: false,
             isPlayGame: false,
             analizeVisible: false,
+            soundGame: false,
         }   
     },
     mounted() {
@@ -292,6 +293,35 @@ export default {
 
     },
     methods: {
+        soundGameStop: function() {
+            this.soundGame = false;
+        },
+        emitGameStart: function() {
+            this.publisher.session.signal({
+                    data: "",
+                    to: [],
+                    type: 'start-sound-game'
+                })
+                .then(() => {
+                    console.log('game start!');
+                })
+                .catch(error => {
+                    console.log(error);
+                })
+        },
+        startButtonConfirm: function() {
+            this.publisher.session.signal({
+                    data: "",
+                    to: [],
+                    type: 'start-game'
+                })
+                .then(() => {
+                    console.log('game start!');
+                })
+                .catch(error => {
+                    console.log(error);
+                })
+        },
         envSettingConfirm: function() {
             if (this.mic == "on") {
                 this.publisher.publishAudio(true);
@@ -474,15 +504,43 @@ export default {
             }
         },
         goRoom() {
-            this.isPlayGame = false
-            this.isPlaySong = false
-            this.isPlaySound = false
+            this.publisher.session.signal({
+                data: '',
+                to: [],
+                type: 'go-room'
+            })
+            .then(() => {
+                console.log("집가자");
+            })
+            .catch(error => {
+                console.log(error)
+            })
         },
         goMultiAnalize() {
-            this.isPlayGame = false
-            this.isPlaySong = false
-            this.isPlaySound = false
-            this.analizeVisible = true
+            this.publisher.session.signal({
+                data: '',
+                to: [],
+                type: 'multi-anal'
+            })
+            .then(() => {
+                console.log("분석 결과");
+            })
+            .catch(error => {
+                console.error(error);
+            })
+        },
+        closeAnal() {
+            this.publisher.session.signal({
+                data: '',
+                to: [],
+                type: 'close-anal'
+            })
+            .then(() => {
+                console.log("분석 닫음");
+            })
+            .catch(error => {
+                console.error(error);
+            })
         },
         createRoom: function() {
 
@@ -578,7 +636,40 @@ export default {
                 console.log("owner에서 ready-minus를 받았다: ", this.countReady);
                 console.log("현재 subscribers의 수: ", this.subscribers.length);
             })
+
+            // 3-9) start game
+            this.session.on('signal:start-game', () => {
+                this.startGame();
+            })
+
+            // 3-10) start sound game
+            this.session.on('signal:start-sound-game', () => {
+                console.log("사운드 게임 신호를 받았다");
+                this.soundGame = true;
+            })
+
+            // 3-11) multi-anal
+            this.session.on('signal:multi-anal', () => {
+                console.log("분석 결과");
+                this.isPlayGame = false
+                this.isPlaySong = false
+                this.isPlaySound = false
+                this.analizeVisible = true
+            })
         
+            // 3-12) go-room
+            this.session.on('signal:go-room', () => {
+                console.log("집가는 신호");
+                this.isPlayGame = false
+                this.isPlaySong = false
+                this.isPlaySound = false
+            })
+
+            // 3-13) close-anal
+            this.session.on('signal:close-anal', () => {
+                console.log('분석 닫는 신호');
+                this.analizeVisible = false
+            })
 
 
 
@@ -703,6 +794,41 @@ export default {
                     this.basicSong = undefined;
                     this.difficulty = difficulty;
                 }
+            })
+
+            // 3-7) start game
+            this.session.on('signal:start-game', () => {
+                this.startGame();
+            })
+
+            // 3-8) start sound game
+            this.session.on('signal:start-sound-game', () => {
+                console.log("사운드 게임 신호를 받았다");
+                this.soundGame = true;
+            })
+
+            
+            // 3-9) multi-anal
+            this.session.on('signal:multi-anal', () => {
+                console.log("분석 결과");
+                this.isPlayGame = false
+                this.isPlaySong = false
+                this.isPlaySound = false
+                this.analizeVisible = true
+            })
+        
+            // 3-10) go-room
+            this.session.on('signal:go-room', () => {
+                console.log("집가는 신호");
+                this.isPlayGame = false
+                this.isPlaySong = false
+                this.isPlaySound = false
+            })
+            
+            // 3-13) close-anal
+            this.session.on('signal:close-anal', () => {
+                console.log('분석 닫는 신호');
+                this.analizeVisible = false
             })
         
 
