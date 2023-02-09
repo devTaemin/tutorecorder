@@ -138,6 +138,7 @@
                     style="cursor:pointer; 
                     width: 45px; height: 45px;"
                     class="can-push-button"
+                    @click="shareSettingVisible=true"
                 >
                 <img src="../assets/confsetting.png" 
                     alt="configuration setting img" 
@@ -148,6 +149,34 @@
             </div>
         </div>
         <!-- 오른쪽 박스 끝 -->
+
+        <!-- 쉐어 모달 창 -->
+        <el-dialog
+            v-model="shareSettingVisible"
+            width="35%"
+            align-center
+        >
+            <template #default>
+                <div id="share-modal-header">
+                    <h2>코드 공유하기</h2>
+                </div>
+                <el-input class="code-input" v-model="roomCode" readonly />
+                <el-button class="copy-button" v-if="!copyStatus" type="primary" @click="copyRoomCode">복사하기</el-button>
+                <el-button class="copy-button" v-if="copyStatus" type="success" @click="copyRoomCode">복사완료</el-button>
+
+                <div>
+                    <a id="kakaotalk-sharing-btn" href="javascript:;" @click="kakaoButton">
+                    <img src="https://developers.kakao.com/assets/img/about/logos/kakaotalksharing/kakaotalk_sharing_btn_medium.png"
+                        alt="카카오톡 공유 보내기 버튼" />
+                    </a>
+                </div>
+
+            </template>
+            <template #footer>
+                <el-button type="danger" id="share-modal-button" @click="shareSettingVisible=false">나가기</el-button>
+            </template>
+        </el-dialog>
+        <!-- 쉐어 모달 창 끝 -->
 
         <!-- 게임설정 모달 창 -->
         <el-dialog 
@@ -280,7 +309,16 @@ export default {
             isPlayGame: false,
             analizeVisible: false,
             soundGame: false,
+            shareSettingVisible:false,
+            copyStatus:false,
         }   
+    },
+    watch: {
+        shareSettingVisible() {
+            if (this.shareSettingVisible == false) {
+                this.copyStatus = false;
+            }
+        }
     },
     mounted() {
         // Check if the URL already has a room
@@ -296,6 +334,23 @@ export default {
 
     },
     methods: {
+        kakaoButton: function() {
+            window.Kakao.Share.createDefaultButton({
+                container: '#kakaotalk-sharing-btn',
+                objectType: 'text',
+                text:
+                '튜토리코더 코드: ' + this.roomCode,
+                link: {
+                mobileWebUrl: 'https://i8c206.p.ssafy.io',
+                webUrl: 'https://i8c206.p.ssafy.io',
+                },
+            });
+        },  
+        copyRoomCode: function() {
+            this.copyStatus=false
+            navigator.clipboard.writeText(this.roomCode);
+            this.copyStatus=true
+        },
         soundGameStop: function() {
             this.soundGame = false;
         },
@@ -942,12 +997,13 @@ export default {
   }
   #YellowBoxVideo{
     /* border: 5px solid yellow; */
+    box-sizing: border-box;
     display: flex;
     justify-content: flex-start;
     width:99%;
     height:65%;
     margin: 0;
-    padding: 0;
+    padding: 10;
   }
   #GreenBoxChat{
     /* border: 5px solid green; */
@@ -1148,10 +1204,31 @@ button {
 .cannot-push-button{
     cursor: url(../assets/cursor_disable.png), auto !important;
 }
-.ready{
-  border: 5px solid blue ;
- }
- .no-ready{
-  border: 5px solid rgba(191, 180, 180, 0.6);
- }
+
+#share-modal-header {
+    margin-bottom: 40px !important
+}
+
+#share-modal-button {
+    display: flex;
+    justify-items: center;
+    width: 20%;
+    height: 20%;
+    margin: auto;
+    font-size: 1vw;
+    font-family: 'JUA', serif;  
+}
+
+.copy-button {
+    display:inline-block;
+    /* justify-items: center; */
+    width: 100px;
+    height: 40px;
+    margin: auto;
+    font-size: 15px;
+    font-family: 'JUA', serif;  
+}
+.code-input {
+  width: 20vw !important;
+}
 </style>
