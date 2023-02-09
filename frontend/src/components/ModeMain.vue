@@ -93,7 +93,6 @@ export default {
             } else{
                   // 유효성 검사 끝
                 this.$router.push('/playroom/#' + this.roomCode);
-                this.roomCode 
             }
         },
         createRoom: function() {

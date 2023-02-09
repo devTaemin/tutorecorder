@@ -287,6 +287,7 @@ export default {
         // (+) Furthermore, Use database/backend to check if the room code is valid or not
         this.checkMounted();
     },
+    
     beforeUnmount() {
         this.leaveSession();
     },
@@ -723,12 +724,14 @@ export default {
             // 2) Init a Session
             this.session = this.OV.initSession();
 
+
             // 3) Spcify the actions when events take place in the session
             // 3-1) streamCreated
             this.session.on('streamCreated', ({ stream }) => {
                 const subscriber = this.session.subscribe(stream);
                 this.subscribers.push(subscriber);
-            }) 
+            })
+
 
             // 3-2) streamDestroyed
             this.session.on('streamDestroyed', ({ stream }) => {
@@ -863,6 +866,10 @@ export default {
                         this.publisher = publisher;
 
                         this.session.publish(this.publisher);
+
+                        if (this.session.streamManagers.length === 0) {
+                            this.leaveSession();
+                        }
             
                     })
                     .catch((error) => {
