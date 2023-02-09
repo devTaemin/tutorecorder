@@ -75,7 +75,7 @@ body {
   width: 80% !important;
   height: 6vh !important;
   margin-left: 0 !important;
-  cursor: url(./assets/cursor_gen.png), auto !important;
+  cursor: url(./assets/cursor_disable.png), auto !important;
 }
 .solo-analyze-button-playgame{
   background-color: #8684FF !important;
@@ -85,7 +85,7 @@ body {
   width: 35% !important;
   height: 6vh !important;
   margin-right: 10% !important;
-  cursor: url(./assets/cursor_gen.png), auto !important;
+  cursor: url(./assets/cursor_disable.png), auto !important;
 }
 .mode{
   position: relative;
