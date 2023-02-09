@@ -13,18 +13,11 @@
             <user-video :stream-manager="mainStreamManager"/>
         </el-col>
         <el-col :span="8" :offset="1" class="game-sub-info">
-            <div class="game-sub-title font">비 행 기</div>
-            <div class="game-sub-img">
+            <div class="game-sub-title font" id="song-title">곡 선 택</div>
+            <div class="game-sub-img no-image" id="game-BG">
                 <!-- 곡 이미지 배경 -->
                 <div class="game-sub-setting">
-                  <el-select v-model="value" class="m-2" placeholder="Select" size="small">
-                    <el-option
-                      v-for="item in options"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    />
-                </el-select>
+                  <!-- 곡 세팅 -->
                 </div>
             </div>
             <div class="game-sub-button">
@@ -42,36 +35,6 @@ import { OpenVidu } from "openvidu-browser";
 import axios from "axios";
 import UserVideo from "@/components/video/soloUserVideo.vue"
 import { mapActions } from 'vuex'
-
-// 아래 자료 삭제 필요
-import { ref } from 'vue'
-
-const value = ref('')
-
-const options = [
-  {
-    value: 'Option1',
-    label: 'Option1',
-  },
-  {
-    value: 'Option2',
-    label: 'Option2',
-  },
-  {
-    value: 'Option3',
-    label: 'Option3',
-  },
-  {
-    value: 'Option4',
-    label: 'Option4',
-  },
-  {
-    value: 'Option5',
-    label: 'Option5',
-  },
-]
-
-
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
 
@@ -244,6 +207,7 @@ var g = (a, e, t, r) => {
         title: "애국가",
         singer: "",
         author: "nobody",
+        image: "nationalflag.png",
         score: `t60 o3 l4
 d'동'g.'해'f+8'물'e'과' g'백'd'두'c-'산'd'이' g'마'a8'르'b8'고'b+.'닳'b8'도' a2'록'.r
 >d.'하'c8'느'<b'님'a'이' g'보'f+8'우'e8d'하'c-'사' d'우'g'리'a8'나'a8'라'b'만' g2.'세'r
@@ -254,6 +218,7 @@ f+.'무'g8a'궁1'f+'화' b.'삼'>c8d'천'<b'리' a'화'g'려'f+'강'g a2.'산'r
         title: "비행기",
         singer: "",
         author: "nobody",
+        image: "airplane.png",
         score: `t80 o3 l4
 e8.'떴' d16'다' c8'떴' d+8'다' e8'비' e8'행' e'기'r
 d8'날' d8'아' d'라' e8'날' e8'아' e'라'r
@@ -264,6 +229,7 @@ d8'우' d8'리' e8.'비' d16'행' c2'기'r`,
         title: "구슬비",
         singer: "",
         author: "nobody",
+        image: "beadrain.png",
         score: `t80 o3 l4
 e8.'송' g8'알' g8'송' f8'알' e8'싸' g8'리' g'잎' f'에' e'은' g'구' f.'슬'r
 d8'조' f8'롱' f8'조' e8'롱' d8'거' f8'미' f8'줄' e8'에' d'옥' f'구' e.'슬'r
@@ -372,145 +338,146 @@ function v(a, e, t) {
     return r;
   }
   // 버튼 만드는 함수
-  function w(a) {
-    let span = v("span", {id: "innerSpan", style: "display: inline-flex; align-items: center;"}, a)
-    let button = v("button", {class: "el-button", type: "button",id: "startBtn"}, span)
-    button.classList.add("solo-start-button")
-    return button
-  }
+function w(a) {
+  let span = v("span", {id: "innerSpan", style: "display: inline-flex; align-items: center;"}, a)
+  let button = v("button", {class: "el-button", type: "button",id: "startBtn"}, span)
+  button.classList.add("solo-start-button")
+  return button
+}
 
-  function V(a) {
-    let e = 4,
-      t,
-      r = 120,
-      i = (60 * 1e3) / r,
-      c = 4,
-      s = i,
-      n = 0;
-    console.log(a);
-    a = a.toUpperCase().replace(/\b/g, "");
-    let y = a.length,
-      d = 0,
-      o = "",
-      p = null,
-      m = [];
-    function f() {
-      n++, (t = a[n]);
-    }
-    function L() {
-      let l = { note: 0, octav: e, length: s, start: d },
-        S = [1],
-        M = !1;
-      for (l.note = q.indexOf(t), f(); n < y; )
-        if (["+", "#", "-"].includes(t))
-          (l.note += t !== "-" ? 1 : -1),
-            l.note < 0 ? (l.octav--, (l.note += 12)) : l.note > 11 && (l.octav++, (l.note -= 12)),
-            f();
-        else if (/[0-9]/.test(t)) {
-          for (o = ""; /[0-9]/.test(t); ) (o += t), f();
-          o.length > 0 && (l.length = (i * 4) / parseInt(o, 10));
-        } else if (t === ".") S.push(S[S.length - 1] / 2), f();
-        else if (/['"]/.test(t)) {
-          for (f(), o = ""; !/['"]/.test(t); ) (o += t), f();
-          (l.lylic = o), (o = ""), f();
-        } else if (t === "&") (M = !0), f();
-        else break;
-      let u = 0;
-      S.forEach((k) => {
-        u += k * l.length;
-      }),
-        (l.length = u),
-        p && p.note === l.note && p.octav === l.octav
-          ? ((p.length += l.length), (l = p))
-          : m.push(l),
-        (p = null),
-        M && (p = l),
-        (d += u);
-    }
-    function D() {
-      for (o = "", f(); t !== "]"; ) (o += t), f();
-      let l = o.length;
-      if (l === 0) return;
-      let S = 0,
-        M = 0;
-      for (let u = m.length - 1; u >= 0; u--)
-        if ((m[u].note !== -1 && S++, S === l)) {
-          M = u;
-          break;
-        }
-      for (let u = M, k = 0; k < l && u < m.length; u++)
-        m[u].note !== -1 && ((m[u].lylic = o[k]), k++);
-      o = "";
-    }
-    function h() {
-      for (o = "", f(); /[0-9]/.test(t); ) (o += t), n++, (t = a[n]);
-      (r = parseInt(o)), (i = (60 * 1e3) / r), (s = (i * 4) / c), (o = "");
-    }
-    function T() {
-      for (n++, o = ""; /[0-9]/.test(a[n]); ) (o += a[n]), n++;
-      (c = parseInt(o, 10)), (s = (i * 4) / c);
-    }
-    for (; n < y; )
-      switch (((t = a[n]), t)) {
-        case "T":
-          h();
-          break;
-        case "C":
-        case "D":
-        case "E":
-        case "F":
-        case "G":
-        case "A":
-        case "B":
-        case "R":
-          L();
-          break;
-        case ">":
-          (e = Math.min(8, e + 1)), n++;
-          break;
-        case "<":
-          (e = Math.max(0, e - 1)), n++;
-          break;
-        case "O":
-          n++, (t = a[n]), (e = parseInt(t));
-          break;
-        case "L":
-          T();
-          break;
-        case "[":
-          D();
-          break;
-        default:
-          n++;
-          break;
+function V(a) {
+  let e = 4,
+    t,
+    r = 120,
+    i = (60 * 1e3) / r,
+    c = 4,
+    s = i,
+    n = 0;
+  console.log(a);
+  a = a.toUpperCase().replace(/\b/g, "");
+  let y = a.length,
+    d = 0,
+    o = "",
+    p = null,
+    m = [];
+  function f() {
+    n++, (t = a[n]);
+  }
+  function L() {
+    let l = { note: 0, octav: e, length: s, start: d },
+      S = [1],
+      M = !1;
+    for (l.note = q.indexOf(t), f(); n < y; )
+      if (["+", "#", "-"].includes(t))
+        (l.note += t !== "-" ? 1 : -1),
+          l.note < 0 ? (l.octav--, (l.note += 12)) : l.note > 11 && (l.octav++, (l.note -= 12)),
+          f();
+      else if (/[0-9]/.test(t)) {
+        for (o = ""; /[0-9]/.test(t); ) (o += t), f();
+        o.length > 0 && (l.length = (i * 4) / parseInt(o, 10));
+      } else if (t === ".") S.push(S[S.length - 1] / 2), f();
+      else if (/['"]/.test(t)) {
+        for (f(), o = ""; !/['"]/.test(t); ) (o += t), f();
+        (l.lylic = o), (o = ""), f();
+      } else if (t === "&") (M = !0), f();
+      else break;
+    let u = 0;
+    S.forEach((k) => {
+      u += k * l.length;
+    }),
+      (l.length = u),
+      p && p.note === l.note && p.octav === l.octav
+        ? ((p.length += l.length), (l = p))
+        : m.push(l),
+      (p = null),
+      M && (p = l),
+      (d += u);
+  }
+  function D() {
+    for (o = "", f(); t !== "]"; ) (o += t), f();
+    let l = o.length;
+    if (l === 0) return;
+    let S = 0,
+      M = 0;
+    for (let u = m.length - 1; u >= 0; u--)
+      if ((m[u].note !== -1 && S++, S === l)) {
+        M = u;
+        break;
       }
-    return m;
+    for (let u = M, k = 0; k < l && u < m.length; u++)
+      m[u].note !== -1 && ((m[u].lylic = o[k]), k++);
+    o = "";
   }
-
-  function K(a) {
-    var e = 12 * (Math.log(a / 440) / Math.log(2));
-    return Math.round(e) + 69;
+  function h() {
+    for (o = "", f(); /[0-9]/.test(t); ) (o += t), n++, (t = a[n]);
+    (r = parseInt(o)), (i = (60 * 1e3) / r), (s = (i * 4) / c), (o = "");
   }
-  function makeSwitch() {
-    let outsideDiv = v("div", {class: ["el-switch", "is-checked", "mb-2"], style:"--el-switch-on-color:#13ce66; --el-switch-off-color:#ff4949;" , id: "outside-div"}, )
-    let inputPart = v("input", { class:"el-switch__input", type: "checkbox", role:"switch", "aria-checked": "true", "aria-disabled": "false", "true-value": "true", "false-value":"false", "id": "check-box"})
-    let exSpan_off = v("span", {class:["el-switch__label", "el-switch__label--left"], id: "ex-span-off"})
-    let inSpan_off = v("span", {"aria-hidden": "true", id:"in-span-off"}, "OFF")
-    let exter_core = v("span", {class: "el-switch__core", id: "exter-core"})
-    let inner_core = v("div", {class: "el-switch__action", id: "inner-core"})
-    let exSpan_on = v("span", {class: ["el-switch__label", "el-switch__label--right", "is-active"], id: "ex-span-on"})
-    let inSpan_on = v("span", {"aria-hidden": "false", id: "in-span-on"}, "ON")
-
-    exSpan_off.appendChild(inSpan_off)
-    exter_core.appendChild(inner_core)
-    exSpan_on.appendChild(inSpan_on)
-    outsideDiv.appendChild(inputPart)
-    outsideDiv.appendChild(exSpan_off)
-    outsideDiv.appendChild(exter_core)
-    outsideDiv.appendChild(exSpan_on)
-
-    return outsideDiv
+  function T() {
+    for (n++, o = ""; /[0-9]/.test(a[n]); ) (o += a[n]), n++;
+    (c = parseInt(o, 10)), (s = (i * 4) / c);
   }
+  for (; n < y; )
+    switch (((t = a[n]), t)) {
+      case "T":
+        h();
+        break;
+      case "C":
+      case "D":
+      case "E":
+      case "F":
+      case "G":
+      case "A":
+      case "B":
+      case "R":
+        L();
+        break;
+      case ">":
+        (e = Math.min(8, e + 1)), n++;
+        break;
+      case "<":
+        (e = Math.max(0, e - 1)), n++;
+        break;
+      case "O":
+        n++, (t = a[n]), (e = parseInt(t));
+        break;
+      case "L":
+        T();
+        break;
+      case "[":
+        D();
+        break;
+      default:
+        n++;
+        break;
+    }
+  return m;
+}
+
+function K(a) {
+  var e = 12 * (Math.log(a / 440) / Math.log(2));
+  return Math.round(e) + 69;
+}
+function makeSwitch() {
+  let outsideDiv = v("div", {class: ["el-switch", "is-checked", "mb-2"], style:"--el-switch-on-color:#13ce66; --el-switch-off-color:#ff4949;" , id: "outside-div"}, )
+  let inputPart = v("input", { class:"el-switch__input", type: "checkbox", role:"switch", "aria-checked": "true", "aria-disabled": "false", "true-value": "true", "false-value":"false", "id": "check-box"})
+  let exSpan_off = v("span", {class:["el-switch__label", "el-switch__label--left"], id: "ex-span-off"})
+  let inSpan_off = v("span", {"aria-hidden": "true", id:"in-span-off"}, "OFF")
+  let exter_core = v("span", {class: "el-switch__core", id: "exter-core"})
+  let inner_core = v("div", {class: "el-switch__action", id: "inner-core"})
+  let exSpan_on = v("span", {class: ["el-switch__label", "el-switch__label--right", "is-active"], id: "ex-span-on"})
+  let inSpan_on = v("span", {"aria-hidden": "false", id: "in-span-on"}, "ON")
+
+  exSpan_off.appendChild(inSpan_off)
+  exter_core.appendChild(inner_core)
+  exSpan_on.appendChild(inSpan_on)
+  outsideDiv.appendChild(inputPart)
+  outsideDiv.appendChild(exSpan_off)
+  outsideDiv.appendChild(exter_core)
+  outsideDiv.appendChild(exSpan_on)
+
+  return outsideDiv
+}
+
   // ------------------- class -------------------------------
 class H {
   _canvas;
@@ -670,20 +637,48 @@ class _ {
 class x extends _ {
   _list = [];
     _element;
+    songTitle;
+    songBGI;
     constructor() {
       super();
-      (this._element = document.createElement("div")),
-      this._element.classList.add("song-list"),
+      (this._element = document.createElement("div"));
+      this._element.classList.add("song-list");
       this._element.addEventListener("click", this._clickHandler);
     }
     set list(e) {
-      (this._list = e.slice()), this._update();
+      (this._list = e.slice()),
+      this._update();
     }
     _clickHandler(e) {
       let t = e.target;
       for (; t && t.dataset.index === void 0; ) t = t.parentElement;
       if (!t) return;
       let r = this._list[parseInt(t.dataset.index, 10)];
+      this.songTitle = document.getElementById("song-title")
+      this.songBGI = document.getElementById("game-BG")
+    
+      this.songTitle.innerHTML = r.title;
+      if (r.title === "애국가") {
+        this.songBGI.classList.remove("no-image")
+        this.songBGI.classList.remove("airplane")
+        this.songBGI.classList.remove("beadrain")
+        this.songBGI.classList.add("nationalflag")
+      } else if (r.title === "비행기"){
+        this.songBGI.classList.remove("no-image")
+        this.songBGI.classList.remove("nationalflag")
+        this.songBGI.classList.remove("beadrain")
+        this.songBGI.classList.add("airplane")
+      } else if (r.title === "구슬비") {
+        this.songBGI.classList.remove("no-image")
+        this.songBGI.classList.remove("nationalflag")
+        this.songBGI.classList.remove("airplane")
+        this.songBGI.classList.add("beadrain")
+      } else {
+        this.songBGI.classList.remove("beadrain")
+        this.songBGI.classList.remove("nationalflag")
+        this.songBGI.classList.remove("airplane")
+        this.songBGI.classList.add("no-image")
+      }
       this.emit("click", r);
     }
     render() {
@@ -691,10 +686,21 @@ class x extends _ {
     }
     // 곡 리스트 생성
     _update() {
-      (this._element.innerHTML = ""),
+      (this._element.innerHTML = "");
         this._list
           .map((e, t) => {
             let r = document.createElement("div");
+            // r.setAttribute("style", "color: white");
+            this.songBGI = document.getElementById("game-BG")
+            console.log(111111111111)
+            console.log(r)
+            if (this.songBGI.classList.contains("nationalflag")) {
+              r.classList.remove("isElse")
+              r.classList.add("isNationalFlag")
+            } else {
+              r.classList.remove("isNationalFlag")
+              r.classList.add("isElse")
+            }
             return (
               (r.dataset.index = t.toString()),
               (r.innerHTML = `<h2>${e.title} - ${e.singer}<small>(${e.author})</small></h2>`),
@@ -760,7 +766,6 @@ class x extends _ {
     initElements() {
       //버튼 생성하는 곳
       (this.btnPlay = w("시작하기")),
-      // (this.chkMelody = v("input", { type: "checkbox", checked: !0 }));
       (this.chkMelody = makeSwitch()),
       (this.inVolume = v("input", { type: "range", min: 0, max: 100, value: 30, step: 1 })),
       (this.buttons = v("div", { class: "song-editor" }, [
@@ -995,6 +1000,7 @@ class x extends _ {
     playMusic = !0;
     sharer = new C(); // 곡 선택 리스트
     songEditor = new N();
+
     constructor(e) {
       (this.drawer = new H()),
         this.createElements(),
@@ -1176,24 +1182,40 @@ class x extends _ {
     margin-top: 3vh;
     margin-bottom: 10px;
 }
-.game-sub-setting {
-
-}
-.sharer {
-  border: 1px solid black;
-}
 .game-sub-img{
     width: 90%;
     height: 60%;
     margin: auto;
     aspect-ratio: 4 / 3;
-    background-image: url("../../assets/game/song/airplane.png");
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    border-radius: 5%;
+}
+.no-image {
+  background-color: rgba(0, 0, 0, 0.374);
+}
+.airplane {
+  background-image: url("@/assets/game/song/airplane.png");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+.nationalflag{
+  background-image: url("@/assets/game/song/nationalflag.jpg");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+.beadrain {
+  background-image: url("@/assets/game/song/beadrain.png");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+.isNationalFlag > h2{
+  color: black;
+}
+.isElse > h2{
+  color: white;
 }
 .game-sub-button{
     margin-top: 1vh;
@@ -1229,19 +1251,6 @@ class x extends _ {
   margin-left: 0 !important;
   margin-top: 1.5vh;
   cursor: url(../../assets/cursor_click.png), auto !important;
-}
-.game-sub-song-info{
-    height: 50%;
-    width: 70%;
-    /* background-image: url("../../assets/game/song/airplane.png");
-    background-repeat: no-repeat;
-    background-size: 100% 100%; */
-    border-radius: 3%;
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
 }
 
 </style>
