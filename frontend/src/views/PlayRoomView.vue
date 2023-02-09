@@ -18,12 +18,12 @@
 
             <!-- 대기방 비디오 디스플레이 -->
             <div id="YellowBoxVideo">
-                <span>
+     
                     <user-video :stream-manager="publisher"/>
                     <user-video v-for="sub in subscribers" 
                                 :key="sub.stream.connection.connectionId" 
                                 :stream-manager="sub" />
-                </span>
+            
             </div>
             <!-- 대기방 비디오 디스플레이 끝 -->
 
@@ -161,6 +161,14 @@
                 <el-input class="code-input" v-model="roomCode" readonly />
                 <el-button class="copy-button" v-if="!copyStatus" type="primary" @click="copyRoomCode">복사하기</el-button>
                 <el-button class="copy-button" v-if="copyStatus" type="success" @click="copyRoomCode">복사완료</el-button>
+
+                <div>
+                    <a id="kakaotalk-sharing-btn" href="javascript:;" @click="kakaoButton">
+                    <img src="https://developers.kakao.com/assets/img/about/logos/kakaotalksharing/kakaotalk_sharing_btn_medium.png"
+                        alt="카카오톡 공유 보내기 버튼" />
+                    </a>
+                </div>
+
             </template>
             <template #footer>
                 <el-button type="danger" id="share-modal-button" @click="shareSettingVisible=false">나가기</el-button>
@@ -323,6 +331,18 @@ export default {
 
     },
     methods: {
+        kakaoButton: function() {
+            window.Kakao.Share.createDefaultButton({
+                container: '#kakaotalk-sharing-btn',
+                objectType: 'text',
+                text:
+                '튜토리코더 코드: ' + this.roomCode,
+                link: {
+                mobileWebUrl: 'https://i8c206.p.ssafy.io',
+                webUrl: 'https://i8c206.p.ssafy.io',
+                },
+            });
+        },  
         copyRoomCode: function() {
             this.copyStatus=false
             navigator.clipboard.writeText(this.roomCode);
@@ -942,12 +962,13 @@ export default {
   }
   #YellowBoxVideo{
     /* border: 5px solid yellow; */
+    box-sizing: border-box;
     display: flex;
     justify-content: flex-start;
     width:99%;
     height:65%;
     margin: 0;
-    padding: 0;
+    padding: 10;
   }
   #GreenBoxChat{
     /* border: 5px solid green; */
