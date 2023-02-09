@@ -18,12 +18,14 @@
 
             <!-- 대기방 비디오 디스플레이 -->
             <div id="YellowBoxVideo">
-     
-                    <user-video :stream-manager="publisher"/>
+                <span>
+                    <user-video :stream-manager="publisher" class="no-ready" id="my-video"/>
                     <user-video v-for="sub in subscribers" 
                                 :key="sub.stream.connection.connectionId" 
-                                :stream-manager="sub" />
-            
+                                :stream-manager="sub"
+                                :id="sub.stream.connection.connectionId"
+                                class="no-ready"/>
+                </span>
             </div>
             <!-- 대기방 비디오 디스플레이 끝 -->
 
@@ -46,7 +48,7 @@
                         <el-button id="fontValue" :type="startButton" :disabled="!startButtonEnabled" @click="startButtonConfirm" :class="{ 'can-push-button': startButtonEnabled, 'cannot-push-button': !startButtonEnabled }">시작하기</el-button>
                     </div>
                     <div v-if="!isOwner && !readyButtonOn">
-                        <el-button id="fontValue" class="button-flicker can-push-button" type="warning" @click="this.readyButtonConfirm">준비하기</el-button>
+                        <el-button id="fontValue" class="button-flicker can-push-button" type="warning" @click="this.readyButtonConfirm(); ">준비하기</el-button>
                     </div>
                     <div v-if="!isOwner && readyButtonOn">
                         <el-button id="fontValue" type="success" @click="this.readyButtonConfirm" class="can-push-button">준비완료</el-button>
@@ -323,6 +325,7 @@ export default {
         // (+) Furthermore, Use database/backend to check if the room code is valid or not
         this.checkMounted();
     },
+    
     beforeUnmount() {
         this.leaveSession();
     },
@@ -358,7 +361,7 @@ export default {
                     type: 'start-sound-game'
                 })
                 .then(() => {
-                })
+                })  
                 .catch(error => {
                     console.log(error);
                 })
@@ -391,14 +394,17 @@ export default {
             this.envSettingVisible=false
         },
         readyButtonConfirm: function() {
+            const myVideo = document.getElementById('my-video')
             if (this.readyButtonOn) {
                 // 준비 버튼이 활성화가 되어 있는 경우
                 this.readyButtonOn = false;
                 this.count--;
                 this.readyButton = "warning";
 
+                myVideo.setAttribute('class', 'no-ready')
+
                 this.publisher.session.signal({
-                    data: "",
+                    data: this.publisher.stream.connection.connectionId,
                     to: [],
                     type: 'ready-minus'
                 })
@@ -414,8 +420,10 @@ export default {
                 this.count++;
                 this.readyButton = "success";
 
+                myVideo.setAttribute('class', 'ready')
+
                 this.publisher.session.signal({
-                    data: "",
+                    data: this.publisher.stream.connection.connectionId,
                     to: [],
                     type: 'ready-plus'
                 })
@@ -661,21 +669,27 @@ export default {
             })
 
             // 3-7) ready plus
-            this.session.on('signal:ready-plus', () => {
+            this.session.on('signal:ready-plus', (event) => {
+                const targetId = event.data
                 this.countReady++;
                 if (this.countReady == this.subscribers.length) {
                     // 추가
                     this.startButtonEnabled = true;
                     this.startButton = "primary";
                 }
+                const targetDiv = document.getElementById(targetId)
+                targetDiv.setAttribute('class', 'ready')
             })
             
 
             // 3-8) ready minus
-            this.session.on('signal:ready-minus', () => {
+            this.session.on('signal:ready-minus', (event) => {
+                const targetId = event.data
                 this.countReady--;
                 this.startButtonEnabled = false;
                 this.startButton = "danger";
+                const targetDiv = document.getElementById(targetId)
+                targetDiv.setAttribute('class', 'no-ready')
             })
 
             // 3-9) start game
@@ -765,12 +779,14 @@ export default {
             // 2) Init a Session
             this.session = this.OV.initSession();
 
+
             // 3) Spcify the actions when events take place in the session
             // 3-1) streamCreated
             this.session.on('streamCreated', ({ stream }) => {
                 const subscriber = this.session.subscribe(stream);
                 this.subscribers.push(subscriber);
-            }) 
+            })
+
 
             // 3-2) streamDestroyed
             this.session.on('streamDestroyed', ({ stream }) => {
@@ -866,6 +882,21 @@ export default {
             this.session.on('signal:close-anal', () => {
                 this.analizeVisible = false
             })
+
+             // 3-14) ready plus
+             this.session.on('signal:ready-plus', (event) => {
+                const targetId = event.data
+                const targetDiv = document.getElementById(targetId)
+                targetDiv.setAttribute('class', 'ready')
+            })
+            
+
+            // 3-15) ready minus
+            this.session.on('signal:ready-minus', (event) => {
+                const targetId = event.data
+                const targetDiv = document.getElementById(targetId)
+                targetDiv.setAttribute('class', 'no-ready')
+            })
         
 
             // 4) Get a token from the OpenVidu deployment
@@ -890,6 +921,10 @@ export default {
                         this.publisher = publisher;
 
                         this.session.publish(this.publisher);
+
+                        if (this.session.streamManagers.length === 0) {
+                            this.leaveSession();
+                        }
             
                     })
                     .catch((error) => {
