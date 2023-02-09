@@ -3,18 +3,16 @@
 
         <!-- 소리내기 게임 컴포넌트 -->
         <MultiSoundMain v-if="isPlaySound" @soundGameStop="soundGameStop" @emitGameStart="emitGameStart" @goMultiAnalize="goMultiAnalize" @goRoom="goRoom" @goRoomAlone="goRoomAlone" :isOwner="isOwner" :difficulty="difficulty" :publisher="publisher" :subscribers="subscribers" :soundGame="soundGame"/>
-        
+        <!-- 소리내기 게임 컴포넌트 끝-->
 
-        
-        
         <!-- 소리내기 게임 분석 -->
         <MultiAnalizeMain v-if="analizeVisible" @closeAnal="closeAnal" @closeAnalAlone="closeAnalAlone" :isOwner="isOwner"/>
-
         <!-- 소리내기 게임 분석 끝 -->
 
         <!-- 연주하기 게임 컴포넌트 -->
         <MultiSongMain v-if="isPlaySong" @goMultiAnalize="goMultiAnalize" @goRoom="goRoom" @goRoomAlone="goRoomAlone" :isOwner="isOwner" :publisher="publisher" :subscribers="subscribers"/>
-
+        <!-- 연주하기 게임 컴포넌트 끝 -->
+        
         <!-- 왼쪽 박스 -->
         <div id="LeftBox" v-if="!isPlayGame">
 
@@ -28,8 +26,6 @@
                 </span>
             </div>
             <!-- 대기방 비디오 디스플레이 끝 -->
-
-            
 
             <div style="display:flex; flex-direction:row; ">
                 <!-- 대기방 채팅창 -->
@@ -303,7 +299,6 @@ export default {
                     type: 'start-sound-game'
                 })
                 .then(() => {
-                    console.log('game start!');
                 })
                 .catch(error => {
                     console.log(error);
@@ -316,7 +311,6 @@ export default {
                     type: 'start-game'
                 })
                 .then(() => {
-                    console.log('game start!');
                 })
                 .catch(error => {
                     console.log(error);
@@ -350,7 +344,6 @@ export default {
                     type: 'ready-minus'
                 })
                 .then(() => {
-                    console.log('the count of ready state is decremented');
                 })
                 .catch(error => {
                     console.log(error);
@@ -368,7 +361,6 @@ export default {
                     type: 'ready-plus'
                 })
                 .then(() => {
-                    console.log('the count of ready state is incremented');
                 })
                 .catch(error => {
                     console.log(error);
@@ -401,7 +393,6 @@ export default {
                 type: 'game-setting'
             })
             .then(() => {
-                console.log('game-setting successfully sent');
             })
             .catch(error => {
                 console.error(error);
@@ -411,14 +402,10 @@ export default {
             const { clientData } = JSON.parse(data);
             return clientData;
         },
-        printSession: function() {
-            console.log(this.session);
-        },
         checkMounted: function() {
             this.roomCode = window.location.hash.slice(1);
 
             if (this.roomCode) {
-                console.log("코드가 있다[방 들어오기 모드] ==> 해당 코드로 만들어진 방이 존재하는지 확인 필요");
                 // 방 들어오기 모드
                 // 해당 코드로 만들어진 방이 존재하는지 확인이 먼저 필요하다
                 // 확인이 완료되면 joinRoom 진행
@@ -427,7 +414,6 @@ export default {
                 this.joinRoom();
             }
             else {
-                console.log("코드가 없다[방 만들기 모드] ==> 코드 만들어서 방 생성");
                 // 방 생성 모드
                 // 방 생성을 위해 코드를 먼저 생성해야 한다
                 this.roomCode = this.randomString();         
@@ -476,8 +462,6 @@ export default {
                 type: 'my-chat'
             })
             .then(() => {
-                console.log('Message successfully sent');
-                console.log(this.chatMessage)
 
                 // 스크롤바 추적1 : 3까지
                 // 스크롤 내리기 위해 필요한 부분
@@ -510,7 +494,6 @@ export default {
                 type: 'go-room'
             })
             .then(() => {
-                console.log("집가자");
             })
             .catch(error => {
                 console.log(error)
@@ -520,6 +503,7 @@ export default {
             this.isPlayGame = false
             this.isPlaySong = false
             this.isPlaySound = false
+            this.publisher.publishAudio(true);
         },
         goMultiAnalize() {
             this.publisher.session.signal({
@@ -528,7 +512,6 @@ export default {
                 type: 'multi-anal'
             })
             .then(() => {
-                console.log("분석 결과");
             })
             .catch(error => {
                 console.error(error);
@@ -541,7 +524,6 @@ export default {
                 type: 'close-anal'
             })
             .then(() => {
-                console.log("분석 닫음");
             })
             .catch(error => {
                 console.error(error);
@@ -565,7 +547,6 @@ export default {
                 this.subscribers.push(subscriber);
                 this.gameSettingConfirm();
                 if (this.countReady != this.subscribers.length) {
-                    console.log("Owner 스트림 생성에 버튼 상태 변화가 감지되었다!!");
                     this.startButtonEnabled = false;
                     this.startButton = "danger";
                 }
@@ -586,7 +567,6 @@ export default {
                 }
 
                 if (this.countReady == this.subscribers.length) {
-                    console.log("Owner 스트림 생성에 버튼 상태 변화가 감지되었다!!");
                     this.startButtonEnabled = true;
                     this.startButton = "primary";
                 }
@@ -629,9 +609,6 @@ export default {
                     this.startButtonEnabled = true;
                     this.startButton = "primary";
                 }
-
-                console.log("owner에서 ready-plus를 받았다: ", this.countReady);
-                console.log("현재 subscribers의 수: ", this.subscribers.length);
             })
             
 
@@ -640,42 +617,38 @@ export default {
                 this.countReady--;
                 this.startButtonEnabled = false;
                 this.startButton = "danger";
-
-                console.log("owner에서 ready-minus를 받았다: ", this.countReady);
-                console.log("현재 subscribers의 수: ", this.subscribers.length);
             })
 
             // 3-9) start game
             this.session.on('signal:start-game', () => {
                 this.startGame();
+                this.publisher.publishAudio(false);
             })
 
             // 3-10) start sound game
             this.session.on('signal:start-sound-game', () => {
-                console.log("사운드 게임 신호를 받았다");
                 this.soundGame = true;
             })
 
             // 3-11) multi-anal
             this.session.on('signal:multi-anal', () => {
-                console.log("분석 결과");
                 this.isPlayGame = false
                 this.isPlaySong = false
                 this.isPlaySound = false
                 this.analizeVisible = true
+                this.publisher.publishAudio(true);
             })
         
             // 3-12) go-room
             this.session.on('signal:go-room', () => {
-                console.log("집가는 신호");
                 this.isPlayGame = false
                 this.isPlaySong = false
                 this.isPlaySound = false
+                this.publisher.publishAudio(true);
             })
 
             // 3-13) close-anal
             this.session.on('signal:close-anal', () => {
-                console.log('분석 닫는 신호');
                 this.analizeVisible = false
             })
 
@@ -688,8 +661,6 @@ export default {
                         let path = (location.pathname.slice(-1) == "/" ? location.pathname : location.pathname + "/");
                         window.history.pushState("", "", path + "#" + this.roomCode);
 
-                        // 대기방 뷰로 변화
-                        // initializeSessionView()
 
                         let publisher = this.OV.initPublisher(undefined, {
                             audioSource: undefined,
@@ -708,7 +679,6 @@ export default {
                         this.session.publish(this.publisher);
 
 
-                        // console.log("현재 session에 접속한 인원 수: " + this.session.connection.localOptions.value.length);
                         // 최대 정원 설정 가능
 
                         // Owner 설정
@@ -807,35 +777,34 @@ export default {
             // 3-7) start game
             this.session.on('signal:start-game', () => {
                 this.startGame();
+                this.publisher.publishAudio(false);
             })
 
             // 3-8) start sound game
             this.session.on('signal:start-sound-game', () => {
-                console.log("사운드 게임 신호를 받았다");
                 this.soundGame = true;
             })
 
             
             // 3-9) multi-anal
             this.session.on('signal:multi-anal', () => {
-                console.log("분석 결과");
                 this.isPlayGame = false
                 this.isPlaySong = false
                 this.isPlaySound = false
                 this.analizeVisible = true
+                this.publisher.publishAudio(true);
             })
         
             // 3-10) go-room
             this.session.on('signal:go-room', () => {
-                console.log("집가는 신호");
                 this.isPlayGame = false
                 this.isPlaySong = false
                 this.isPlaySound = false
+                this.publisher.publishAudio(true);
             })
 
             // 3-13) close-anal
             this.session.on('signal:close-anal', () => {
-                console.log('분석 닫는 신호');
                 this.analizeVisible = false
             })
         
@@ -847,8 +816,6 @@ export default {
                         let path = (location.pathname.slice(-1) == "/" ? location.pathname : location.pathname + "/");
                         window.history.pushState("", "", path + "#" + this.roomCode);
 
-                        // 대기방 뷰로 변화
-                        // initializeSessionView()
 
                         let publisher = this.OV.initPublisher(undefined, {
                             audioSource: undefined,
@@ -864,17 +831,7 @@ export default {
                         this.publisher = publisher;
 
                         this.session.publish(this.publisher);
-
-
-                        // console.log("현재 session에 접속한 인원 수: " + this.session.connection.localOptions.value.length);
-                        // 최대 정원 4명으로 설정
-                        // let numOfJoined = this.session.connection.localOptions.value.length;
-                        // console.log("방에 접속한 현재 인원: " + numOfJoined);
-                        // if (numOfJoined >= 4) {
-                        //     alert("정원초과");
-                        //     this.leaveSession();
-                        //     return;
-                        // }
+            
                     })
                     .catch((error) => {
                         console.log("There was an error connecting to the session: ", 
