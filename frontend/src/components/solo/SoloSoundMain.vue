@@ -35,7 +35,7 @@ import axios from "axios";
 //import UserVideo from "@/components/video/soloUserVideo.vue"
 import * as speechCommands from '@tensorflow-models/speech-commands'
 import { mapActions } from 'vuex'
-import * as tmImage from '@teachablemachine/image'
+
 
 let pitch_list = ['도', '레', '미', '파', '솔', '라', '시'];
 const pitch_list2 = ['도', '레', '미', '파', '솔', '라', '시'];
@@ -61,8 +61,8 @@ const problem = 3
 const total_problem = problem + 9;
 const URL = "https://teachablemachine.withgoogle.com/models/eptQYA8MT/";
 
-let model, webcam, labelContainer, maxPredictions;
-const ImageURL = "https://teachablemachine.withgoogle.com/models/7V-1Hlw2G/"; //image 데이터
+
+
 
 // 음계 측정값 넣을 리스트 - 현재 7개의 음과 배경소음만 있고 나중에 삑사리 추가
 let grade_list = [[], [], [], [], [], [], []];
@@ -412,118 +412,7 @@ export default {
                 headers: { 'Content-Type': 'application/json' }
             });
             return response.data;
-        },//image 인식 시작
-         async image() {
-            console.log('시작')
-        const modelURL = ImageURL + "model.json";
-        const metadataURL = ImageURL + "metadata.json";
-
-        // load the model and metadata
-        // Refer to tmImage.loadFromFiles() in the API to support files from a file picker
-        // or files from your local hard drive
-        // Note: the pose library adds "tmImage" object to your window (window.tmImage)
-        model = await tmImage.load(modelURL, metadataURL);
-        maxPredictions = model.getTotalClasses();
-
-        // Convenience function to setup a webcam
-        const flip = true; // whether to flip the webcam
-        webcam = new tmImage.Webcam(600, 600, flip); // width, height, flip
-        await webcam.setup(); // request access to the webcam
-        await webcam.play();
-        window.requestAnimationFrame(this.loop);
-
-        // append elements to the DOM
-        document.getElementById("webcam-container").appendChild(webcam.canvas);
-        labelContainer = document.getElementById("label-container");
-        for (let i = 0; i < maxPredictions; i++) { // and class labels
-            labelContainer.appendChild(document.createElement("div"));
         }
-    },
-    async loop() {
-        webcam.update(); // update the webcam frame
-        await this.predict();
-        window.requestAnimationFrame(this.loop);
-    },
-    // run the webcam image through the image model
-    async predict() {
-        // predict can take in an image, video or canvas html element
-        const prediction = await model.predict(webcam.canvas);
-        let Array = [0,0,0,0,0,0,0,0];
-        for (let i = 0; i < maxPredictions; i++) {
-            const classPrediction =
-                prediction[i].className + ": " + prediction[i].probability.toFixed(2);
-            labelContainer.childNodes[i].innerHTML = classPrediction;
-
-            //console.log(prediction)
-
-            Array[i] = prediction[i].probability;
-
-            const index = Array.indexOf(Math.max(...Array));
-            switch(this.pitch_target) {
-                        case '도':
-                            if (index === 0) {
-                                grade_list[0].push(1)
-                            } else{
-                                grade_list[0].push(0)
-                            }
-                            break;
-                        case '레':
-                            if (index === 1) {
-                                grade_list[1].push(1)
-                            } else {
-                                grade_list[1].push(0)
-                            }
-                            break;
-                        case '미':
-                            if (index === 2) {
-                                grade_list[2].push(1)
-                            } else {
-                                grade_list[2].push(0)
-                            }
-                            break;
-                        case '파':
-                            if (index === 3) {
-                                grade_list[3].push(1)
-                            } else{
-                                grade_list[3].push(0)
-                            }
-                            break;
-                        case '솔':
-                            if (index === 4) {
-                                grade_list[4].push(1)
-                            } else{
-                                grade_list[4].push(0)
-                            }
-                            break;
-                        case '라':
-                            if (index === 5) {
-                                grade_list[5].push(1)
-                            } else {
-                                grade_list[5].push(0)
-                            }
-                            break;
-                        case '시':
-                            if (index === 6) {
-                                grade_list[6].push(1)
-                            } else{
-                                grade_list[6].push(0)
-                            }
-                            break;
-                        default:
-                            // code block for default case
-                    }
-
-
-
-
-
-            // console.log('음계 : ' + prediction[i].className);
-            // console.log('예측치 : ' + prediction[i].probability.toFixed(2)); 
-        }
-
-
-    }
-
 
     },
     mounted() {

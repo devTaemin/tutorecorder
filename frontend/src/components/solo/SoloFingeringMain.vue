@@ -32,7 +32,7 @@ import axios from "axios";
 //import UserVideo from "@/components/video/soloUserVideo.vue"
 
 import { mapActions } from 'vuex'
-import * as tmImage from '@teachablemachine/image'
+// import * as tmImage from '@teachablemachine/image'
 
 let pitch_list = ['도', '레', '미', '파', '솔', '라', '시'];
 const pitch_list2 = ['도', '레', '미', '파', '솔', '라', '시'];
@@ -58,6 +58,7 @@ const problem = 3
 const total_problem = problem + 9;
 
 let model, webcam, labelContainer, maxPredictions;
+
 const ImageURL = "https://teachablemachine.withgoogle.com/models/7V-1Hlw2G/"; //image 데이터
 
 // 음계 측정값 넣을 리스트 - 현재 7개의 음과 배경소음만 있고 나중에 삑사리 추가
@@ -312,18 +313,28 @@ export default {
         // Refer to tmImage.loadFromFiles() in the API to support files from a file picker
         // or files from your local hard drive
         // Note: the pose library adds "tmImage" object to your window (window.tmImage)
-        model = await tmImage.load(modelURL, metadataURL);
+        model = await window.tmImage.load(modelURL, metadataURL);
         maxPredictions = model.getTotalClasses();
 
         // Convenience function to setup a webcam
         const flip = true; // whether to flip the webcam
-        webcam = new tmImage.Webcam(600, 600, flip); // width, height, flip
+        webcam = new window.tmImage.Webcam(400, 400, flip); // width, height, flip
+        webcam.IMAGE_SIZE = 500;
         await webcam.setup(); // request access to the webcam
         await webcam.play();
         window.requestAnimationFrame(this.loop);
 
         // append elements to the DOM
         document.getElementById("webcam-container").appendChild(webcam.canvas);
+        
+        
+        console.log("Asdfdsafsda");
+        console.log(webcam.canvas.width);
+        console.log(webcam)
+        
+        
+
+
         labelContainer = document.getElementById("label-container");
         for (let i = 0; i < maxPredictions; i++) { // and class labels
             labelContainer.appendChild(document.createElement("div"));
