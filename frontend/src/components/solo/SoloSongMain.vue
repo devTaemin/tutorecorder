@@ -469,6 +469,10 @@ function makeSwitch() {
   let exSpan_on = v("span", {class: ["el-switch__label", "el-switch__label--right", "is-active"], id: "ex-span-on"})
   let inSpan_on = v("span", {"aria-hidden": "false", id: "in-span-on"}, "ON")
 
+  exter_core.classList.add("can-click")
+  exSpan_on.classList.add("can-click")
+  exSpan_off.classList.add("can-click")
+
   exSpan_off.appendChild(inSpan_off)
   exter_core.appendChild(inner_core)
   exSpan_on.appendChild(inSpan_on)
@@ -711,6 +715,7 @@ class x extends _ {
           .map((e, t) => {
             let r = document.createElement("div");
             r.classList.add("list-item")
+            r.classList.add("can-click")
             
             return (
               (r.dataset.index = t.toString()),
@@ -1295,6 +1300,10 @@ class x extends _ {
   -moz-animation: flickerAnimation 1s infinite;
   -o-animation: flickerAnimation 1s infinite;
   animation: flickerAnimation 1s infinite;
+}
+
+.can-click{
+  cursor: url(../../assets/cursor_click.png), auto !important;
 }
 
 </style>
