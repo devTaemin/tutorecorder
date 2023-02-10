@@ -656,7 +656,6 @@ class x extends _ {
       let r = this._list[parseInt(t.dataset.index, 10)];
       this.songTitle = document.getElementById("song-title")
       this.songBGI = document.getElementById("game-BG")
-    
       this.songTitle.innerHTML = r.title;
       if (r.title === "애국가") {
         this.songBGI.classList.remove("no-image")
@@ -690,20 +689,11 @@ class x extends _ {
         this._list
           .map((e, t) => {
             let r = document.createElement("div");
-            // r.setAttribute("style", "color: white");
-            this.songBGI = document.getElementById("game-BG")
-            console.log(111111111111)
-            console.log(r)
-            if (this.songBGI.classList.contains("nationalflag")) {
-              r.classList.remove("isElse")
-              r.classList.add("isNationalFlag")
-            } else {
-              r.classList.remove("isNationalFlag")
-              r.classList.add("isElse")
-            }
+            r.classList.add("list-item")
+            
             return (
               (r.dataset.index = t.toString()),
-              (r.innerHTML = `<h2>${e.title} - ${e.singer}<small>(${e.author})</small></h2>`),
+              (r.innerHTML = `<h2>${e.title}</h2>`),
               r
             );
           })
@@ -1211,10 +1201,27 @@ class x extends _ {
   background-size: 100% 100%;
   background-repeat: no-repeat;
 }
-.isNationalFlag > h2{
-  color: black;
+.setting-volume {
+  margin-bottom: 3vh;
 }
-.isElse > h2{
+.song-list{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.list-item{
+  background-color: rgba(0, 0, 0, 0.374);
+  border-radius: 30px;
+  margin-top: 0.5vh;
+  margin-bottom: 0.5vh;
+  width:fit-content
+}
+.list-item > h2{
+  margin-top: 0.5vh;
+  margin-bottom: 0.5vh;
+  margin-left: 3vh;
+  margin-right: 3vh;
   color: white;
 }
 .game-sub-button{
