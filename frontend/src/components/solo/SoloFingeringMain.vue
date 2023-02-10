@@ -2,7 +2,7 @@
     <el-row class="game-content-container">
         <el-col :span="15" class="game-content-my-cam">
         <div id="webcam-container"></div>
-        <div id="label-container"></div>
+        <!-- <div id="label-container"></div> -->
         </el-col>
         <el-col :span="8" class="game-content-info">
             <div class="game-content-title">운지법</div>
@@ -34,32 +34,14 @@ import axios from "axios";
 import { mapActions } from 'vuex'
 // import * as tmImage from '@teachablemachine/image'
 
-let pitch_list = ['도', '레', '미', '파', '솔', '라', '시'];
-const pitch_list2 = ['도', '레', '미', '파', '솔', '라', '시'];
+let pick_list = ['도', '레', '미', '파', '솔', '라', '시'];
 
 
-// pick_list에 나올 음계 저장
-// 최소 한 번씩 나오게 하는 구간
-// let pick_list = ['시작!']
-// for (let i=0; i<7; i++) {
-//     const pick_index = Math.floor(Math.random() * pitch_list.length);
-//     pick_list.push(pitch_list[pick_index]);
-//     pitch_list.splice(pick_index, 1);
-// }
-// 최소 한 번씩 나오게 하는 구간 끝
+const total_problem = 9; //총 문제 수
 
-const problem = 3
-// 랜덤으로 problem개 더 출력
-// for (let i=0; i<problem; i++) {
-//     pick_list.push(pitch_list2[Math.floor(Math.random() * 7)]);
-// }
+let model, webcam,  maxPredictions; //teachable에서 사용할 변수 labelContainer,
 
-// pick_list.push('참 잘했어요')
-const total_problem = problem + 9;
-
-let model, webcam, labelContainer, maxPredictions;
-
-const ImageURL = "https://teachablemachine.withgoogle.com/models/7V-1Hlw2G/"; //image 데이터
+const ImageURL = "https://teachablemachine.withgoogle.com/models/ic2Rvnu7Z/"; //image 데이터
 
 // 음계 측정값 넣을 리스트 - 현재 7개의 음과 배경소음만 있고 나중에 삑사리 추가
 let grade_list = [[], [], [], [], [], [], []];
@@ -121,31 +103,28 @@ export default {
         
         gameStart() {
             this.initGameResult()
-            pitch_list = ['도', '레', '미', '파', '솔', '라', '시'];
+            
             // pick_list에 나올 음계 저장
             // 최소 한 번씩 나오게 하는 구간
-            let pick_list = ['시작!']
-            for (let i=0; i<7; i++) {
-                const pick_index = Math.floor(Math.random() * pitch_list.length);
-                pick_list.push(pitch_list[pick_index]);
-                pitch_list.splice(pick_index, 1);
-            }
+            pick_list = ['시작!','도', '레', '미', '파', '솔', '라', '시']
+            
             // 최소 한 번씩 나오게 하는 구간 끝
+
             // 랜덤으로 problem개 더 출력
-            for (let i=0; i<problem; i++) {
-                pick_list.push(pitch_list2[Math.floor(Math.random() * 7)]);
-            }
+            // for (let i=0; i<problem; i++) {
+            //     pick_list.push(pitch_list2[Math.floor(Math.random() * 7)]);
+            // }
 
             pick_list.push('참 잘했어요')
 
             this.playGameAnalize = true
             this.gameState = '게임 진행중...'
             this.playGame = true
-            this.pitch_target = '준비하세요';
+            this.pitch_target = '준비하세요'; //칠판에 초기값으로 먼저 들어가 있는 값
             let index = 0;
             grade_list = [[], [], [], [], [], [], []];
             let game = setInterval(() => {
-                this.pitch_target = pick_list[index];
+                this.pitch_target = pick_list[index]; //게임시작하면 pick_list의 값이 하나씩 추가
                 // index에 몇 가지 나올지 저장
                 index = (index + 1) % total_problem;
                 if (index === 2) {
@@ -155,7 +134,7 @@ export default {
                     this.problem = '1' + '/' + (total_problem - 2)
                     game = setInterval(() => {
                         this.problem = index + '/' + (total_problem - 2)
-                        if (index > 10) {
+                        if (index > 7) {
                             this.problem = ''
                         }
                         this.pitch_target = pick_list[index];
@@ -166,7 +145,7 @@ export default {
                             this.gameState = '게임 시작!'
                             this.playGameAnalize = false
                             this.playGame = false
-                            console.log(grade_list)
+                            console.log((grade_list[0].reduce((a,b) => a+b, 0)/grade_list[0].length)*100)
                         }
                     }, 5000)
                 } 
@@ -244,6 +223,7 @@ export default {
                     publishVideo: true,
                     // ratio: 16/9,
                     resolution: "240x160",
+
                     framerate: 30,
                     insertMode: "Append",
                     mirror: false,
@@ -304,123 +284,120 @@ export default {
             });
             return response.data;
         },//image 인식 시작
-         async image() {
+        async image() {
             console.log('시작')
-        const modelURL = ImageURL + "model.json";
-        const metadataURL = ImageURL + "metadata.json";
+            const modelURL = ImageURL + "model.json";
+            const metadataURL = ImageURL + "metadata.json";
 
-        // load the model and metadata
-        // Refer to tmImage.loadFromFiles() in the API to support files from a file picker
-        // or files from your local hard drive
-        // Note: the pose library adds "tmImage" object to your window (window.tmImage)
-        model = await window.tmImage.load(modelURL, metadataURL);
-        maxPredictions = model.getTotalClasses();
+            // load the model and metadata
+            // Refer to tmImage.loadFromFiles() in the API to support files from a file picker
+            // or files from your local hard drive
+            // Note: the pose library adds "tmImage" object to your window (window.tmImage)
+            model = await window.tmImage.load(modelURL, metadataURL);
+            maxPredictions = model.getTotalClasses();
 
-        // Convenience function to setup a webcam
-        const flip = true; // whether to flip the webcam
-        webcam = new window.tmImage.Webcam(400, 400, flip); // width, height, flip
-        webcam.IMAGE_SIZE = 500;
-        await webcam.setup(); // request access to the webcam
-        await webcam.play();
-        window.requestAnimationFrame(this.loop);
+            // Convenience function to setup a webcam
+            const flip = true; // whether to flip the webcam
+            webcam = new window.tmImage.Webcam(600, 600, flip); // width, height, flip
+            webcam.IMAGE_SIZE = 500;
+            await webcam.setup(); // request access to the webcam
+            await webcam.play();
+            window.requestAnimationFrame(this.loop);
 
-        // append elements to the DOM
-        document.getElementById("webcam-container").appendChild(webcam.canvas);
-        
-        
-        console.log("Asdfdsafsda");
-        console.log(webcam.canvas.width);
-        console.log(webcam)
-        
-        
-
-
-        labelContainer = document.getElementById("label-container");
-        for (let i = 0; i < maxPredictions; i++) { // and class labels
-            labelContainer.appendChild(document.createElement("div"));
-        }
-    },
-    async loop() {
-        webcam.update(); // update the webcam frame
-        await this.predict();
-        window.requestAnimationFrame(this.loop);
-    },
-    // run the webcam image through the image model
-    async predict() {
-        // predict can take in an image, video or canvas html element
-        const prediction = await model.predict(webcam.canvas);
-        let Array = [0,0,0,0,0,0,0,0];
-        for (let i = 0; i < maxPredictions; i++) {
-            const classPrediction =
-                prediction[i].className + ": " + prediction[i].probability.toFixed(2);
-            labelContainer.childNodes[i].innerHTML = classPrediction;
-
-            //console.log(prediction)
-
-            Array[i] = prediction[i].probability;
-
-            const index = Array.indexOf(Math.max(...Array));
-            switch(this.pitch_target) {
-                        case '도':
-                            if (index === 0) {
-                                grade_list[0].push(1)
-                            } else{
-                                grade_list[0].push(0)
-                            }
-                            break;
-                        case '레':
-                            if (index === 1) {
-                                grade_list[1].push(1)
-                            } else {
-                                grade_list[1].push(0)
-                            }
-                            break;
-                        case '미':
-                            if (index === 2) {
-                                grade_list[2].push(1)
-                            } else {
-                                grade_list[2].push(0)
-                            }
-                            break;
-                        case '파':
-                            if (index === 3) {
-                                grade_list[3].push(1)
-                            } else{
-                                grade_list[3].push(0)
-                            }
-                            break;
-                        case '솔':
-                            if (index === 4) {
-                                grade_list[4].push(1)
-                            } else{
-                                grade_list[4].push(0)
-                            }
-                            break;
-                        case '라':
-                            if (index === 5) {
-                                grade_list[5].push(1)
-                            } else {
-                                grade_list[5].push(0)
-                            }
-                            break;
-                        case '시':
-                            if (index === 6) {
-                                grade_list[6].push(1)
-                            } else{
-                                grade_list[6].push(0)
-                            }
-                            break;
-                        default:
-                            // code block for default case
-                    }
+            // append elements to the DOM
+            document.getElementById("webcam-container").appendChild(webcam.canvas);
+            
+            
+            
+            console.log("Asdfdsafsda");
+            console.log(webcam.canvas.width);
+            console.log(webcam)
+            
+            
 
 
+            // labelContainer = document.getElementById("label-container");
+            // for (let i = 0; i < maxPredictions; i++) { // and class labels
+            //     labelContainer.appendChild(document.createElement("div"));
+            // }
+        },
+        async loop() {
+            webcam.update(); // update the webcam frame
+            await this.predict();
+            window.requestAnimationFrame(this.loop);
+        },
+        // run the webcam image through the image model
+        async predict() {
+            // predict can take in an image, video or canvas html element
+            const prediction = await model.predict(webcam.canvas);
+            let Array = [0,0,0,0,0,0,0,0];
+            for (let i = 0; i < maxPredictions; i++) {
+                // const classPrediction =
+                //     prediction[i].className + ": " + prediction[i].probability.toFixed(2);
+                //  labelContainer.childNodes[i].innerHTML = classPrediction;
 
+                //console.log(prediction)
 
+                Array[i] = prediction[i].probability;
 
-            // console.log('음계 : ' + prediction[i].className);
-            // console.log('예측치 : ' + prediction[i].probability.toFixed(2)); 
-        }
+                const index = Array.indexOf(Math.max(...Array));
+                switch(this.pitch_target) {
+                            case '도':
+                                if (index === 0) {
+                                    grade_list[0].push(1)
+                                } else if(index !== 4){
+                                    grade_list[0].push(0)
+                                }
+                                break;
+                            case '레':
+                                if (index === 1) {
+                                    grade_list[1].push(1)
+                                } else if(index !== 4) {
+                                    grade_list[1].push(0)
+                                }
+                                break;
+                            case '미':
+                                if (index === 2) {
+                                    grade_list[2].push(1)
+                                } else if(index !== 4) {
+                                    grade_list[2].push(0)
+                                }
+                                break;
+                            case '파':
+                                if (index === 3) {
+                                    grade_list[3].push(1)
+                                } else if(index !== 4){
+                                    grade_list[3].push(0)
+                                }
+                                break;
+                            case '솔':
+                                if (index === 5) {
+                                    grade_list[4].push(1)
+                                } else if(index !== 4){
+                                    grade_list[4].push(0)
+                                }
+                                break;
+                            case '라':
+                                if (index === 6) {
+                                    grade_list[5].push(1)
+                                } else if(index !== 4) {
+                                    grade_list[5].push(0)
+                                }
+                                break;
+                            case '시':
+                                if (index === 7) {
+                                    grade_list[6].push(1)
+                                } else if(index !== 4){
+                                    grade_list[6].push(0)
+                                }
+                                break;
+                            default:
+                                // code block for default case
+                        }
+                // console.log('음계 : ' + prediction[i].className);
+                // console.log('예측치 : ' + prediction[i].probability.toFixed(2)); 
+            }
+            //console.log(grade_list)
 
 
     }
@@ -436,6 +413,10 @@ export default {
 </script>
 
 <style>
+#webcam-container{
+    width: 600px;
+    height: 600px;
+}
 
 .game-content-container{
     height: 100%;
