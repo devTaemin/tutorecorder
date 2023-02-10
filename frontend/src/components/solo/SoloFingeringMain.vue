@@ -1,7 +1,7 @@
 <template>
     <el-row class="game-content-container">
         <el-col :span="15" class="game-content-my-cam">
-        <div id="webcam-container"></div>
+        <div id="webcam-container" width=100% height=100%></div>
         <!-- <div id="label-container"></div> -->
         </el-col>
         <el-col :span="8" class="game-content-info">
@@ -298,6 +298,8 @@ export default {
 
             // Convenience function to setup a webcam
             const flip = true; // whether to flip the webcam
+            // const Vwidth = window.innerWidth;
+            // const Vheight = window.innerHeight;
             webcam = new window.tmImage.Webcam(600, 600, flip); // width, height, flip
             await webcam.setup(); // request access to the webcam
             await webcam.play();
@@ -412,10 +414,10 @@ export default {
 </script>
 
 <style>
-#webcam-container{
+/* #webcam-container{
     width: 100%;
     height: 100%;
-}
+} */
 
 .game-content-container{
     height: 100%;
