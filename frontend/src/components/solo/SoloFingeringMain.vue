@@ -49,8 +49,8 @@ let grade_list = [[], [], [], [], [], [], []];
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
 
-// const APPLICATION_SERVER_URL = "http://localhost:5000/";
-const APPLICATION_SERVER_URL = "https://i8c206.p.ssafy.io/";
+const APPLICATION_SERVER_URL = "http://localhost:5000/";
+// const APPLICATION_SERVER_URL = "https://i8c206.p.ssafy.io/";
 
 // 타이머 텍스트 색상
 let color = 180; 
@@ -289,7 +289,7 @@ export default {
             const modelURL = ImageURL + "model.json";
             const metadataURL = ImageURL + "metadata.json";
 
-            // load the model and metadata
+            // load the model and metadatanpm
             // Refer to tmImage.loadFromFiles() in the API to support files from a file picker
             // or files from your local hard drive
             // Note: the pose library adds "tmImage" object to your window (window.tmImage)
@@ -299,7 +299,6 @@ export default {
             // Convenience function to setup a webcam
             const flip = true; // whether to flip the webcam
             webcam = new window.tmImage.Webcam(600, 600, flip); // width, height, flip
-            webcam.IMAGE_SIZE = 500;
             await webcam.setup(); // request access to the webcam
             await webcam.play();
             window.requestAnimationFrame(this.loop);
@@ -414,8 +413,8 @@ export default {
 
 <style>
 #webcam-container{
-    width: 600px;
-    height: 600px;
+    width: 100%;
+    height: 100%;
 }
 
 .game-content-container{
