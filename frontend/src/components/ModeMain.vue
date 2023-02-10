@@ -90,10 +90,10 @@ export default {
                 this.inputCorrect = false
                 this.errorMessage = '참여코드를 확인해 주세요!(20글자)'
                 this.roomCode = ''
+            } else{
+                  // 유효성 검사 끝
+                this.$router.push('/playroom/#' + this.roomCode);
             }
-            // 유효성 검사 끝
-            this.$router.push('/playroom/#' + this.roomCode);
-            this.roomCode 
         },
         createRoom: function() {
             this.$router.push({ name: 'playRoom' });

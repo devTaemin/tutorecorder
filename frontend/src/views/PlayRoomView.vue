@@ -18,10 +18,12 @@
 
             <!-- 대기방 비디오 디스플레이 -->
             <div id="YellowBoxVideo">
-                <user-video :stream-manager="publisher"/>
-                <user-video v-for="sub in subscribers" 
-                            :key="sub.stream.connection.connectionId" 
-                            :stream-manager="sub" />
+                    <user-video :stream-manager="publisher" :class="{ 'host': isOwner, 'no-ready': !isOwner}" id="my-video"/>
+                    <user-video v-for="sub in subscribers" 
+                                :key="sub.stream.connection.connectionId" 
+                                :stream-manager="sub"
+                                :id="sub.stream.connection.connectionId"
+                                class="no-ready"/>
             </div>
             <!-- 대기방 비디오 디스플레이 끝 -->
 
@@ -44,7 +46,7 @@
                         <el-button id="fontValue" :type="startButton" :disabled="!startButtonEnabled" @click="startButtonConfirm" :class="{ 'can-push-button': startButtonEnabled, 'cannot-push-button': !startButtonEnabled }">시작하기</el-button>
                     </div>
                     <div v-if="!isOwner && !readyButtonOn">
-                        <el-button id="fontValue" class="button-flicker can-push-button" type="warning" @click="this.readyButtonConfirm">준비하기</el-button>
+                        <el-button id="fontValue" class="button-flicker can-push-button" type="warning" @click="this.readyButtonConfirm(); ">준비하기</el-button>
                     </div>
                     <div v-if="!isOwner && readyButtonOn">
                         <el-button id="fontValue" type="success" @click="this.readyButtonConfirm" class="can-push-button">준비완료</el-button>
@@ -121,6 +123,7 @@
             <!-- 사용자 목록 끝 -->
 
 
+            <!-- 설정 박스 -->
             <div id="RedBoxRightBottom">
                 <img src="../assets/goback.png" 
                     alt="game setting img" 
@@ -134,6 +137,7 @@
                     style="cursor:pointer; 
                     width: 45px; height: 45px;"
                     class="can-push-button"
+                    @click="shareSettingVisible=true"
                 >
                 <img src="../assets/confsetting.png" 
                     alt="configuration setting img" 
@@ -142,8 +146,37 @@
                     class="can-push-button"
                 >
             </div>
+            <!-- 설정 박스 끝 -->
         </div>
         <!-- 오른쪽 박스 끝 -->
+
+        <!-- 쉐어 모달 창 -->
+        <el-dialog
+            v-model="shareSettingVisible"
+            width="35%"
+            align-center
+        >
+            <template #default>
+                <div id="share-modal-header">
+                    <h2>코드 공유하기</h2>
+                </div>
+                <el-input class="code-input" v-model="roomCode" readonly />
+                <el-button class="copy-button" v-if="!copyStatus" type="primary" @click="copyRoomCode">복사하기</el-button>
+                <el-button class="copy-button" v-if="copyStatus" type="success" @click="copyRoomCode">복사완료</el-button>
+
+                <div>
+                    <a id="kakaotalk-sharing-btn" href="javascript:;" @click="kakaoButton">
+                    <img src="https://developers.kakao.com/assets/img/about/logos/kakaotalksharing/kakaotalk_sharing_btn_medium.png"
+                        alt="카카오톡 공유 보내기 버튼" />
+                    </a>
+                </div>
+
+            </template>
+            <template #footer>
+                <el-button type="danger" id="share-modal-button" @click="shareSettingVisible=false">나가기</el-button>
+            </template>
+        </el-dialog>
+        <!-- 쉐어 모달 창 끝 -->
 
         <!-- 게임설정 모달 창 -->
         <el-dialog 
@@ -276,13 +309,23 @@ export default {
             isPlayGame: false,
             analizeVisible: false,
             soundGame: false,
+            shareSettingVisible:false,
+            copyStatus:false,
         }   
+    },
+    watch: {
+        shareSettingVisible() {
+            if (this.shareSettingVisible == false) {
+                this.copyStatus = false;
+            }
+        }
     },
     mounted() {
         // Check if the URL already has a room
         // (+) Furthermore, Use database/backend to check if the room code is valid or not
         this.checkMounted();
     },
+    
     beforeUnmount() {
         this.leaveSession();
     },
@@ -291,6 +334,23 @@ export default {
 
     },
     methods: {
+        kakaoButton: function() {
+            window.Kakao.Share.createDefaultButton({
+                container: '#kakaotalk-sharing-btn',
+                objectType: 'text',
+                text:
+                '튜토리코더 코드: ' + this.roomCode,
+                link: {
+                mobileWebUrl: 'https://i8c206.p.ssafy.io',
+                webUrl: 'https://i8c206.p.ssafy.io',
+                },
+            });
+        },  
+        copyRoomCode: function() {
+            this.copyStatus=false
+            navigator.clipboard.writeText(this.roomCode);
+            this.copyStatus=true
+        },
         soundGameStop: function() {
             this.soundGame = false;
         },
@@ -301,7 +361,7 @@ export default {
                     type: 'start-sound-game'
                 })
                 .then(() => {
-                })
+                })  
                 .catch(error => {
                     console.log(error);
                 })
@@ -334,14 +394,17 @@ export default {
             this.envSettingVisible=false
         },
         readyButtonConfirm: function() {
+            const myVideo = document.getElementById('my-video')
             if (this.readyButtonOn) {
                 // 준비 버튼이 활성화가 되어 있는 경우
                 this.readyButtonOn = false;
                 this.count--;
                 this.readyButton = "warning";
 
+                myVideo.setAttribute('class', 'no-ready')
+
                 this.publisher.session.signal({
-                    data: "",
+                    data: this.publisher.stream.connection.connectionId,
                     to: [],
                     type: 'ready-minus'
                 })
@@ -357,8 +420,10 @@ export default {
                 this.count++;
                 this.readyButton = "success";
 
+                myVideo.setAttribute('class', 'ready')
+
                 this.publisher.session.signal({
-                    data: "",
+                    data: this.publisher.stream.connection.connectionId,
                     to: [],
                     type: 'ready-plus'
                 })
@@ -531,6 +596,30 @@ export default {
                 console.error(error);
             })
         },
+        findHost() {
+            this.publisher.session.signal({
+                data: '',
+                to: [],
+                type: 'who-is-host'
+            })
+            .then(() => {
+            })
+            .catch(error => {
+                console.error(error);
+            })
+        },
+        iAmHost() {
+            this.publisher.session.signal({
+                data: this.publisher.stream.connection.connectionId,
+                to: [],
+                type: 'i-am-host'
+            })
+            .then(() => {
+            })
+            .catch(error => {
+                console.error(error);
+            })
+        },
         closeAnalAlone() {
             this.analizeVisible = false
         },
@@ -604,21 +693,27 @@ export default {
             })
 
             // 3-7) ready plus
-            this.session.on('signal:ready-plus', () => {
+            this.session.on('signal:ready-plus', (event) => {
+                const targetId = event.data
                 this.countReady++;
                 if (this.countReady == this.subscribers.length) {
                     // 추가
                     this.startButtonEnabled = true;
                     this.startButton = "primary";
                 }
+                const targetDiv = document.getElementById(targetId)
+                targetDiv.setAttribute('class', 'ready')
             })
             
 
             // 3-8) ready minus
-            this.session.on('signal:ready-minus', () => {
+            this.session.on('signal:ready-minus', (event) => {
+                const targetId = event.data
                 this.countReady--;
                 this.startButtonEnabled = false;
                 this.startButton = "danger";
+                const targetDiv = document.getElementById(targetId)
+                targetDiv.setAttribute('class', 'no-ready')
             })
 
             // 3-9) start game
@@ -654,6 +749,12 @@ export default {
                 this.analizeVisible = false
             })
 
+            // 3-14) who is host
+            this.session.on('signal:who-is-host', () => {
+                if (this.isOwner === true) {
+                    this.iAmHost()
+                }
+            })
 
 
             // 4) Get a token from the OpenVidu deployment
@@ -708,12 +809,14 @@ export default {
             // 2) Init a Session
             this.session = this.OV.initSession();
 
+
             // 3) Spcify the actions when events take place in the session
             // 3-1) streamCreated
             this.session.on('streamCreated', ({ stream }) => {
                 const subscriber = this.session.subscribe(stream);
                 this.subscribers.push(subscriber);
-            }) 
+            })
+
 
             // 3-2) streamDestroyed
             this.session.on('streamDestroyed', ({ stream }) => {
@@ -809,6 +912,28 @@ export default {
             this.session.on('signal:close-anal', () => {
                 this.analizeVisible = false
             })
+
+             // 3-14) ready plus
+             this.session.on('signal:ready-plus', (event) => {
+                const targetId = event.data
+                const targetDiv = document.getElementById(targetId)
+                targetDiv.setAttribute('class', 'ready')
+            })
+            
+
+            // 3-15) ready minus
+            this.session.on('signal:ready-minus', (event) => {
+                const targetId = event.data
+                const targetDiv = document.getElementById(targetId)
+                targetDiv.setAttribute('class', 'no-ready')
+            })
+
+            // 3-16) i-am-host
+            this.session.on('signal:i-am-host', (event) => {
+                const targetId = event.data
+                const targetDiv = document.getElementById(targetId)
+                targetDiv.setAttribute('class', 'host')
+            })
         
 
             // 4) Get a token from the OpenVidu deployment
@@ -833,7 +958,12 @@ export default {
                         this.publisher = publisher;
 
                         this.session.publish(this.publisher);
-            
+
+                        if (this.session.streamManagers.length === 0) {
+                            this.leaveSession();
+                        }
+
+                        this.findHost()
                     })
                     .catch((error) => {
                         console.log("There was an error connecting to the session: ", 
@@ -911,7 +1041,7 @@ export default {
     width:99%;
     height:65%;
     margin: 0;
-    padding: 0;
+    padding: 10;
   }
   #GreenBoxChat{
     /* border: 5px solid green; */
@@ -1112,4 +1242,62 @@ button {
 .cannot-push-button{
     cursor: url(../assets/cursor_disable.png), auto !important;
 }
+
+#share-modal-header {
+    margin-bottom: 40px !important
+}
+
+#share-modal-button {
+    display: flex;
+    justify-items: center;
+    width: 20%;
+    height: 20%;
+    margin: auto;
+    font-size: 1vw;
+    font-family: 'JUA', serif;  
+}
+
+.copy-button {
+    display:inline-block;
+    /* justify-items: center; */
+    width: 100px;
+    height: 40px;
+    margin: auto;
+    font-size: 15px;
+    font-family: 'JUA', serif;  
+}
+.code-input {
+  width: 20vw !important;
+}
+.host{
+    border: 5px solid rgb(230, 113, 24);
+    height: 25vh;
+    border-radius: 10px;
+    margin: 2%;
+    margin-top: 0.75%;
+    margin-bottom: 0.75%;
+    padding: 0;  
+    height: 42%;
+}
+.ready{
+  border: 5px solid blue;
+  height: 25vh;
+  border-radius: 10px;
+  margin: 2%;
+    margin-top: 0.75%;
+    margin-bottom: 0.75%;
+    padding: 0;  
+    height: 42%;
+ }
+ .no-ready{
+  border: 5px solid rgba(191, 180, 180, 0.6);
+  height: 25vh;
+  border-radius: 10px;
+    margin: 2%;
+    margin-top: 0.75%;
+    margin-bottom: 0.75%;
+    padding: 0;  
+    height: 42%;
+ }
+
 </style>
