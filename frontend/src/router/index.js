@@ -43,6 +43,11 @@ const routes = [
     component: () => import(/* webpackChunkName: "solo" */ '../views/solo/SoloAnalizeView.vue')
   },
   {
+    path: '/solo/finger',
+    name: 'soloFinger',
+    component: () => import(/* webpackChunkName: "solo" */ '../views/solo/SoloFingeringView.vue')
+  },
+  {
     path: '/playroom',
     name: 'playRoom',
     // component: Playroom,
