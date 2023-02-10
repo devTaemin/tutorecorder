@@ -125,6 +125,7 @@
             <!-- 사용자 목록 끝 -->
 
 
+            <!-- 설정 박스 -->
             <div id="RedBoxRightBottom">
                 <img src="../assets/goback.png" 
                     alt="game setting img" 
@@ -147,6 +148,7 @@
                     class="can-push-button"
                 >
             </div>
+            <!-- 설정 박스 끝 -->
         </div>
         <!-- 오른쪽 박스 끝 -->
 
