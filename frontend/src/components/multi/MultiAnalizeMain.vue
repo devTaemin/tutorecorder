@@ -7,10 +7,25 @@
                 <!-- 랭크 -->
                 <div id="redBoxLeft" >
                     <div class="analize-result-title">분석결과</div>
-                    <img id="captureImg" src="../../assets/multi/rankcapture.png" alt="캡쳐" style="left:41%; top: 19%;">
-                    <img id="captureImg" src="../../assets/multi/rankcapture.png" alt="캡쳐" style="left:17%; top: 32%;">
-                    <img id="captureImg" src="../../assets/multi/rankcapture.png" alt="캡쳐" style="left:63%; top: 33%;">
-                    <p id="totalScore">종합점수 : {{ totalgrade }}</p>
+                    <div id="leftSubBox">
+                        <!-- 이미지 삽입 구간 -->
+                        <!-- <img id="captureImg" src="../../assets/multi/rankcapture.png" alt="캡쳐" style="padding-top:7%; z-index:4321;">
+                            <img id="captureImg" src="../../assets/multi/rankcapture.png" alt="캡쳐" style="padding-bottom:12%; z-index:4321;">
+                            <img id="captureImg" src="../../assets/multi/rankcapture.png" alt="캡쳐" style="padding-top:7%; z-index:4321;"> -->
+                        <!-- 이미지 사용 안하면 아래 스타일 제거  -->
+                        <!-- 이미지 삽입 구간 끝 -->
+
+                        <!-- 텍스트 삽입 구간 -->
+                        <p style="width:30%; padding-top:15%; z-index:4321;">{{ n1 }}</p>
+                        <p style="width:30%; padding-bottom:12%; z-index:4321;">{{ n2 }}</p>
+                        <p style="width:30%; padding-top:15%; z-index:4321;">{{ n3 }}</p>
+                        <!-- 텍스트 삽입 구간 끝 -->
+                       
+                        <img src="../../assets/multi/rank.png" alt="랭크" 
+                        style="width:80%; margin-top: -17%;">
+                        <p id="totalScore">종합점수 : {{ totalgrade }}</p>
+                    </div>
+
                 </div>
                 <!-- 랭크 끝 -->
 
@@ -61,7 +76,7 @@
                 <!-- 게임 분석 그래프 -->
             </div>
             <div>
-                <el-button class="solo-out-button" @click="$emit('close-modal')" style="margin-top:0%;">나가기</el-button>
+                <el-button class="solo-out-button" @click="closeAnal" style="margin-top:0%;">나가기</el-button>
             </div>
             
         </div>
@@ -215,12 +230,29 @@ export default {
             gameResult: [],
             analizeResultText: '',
             gradeImg: ['', '', '', '', '', '', ''],
-            totalgrade: 0
+
+
+
+            // 연결 필요
+            totalgrade: 0,
+            n1:'player1',
+            n2:'player2',
+            n3:'player3',
         }
+    },
+    props: {
+        isOwner: Boolean,
     },
     methods: {
         goSoloSound() {
             this.$router.push({ name: 'soloSound' })
+        },
+        closeAnal() {
+            if (this.isOwner === true) {
+                this.$emit('closeAnal')
+            } else {
+                this.$emit('closeAnalAlone')
+            }
         }
     }
 }
@@ -239,7 +271,7 @@ export default {
 
 }
 .overlay{
-    border: 5px solid black;
+    /* border: 5px solid black; */
     margin-top:2%;
     background-color: #F2E6E6;
     border-radius: 40px;
@@ -248,7 +280,7 @@ export default {
 
 
 #container{
-    border: 5px solid  gray;    
+    /* border: 5px solid  gray;     */
     width: 99%;
     height: 83vh;
     display: flex;
@@ -260,45 +292,55 @@ export default {
 
 /* 왼쪽 */
 #redBoxLeft{
-    border: 5px solid red;
+    border: 5px solid rgba(0, 0, 0, 0.374);
     border-radius: 40px;
     width: 50%;
     height: 80vh;
-    background-image: url("../../assets/multi/rank.png");
-    background-repeat: no-repeat;
-    background-size: 60% 40%;
-    background-position: 50% 73%;
-    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 .analize-result-title{
-    border: 5px solid gold;
+    /* border: 5px solid gold; */
     font-size: 2vw;    
     text-align: start;
-    padding-top: 5%;
+    padding-top: 2%;
     font-family: 'JUA', serif;
     text-align: center;
 }
+#leftSubBox{
+    /* border: 5px solid hotpink; */
+    width: 80%;
+    height:90%;
+    margin-top:5vh;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;    
+}
 
 #captureImg{
-    border: 5px solid brown;
-    width:20%;
-    position: absolute;
+    /* border: 5px solid brown; */
+    margin:5%;
+    width:7vw;
+    /* height: 10%;; */
+
     /* 위치 조정은 인라인으로 여백 조정 */
 }
 #totalScore{
-    border:5px solid red; 
-    width:98%;
+    /* border:5px solid red;  */
+    width:47%;
     height:8%;
     font-family: 'JUA', serif;
     font-size: 2vw;
-    margin-top: 55vh;
+  
+    
 }
 /* 왼쪽 끝 */
 
 /* 오른쪽  */
 
 #analize-container{
-    border: 5px solid blue;
+    /* border: 5px solid blue; */
     
     background-color: rgba(0, 0, 0, 0.374);
     height: 80vh;

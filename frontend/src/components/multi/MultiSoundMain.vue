@@ -4,15 +4,17 @@
             <el-col :span="6" class="game-content-others-cam">
                 <el-button class="carousel-button" :icon="ArrowUpBold" @click="goPrev"></el-button>
                 <div class="carousel" id="cam-carousel">
-                    <div v-for="subscriber in subscribers" :key="subscriber" class="caroursel-item">
-                        <h3>{{ subscriber }}</h3>
+                    <div v-for="sub in subscribers" :key="sub" class="caroursel-item">
+                        <user-video :stream-manager="sub" />
                     </div>
                 </div>
                 <el-button class="carousel-button" :icon="ArrowDownBold" @click="goNext"></el-button>
             </el-col>
+
             <el-col :span="17" class="game-content-my-cam">
-                <user-video :stream-manager="mainStreamManager"/>
+                <user-video :stream-manager="publisher"/>
             </el-col>
+
         </el-col>
         <el-col :span="8" class="game-content-info">
             <div class="game-content-title">소리내기</div>
@@ -24,11 +26,11 @@
             </div>
             <div class="button-container">
                 <div class="option-container">
-                    <el-button :class="{ 'solo-analyze-button': !playGameAnalize, 'solo-analyze-button-playgame': playGameAnalize }" :disabled="playGameAnalize" @click="goMultiAnalize">분석</el-button>
+                    <el-button :class="{ 'solo-analyze-button': !playGameAnalize, 'solo-analyze-button-playgame': playGameAnalize, 'is-owner': !isOwner }" :disabled="playGameAnalize" @click="goMultiAnalize">분석</el-button>
                     <el-button class="solo-out-button" @click="goRoom">나가기</el-button>
                 </div>
                 <div class="solo-start-button-container">
-                    <el-button :class="{ 'solo-start-button': !playGame, 'solo-start-button-playgame': playGame }" :disabled="playGame" @click="gameStart(); init()">{{ gameState }}</el-button>
+                    <el-button :class="{ 'solo-start-button': !playGame, 'solo-start-button-playgame': playGame, 'is-owner': !isOwner }" :disabled="playGame" @click="init(); emitGameStart()">{{ gameState }}</el-button>
                 </div>
             </div>
         </el-col>
@@ -37,37 +39,20 @@
 
 <script>
 import { ArrowUpBold, ArrowDownBold } from '@element-plus/icons-vue'
-import { OpenVidu } from "openvidu-browser";
 import axios from "axios";
 import UserVideo from "@/components/video/soloUserVideo.vue"
 import { mapActions } from 'vuex'
 import '@tensorflow/tfjs'
 import * as speechCommands from '@tensorflow-models/speech-commands'
 
-// const APPLICATION_SERVER_URL = "http://localhost:5000/";
-const APPLICATION_SERVER_URL = "https://i8c206.p.ssafy.io/";
-
 let pitch_list = ['도', '레', '미', '파', '솔', '라', '시'];
 const pitch_list2 = ['도', '레', '미', '파', '솔', '라', '시'];
 
 
-// pick_list에 나올 음계 저장
-// 최소 한 번씩 나오게 하는 구간
+
 let pick_list
-// for (let i=0; i<7; i++) {
-//     const pick_index = Math.floor(Math.random() * pitch_list.length);
-//     pick_list.push(pitch_list[pick_index]);
-//     pitch_list.splice(pick_index, 1);
-// }
-// 최소 한 번씩 나오게 하는 구간 끝
-
 const problem = 3
-// // 랜덤으로 problem개 더 출력
-// for (let i=0; i<problem; i++) {
-//     pick_list.push(pitch_list2[Math.floor(Math.random() * 7)]);
-// }
 
-// pick_list.push('참 잘했어요')
 const total_problem = problem + 9;
 const URL = "https://teachablemachine.withgoogle.com/models/eptQYA8MT/";
 
@@ -88,6 +73,10 @@ export default {
     },
     props: {
         difficulty: String,
+        publisher: Object,
+        subscribers: Array,
+        isOwner: Boolean,
+        soundGame: Boolean,
     },
     data() {
         return {
@@ -95,12 +84,8 @@ export default {
             ArrowUpBold: ArrowUpBold,
             ArrowDownBold: ArrowDownBold,
 
-            // openvidu object
             OV: undefined,
             session: undefined,
-            mainStreamManager: undefined,
-            publisher: undefined,
-            subscribers: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
 
             
             // Join form
@@ -113,9 +98,9 @@ export default {
             gameState: '게임 시작!',
             playGame: false,
             problem: '',
+            functionTimer: '',
             
-            // playGameAnalize: true,
-            playGameAnalize: false,
+            playGameAnalize: true,
         }
     },
     computed: {
@@ -124,6 +109,15 @@ export default {
                 return this.$store.state.mySessionId
             } else {
                 return 'SessionA'
+            }
+        },
+    },
+    watch: {
+        soundGame() {
+            console.log(this.soundGame);
+            if(this.soundGame) {
+                this.init();
+                this.gameStart();
             }
         }
     },
@@ -134,8 +128,12 @@ export default {
             this.$emit('goMultiAnalize')
         },
         goRoom() {
-            this.startTimer().timer
-            this.$emit('goRoom')
+            if (this.isOwner === true) {
+                this.$emit('goRoom')
+            } else {
+                this.$emit('goRoomAlone')
+            }
+
         },
         goNext() {
             let height = document.getElementById('cam-carousel').clientHeight;
@@ -168,11 +166,7 @@ export default {
         async init () {
             const recognizer = await this.createModel() // 모델 생성
             const classLabels = recognizer.wordLabels() // get class labels, 학습 시킨 클래스들
-            // 실시간으로 계이름 전체 점수 표시해주는 역할(필요없어서 지움)
-            // const labelContainer = document.getElementById('label-container') // 데이터 라벨 생성
-            // for (let i = 0; i < classLabels.length; i++) {
-            //     labelContainer.appendChild(document.createElement('div'))
-            // }
+
 
             // listen() takes two arguments:
             // 1. A callback function that is invoked anytime a word is recognized.
@@ -181,10 +175,6 @@ export default {
                 const scores = result.scores // eslint-disable-line no-unused-vars
                 // render the probability scores per class
                 for (let i = 0; i < classLabels.length; i++) {
-                    // const classPrediction = classLabels[i] + ': ' + result.scores[i].toFixed(2) // 소숫점까지 표기(2자리)
-                    //   console.log('음계' + classLabels[i])
-                    //   console.log('점수' + result.scores[i])
-                    // 도, 레, 미, 파, 솔, 라, 시, 음이탈, 바람빠지는소리, 배경소음
                     const index = result.scores.indexOf(Math.max(...result.scores));
                     switch(this.pitch_target) {
                         case '도':
@@ -239,9 +229,6 @@ export default {
                         default:
                             // code block for default case
                     }
-
-                    // 실시간 전체 점수 표시해주는 역할(필요없어서 지움)
-                    // labelContainer.childNodes[i].innerHTML = classPrediction
                 }
             }, {
             includeSpectrogram: true, // in case listen should return result.spectrogram
@@ -249,9 +236,9 @@ export default {
             invokeCallbackOnNoiseAndUnknown: true,
             overlapFactor: 0.50 // probably want between 0.5 and 0.75. More info in README
             })
-
-            // Stop the recognition in 5 seconds.
-            // setTimeout(() => recognizer.stopListening(), 5000);
+        },
+        emitGameStart() {
+            this.$emit('emitGameStart');
         },
         gameStart() {
             this.initGameResult()
@@ -298,6 +285,8 @@ export default {
                             this.gameState = '게임 시작!'
                             this.playGameAnalize = false
                             this.playGame = false
+                            
+                            this.$emit('soundGameStop');
                         }
                     }, (this.difficulty * 1000))
                 } 
@@ -307,7 +296,7 @@ export default {
             this.timer = this.difficulty - 1;
             // count를 이용해서 문제 끝나면 타이머 사라지게 함
             let count = this.difficulty * 2
-            let timer = setInterval(() => {
+            this.functionTimer = setInterval(() => {
                 this.timer -= 1;
                 count += 1
                 if (this.timer === -1) {
@@ -315,13 +304,13 @@ export default {
                     color = 180;
                 }
                 if (count/this.difficulty === total_problem) {
-                    clearInterval(timer)
+                    clearInterval(this.functionTimer)
                     this.timer = ''
                 }
             }, 1000)
         },
         timerRed() {
-            // 5초일때 -3.6, 4초일때 -4.5 , 3초일때 -6
+            color = 180;
             const timer = document.getElementById("solo-sound-timer");
             timer.style.color = `rgb(255, 180, 180)`;
             let count = 0
@@ -336,113 +325,8 @@ export default {
                 }
             }, 100);
         },
-
-        // OpenVidu
-
-        joinSession() {
-            // 1. OpenVidu 객체 가져오기
-            this.OV = new OpenVidu();
-            
-            // 2. 세션 시작
-            this.session = this.OV.initSession();
-
-            // 3. 세션에서 일어나는 이벤트 
-            // 3-1. 새로운 스트림 생성시 사용자 등록
-            this.session.on("streamCreated", ({ stream }) => {
-                const subscriber = this.session.subscribe(stream);
-                this.subscribers.push(subscriber);
-            });
-
-            // 3-2. 스트림 말소시 사용자 제외
-            this.session.on("streamDestroyed", ({ stream }) => {
-                const index = this.subscribers.indexOf(stream.streamManager, 0);
-                if (index >= 0) {
-                this.subscribers.splice(index, 1);
-                }
-            })
-
-            // 3-3. 예외 발생 시
-            this.session.on("exception", ({ exception }) => {
-                console.warn(exception);
-            })
-
-            // 4. 유효한 사용자 토큰과 세션에 접속하기
-            this.getToken(this.$store.state.mySessionId).then((token) => {
-                this.session.connect(token, { clientData: this.$store.state.myUserName })
-                .then(() => {
-
-                    // 5. 카메라 설정
-                    let publisher = this.OV.initPublisher(undefined, {
-                    audioSource: undefined,
-                    videoSource: undefined,
-                    publishAudio: true,
-                    publishVideo: true,
-                    // ratio: 16/9,
-                    resolution: "240x160",
-                    framerate: 30,
-                    insertMode: "Append",
-                    mirror: false,
-                    });
-
-                    this.mainStreamManager = publisher;
-                    this.publisher = publisher;
-
-                    // 6. 스트림 퍼블리시
-                    this.session.publish(this.publisher);
-                })
-                .catch((error) => {
-                    console.log("ERROR: ", error.code, error.message);
-                });
-            });
-
-            window.addEventListener("beforeunload", this.leaveSession);
-        }, //joinSession 함수 끝
-
-        leaveSession() {
-            // 세션 종료
-            if (this.session) this.session.disconnect();
-
-            // 모든 요소 초기화
-            this.session = undefined;
-            this.mainStreamManager = undefined;
-            this.publisher = undefined;
-            this.subscribers = [];
-            this.OV = undefined;
-
-            this.initMySessionId(); // 세션 초기화, 닉네임은 유지
-            window.removeEventListener("beforeunload", this.leaveSession);
-            this.$router.push({ name: 'mode' }) // 모드 선택으로 이동
-        },
-
-        updateMainVideoStreamManager(stream) {
-            // 메인 비디오 적용
-            if (this.mainStreamManager === stream) return;
-            this.mainStreamManager = stream;
-        },
-
-        async getToken(mySessionId) {
-            const sessionId = await this.createSession(mySessionId);
-            return await this.createToken(sessionId);
-        },
-
-        async createSession(sessionId) {
-            const response = await axios.post(APPLICATION_SERVER_URL + 'api/sessions', { customSessionId: sessionId },{
-                headers: { 'Content-Type': 'application/json', },
-            });
-            return response.data;
-        },
-
-
-        async createToken(sessionId) {
-            const response = await axios.post(APPLICATION_SERVER_URL + 'api/sessions/' + sessionId + '/connections', {}, {
-                headers: { 'Content-Type': 'application/json' }
-            });
-            return response.data;
-        }
     },
-    mounted() {
-        this.joinSession()
-    }
+    
 }
 </script>
 
@@ -587,5 +471,9 @@ export default {
     font-size: 5vh;
     color: white;
     font-family: 'JUA', serif;
+}
+
+.is-owner{
+    display: none;
 }
 </style>
