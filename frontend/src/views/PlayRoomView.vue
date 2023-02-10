@@ -18,14 +18,12 @@
 
             <!-- 대기방 비디오 디스플레이 -->
             <div id="YellowBoxVideo">
-                <span>
                     <user-video :stream-manager="publisher" :class="{ 'host': isOwner, 'no-ready': !isOwner}" id="my-video"/>
                     <user-video v-for="sub in subscribers" 
                                 :key="sub.stream.connection.connectionId" 
                                 :stream-manager="sub"
                                 :id="sub.stream.connection.connectionId"
                                 class="no-ready"/>
-                </span>
             </div>
             <!-- 대기방 비디오 디스플레이 끝 -->
 
@@ -1037,8 +1035,8 @@ export default {
   }
   #YellowBoxVideo{
     /* border: 5px solid yellow; */
-    box-sizing: border-box;
-    display: flex;
+    display: flex;  
+    flex-wrap: wrap;
     justify-content: flex-start;
     width:99%;
     height:65%;
@@ -1273,12 +1271,33 @@ button {
 }
 .host{
     border: 5px solid rgb(230, 113, 24);
+    height: 25vh;
+    border-radius: 10px;
+    margin: 2%;
+    margin-top: 0.75%;
+    margin-bottom: 0.75%;
+    padding: 0;  
+    height: 42%;
 }
 .ready{
   border: 5px solid blue;
+  height: 25vh;
+  border-radius: 10px;
+  margin: 2%;
+    margin-top: 0.75%;
+    margin-bottom: 0.75%;
+    padding: 0;  
+    height: 42%;
  }
  .no-ready{
   border: 5px solid rgba(191, 180, 180, 0.6);
+  height: 25vh;
+  border-radius: 10px;
+    margin: 2%;
+    margin-top: 0.75%;
+    margin-bottom: 0.75%;
+    padding: 0;  
+    height: 42%;
  }
 
 </style>
