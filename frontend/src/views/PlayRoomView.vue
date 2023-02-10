@@ -318,7 +318,7 @@ export default {
             if (this.shareSettingVisible == false) {
                 this.copyStatus = false;
             }
-        }
+        },
     },
     mounted() {
         // Check if the URL already has a room
@@ -353,6 +353,7 @@ export default {
         },
         soundGameStop: function() {
             this.soundGame = false;
+            this.findHost();
         },
         emitGameStart: function() {
             this.publisher.session.signal({
@@ -555,6 +556,7 @@ export default {
             }
         },
         goRoom() {
+            this.findHost();
             this.publisher.session.signal({
                 data: '',
                 to: [],
@@ -573,6 +575,7 @@ export default {
             this.publisher.publishAudio(true);
         },
         goMultiAnalize() {
+            this.findHost();
             this.publisher.session.signal({
                 data: '',
                 to: [],
@@ -585,6 +588,7 @@ export default {
             })
         },
         closeAnal() {
+            this.findHost();
             this.publisher.session.signal({
                 data: '',
                 to: [],
@@ -883,6 +887,7 @@ export default {
             this.session.on('signal:start-game', () => {
                 this.startGame();
                 this.publisher.publishAudio(false);
+                this.readyButtonConfirm()
             })
 
             // 3-8) start sound game
