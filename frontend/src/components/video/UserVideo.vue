@@ -37,17 +37,14 @@ export default {
 
   #video-div{
     border-radius: 10px;
-    /* display: inline-block; */
     margin: 1%;
     margin-top: 1.5%;
     margin-bottom: 1.5%;
     padding: 0;  
-    height: 42%;
   }
 
   #video-box {
     /* border: 15px solid red;  */
-    display: inline-block;
     margin: 0;
     padding: 0;  
   }
