@@ -155,26 +155,31 @@
             v-model="shareSettingVisible"
             width="35%"
             align-center
+            style="border-radius: 10px; background-color: #DFE4F6;"
         >
             <template #default>
                 <div id="share-modal-header">
                     <h2>코드 공유하기</h2>
                 </div>
-                <el-input class="code-input" v-model="roomCode" readonly />
-                <el-button class="copy-button" v-if="!copyStatus" type="primary" @click="copyRoomCode">복사하기</el-button>
-                <el-button class="copy-button" v-if="copyStatus" type="success" @click="copyRoomCode">복사완료</el-button>
+                <input class="code-input" v-model="roomCode" readonly/>
 
-                <div>
-                    <a id="kakaotalk-sharing-btn" href="javascript:;" @click="kakaoButton">
-                    <img src="https://developers.kakao.com/assets/img/about/logos/kakaotalksharing/kakaotalk_sharing_btn_medium.png"
-                        alt="카카오톡 공유 보내기 버튼" />
-                    </a>
+                <div style="display: flex; justify-content: center; margin-bottom: 10%;">
+                    <div style="width: 40%;">
+                        <a id="kakaotalk-sharing-btn" href="javascript:;" @click="kakaoButton">
+                            <img src="https://developers.kakao.com/assets/img/about/logos/kakaotalksharing/kakaotalk_sharing_btn_medium.png"
+                            alt="카카오톡 공유 보내기 버튼" />
+                        </a>    
+                    </div>
+    
+                    <div style="display:flex; flex-direction:column; align-items: center; width:40%;">
+                        <!-- <img src="../assets/URL.png" alt="URL 공유하기" style="width:30%;"> -->
+                        <el-button class="copy-button" v-if="!copyStatus" type="primary" @click="copyRoomCode">코드복사</el-button>
+                        <el-button class="copy-button" v-if="copyStatus" type="success" @click="copyRoomCode">복사완료</el-button>
+                    </div>
                 </div>
+                
+            </template>
 
-            </template>
-            <template #footer>
-                <el-button type="danger" id="share-modal-button" @click="shareSettingVisible=false">나가기</el-button>
-            </template>
         </el-dialog>
         <!-- 쉐어 모달 창 끝 -->
 
@@ -1259,15 +1264,20 @@ button {
 
 .copy-button {
     display:inline-block;
-    /* justify-items: center; */
-    width: 100px;
-    height: 40px;
+    width: 70px;
+    height: 70px;
     margin: auto;
+    padding: 0;
     font-size: 15px;
-    font-family: 'JUA', serif;  
+    font-family: 'JUA', serif;
+    border-radius: 100px;
 }
 .code-input {
-  width: 20vw !important;
+  width: 17vw !important;
+  text-align: center;
+  font-family: 'JUA', serif;
+  border-radius: 10px;
+  margin-bottom: 10%;
 }
 .host{
     border: 5px solid rgb(230, 113, 24);
