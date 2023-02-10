@@ -19,7 +19,7 @@
             <!-- 대기방 비디오 디스플레이 -->
             <div id="YellowBoxVideo">
                 <span>
-                    <user-video :stream-manager="publisher" class="no-ready" id="my-video"/>
+                    <user-video :stream-manager="publisher" :class="{ 'host': isOwner, 'no-ready': !isOwner}" id="my-video"/>
                     <user-video v-for="sub in subscribers" 
                                 :key="sub.stream.connection.connectionId" 
                                 :stream-manager="sub"
@@ -596,6 +596,30 @@ export default {
                 console.error(error);
             })
         },
+        findHost() {
+            this.publisher.session.signal({
+                data: '',
+                to: [],
+                type: 'who-is-host'
+            })
+            .then(() => {
+            })
+            .catch(error => {
+                console.error(error);
+            })
+        },
+        iAmHost() {
+            this.publisher.session.signal({
+                data: this.publisher.stream.connection.connectionId,
+                to: [],
+                type: 'i-am-host'
+            })
+            .then(() => {
+            })
+            .catch(error => {
+                console.error(error);
+            })
+        },
         closeAnalAlone() {
             this.analizeVisible = false
         },
@@ -725,6 +749,12 @@ export default {
                 this.analizeVisible = false
             })
 
+            // 3-14) who is host
+            this.session.on('signal:who-is-host', () => {
+                if (this.isOwner === true) {
+                    this.iAmHost()
+                }
+            })
 
 
             // 4) Get a token from the OpenVidu deployment
@@ -897,6 +927,13 @@ export default {
                 const targetDiv = document.getElementById(targetId)
                 targetDiv.setAttribute('class', 'no-ready')
             })
+
+            // 3-16) i-am-host
+            this.session.on('signal:i-am-host', (event) => {
+                const targetId = event.data
+                const targetDiv = document.getElementById(targetId)
+                targetDiv.setAttribute('class', 'host')
+            })
         
 
             // 4) Get a token from the OpenVidu deployment
@@ -925,7 +962,8 @@ export default {
                         if (this.session.streamManagers.length === 0) {
                             this.leaveSession();
                         }
-            
+
+                        this.findHost()
                     })
                     .catch((error) => {
                         console.log("There was an error connecting to the session: ", 
@@ -1231,4 +1269,14 @@ button {
 .code-input {
   width: 20vw !important;
 }
+.host{
+    border: 5px solid rgb(230, 113, 24);
+}
+.ready{
+  border: 5px solid blue;
+ }
+ .no-ready{
+  border: 5px solid rgba(191, 180, 180, 0.6);
+ }
+
 </style>
