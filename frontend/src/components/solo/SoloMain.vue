@@ -14,11 +14,18 @@
                 <img id="iconImg" src="@/assets/soloSelect-sound.png" alt="소리내기 img">
                 <img id="textImg" src="@/assets/text/solo_sound.png" alt="소리내기">
             </div>
+        </div>
+        <div id="blueBoxContainer">
             <div id="redBoxComponent" @click="moveSoloSong">
                 <img id="iconImg" src="@/assets/soloSelect-song.png" alt="연주하기 img">
                 <img id="textImg" src="@/assets/text/solo_song.png" alt="연주하기">
             </div>
+            <div id="redBoxComponent" @click="moveSoloFingering">
+                <img id="iconImg" src="@/assets/soloSelect-fingering.png" alt="운지법 img">
+                <img id="textImg" src="@/assets/text/solo_fingering.png" alt="운지법">
+            </div>
         </div>
+
 
         
         <!-- 뒤로가기, 홈버튼 -->
@@ -51,14 +58,15 @@ export default {
         moveSoloSong: function() {
             this.$router.push({ name: 'soloSong' })
         },
+        moveSoloFingering: function() {
+            this.$router.push({ name :'soloFinger' })
+        },
         goback() {  
-            console.log('go mode select')
             this.$router.push({ name: 'mode' })
         },
         goHome() {
-            console.log('go home')
             this.$router.push({ name: 'home' })
-        }
+        },
 
     },  
 
@@ -92,17 +100,18 @@ export default {
     #blueBoxContainer{
         /* border: 5px solid blue; */
         display: flex;
+        justify-content: space-between;
+        align-items: center;
         width: 80%;
-        height: 60%;
+        height: 30%;
     }
     #redBoxComponent{
         /* border: 5px solid red; */
-        width: 40%;
-        height: 99%;
+        width: 45%;
+        height: 60%;
         display: flex;
-        flex-direction: column;
-        align-items: center;
         justify-content: center;
+        align-items: center;
 
         background-color: #F2E6E6;   
         border-radius: 20px;
@@ -113,12 +122,14 @@ export default {
 
     #iconImg{
         /* border: 5px solid violet; */
-        width: 60%;
+        width: 20%;
     } 
     #textImg{
         /* border: 5px solid gold; */
-        width: 60%;
-        margin-top: 10%;
+        width: 45%;
+        height: 10vh;
+        margin-left: 4% ;
+
     }
 
 
