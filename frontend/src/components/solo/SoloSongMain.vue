@@ -342,7 +342,8 @@ function v(a, e, t) {
 function w(a) {
   let span = v("span", {id: "innerSpan", style: "display: inline-flex; align-items: center;"}, a)
   let button = v("button", {class: "el-button", type: "button",id: "startBtn"}, span)
-  button.classList.add("solo-start-button")
+  button.classList.add("solo-start-button-disable")
+  button.disabled = true
   return button
 }
 
@@ -658,17 +659,36 @@ class x extends _ {
       this.songTitle = document.getElementById("song-title")
       this.songBGI = document.getElementById("game-BG")
       this.songTitle.innerHTML = r.title;
+      const startButton = document.getElementById("startBtn")
       if (r.title === "애국가") {
+        if (document.getElementById("innerSpan").innerHTML === '곡을 선택해주세요') {
+          document.getElementById("innerSpan").innerHTML = "시작하기"
+        }
+        startButton.disabled = false
+        startButton.classList.remove("solo-start-button-disable")
+        startButton.classList.add("solo-start-button")
         this.songBGI.classList.remove("no-image")
         this.songBGI.classList.remove("airplane")
         this.songBGI.classList.remove("beadrain")
         this.songBGI.classList.add("nationalflag")
       } else if (r.title === "비행기"){
+        if (document.getElementById("innerSpan").innerHTML === '곡을 선택해주세요') {
+          document.getElementById("innerSpan").innerHTML = "시작하기"
+        }
+        startButton.disabled = false
+        startButton.classList.remove("solo-start-button-disable")
+        startButton.classList.add("solo-start-button")
         this.songBGI.classList.remove("no-image")
         this.songBGI.classList.remove("nationalflag")
         this.songBGI.classList.remove("beadrain")
         this.songBGI.classList.add("airplane")
       } else if (r.title === "구슬비") {
+        if (document.getElementById("innerSpan").innerHTML === '곡을 선택해주세요') {
+          document.getElementById("innerSpan").innerHTML = "시작하기"
+        }
+        startButton.disabled = false
+        startButton.classList.remove("solo-start-button-disable")
+        startButton.classList.add("solo-start-button")
         this.songBGI.classList.remove("no-image")
         this.songBGI.classList.remove("nationalflag")
         this.songBGI.classList.remove("airplane")
@@ -756,7 +776,7 @@ class x extends _ {
     }
     initElements() {
       //버튼 생성하는 곳
-      (this.btnPlay = w("시작하기")),
+      (this.btnPlay = w("곡을 선택해주세요")),
       (this.chkMelody = makeSwitch()),
       (this.inVolume = v("input", { type: "range", min: 0, max: 100, value: 30, step: 1 })),
       (this.buttons = v("div", { class: "song-editor" }, [
@@ -1259,6 +1279,22 @@ class x extends _ {
   margin-left: 0 !important;
   margin-top: 1.5vh;
   cursor: url(../../assets/cursor_click.png), auto !important;
+}
+
+.solo-start-button-disable{
+  background-color: #DD5A3E !important;
+  color: white !important;
+  font-family: 'JUA', serif !important;
+  font-size: 2vw !important;
+  width: 80% !important;
+  height: 6vh !important;
+  margin-left: 0 !important;
+  margin-top: 1.5vh;
+  cursor: url(../../assets/cursor_disable.png), auto !important;
+  -webkit-animation: flickerAnimation 1s infinite;
+  -moz-animation: flickerAnimation 1s infinite;
+  -o-animation: flickerAnimation 1s infinite;
+  animation: flickerAnimation 1s infinite;
 }
 
 </style>
