@@ -1,12 +1,8 @@
 <template>
     <el-row class="game-content-container">
-        <!-- <el-col :span="15" class="game-content-my-cam">
-            <user-video :stream-manager="mainStreamManager"/>
-        </el-col> -->
         <el-col :span="15" class="game-content-my-cam">
-        <div id="webcam-container"></div>
-        <div id="label-container"></div>
-        </el-col>
+            <user-video :stream-manager="mainStreamManager"/>
+        </el-col>       
         <el-col :span="8" class="game-content-info">
             <div class="game-content-title">소리내기</div>
             <div class="game-content-target">
@@ -32,7 +28,7 @@
 import '@tensorflow/tfjs'
 import { OpenVidu } from "openvidu-browser";
 import axios from "axios";
-//import UserVideo from "@/components/video/soloUserVideo.vue"
+import UserVideo from "@/components/video/soloUserVideo.vue"
 import * as speechCommands from '@tensorflow-models/speech-commands'
 import { mapActions } from 'vuex'
 
@@ -79,7 +75,7 @@ let color = 180;
 export default {
     name: 'SoloSoundMain',
     components: {
-        //UserVideo,
+        UserVideo,
     },
     computed: {
         isSession() {
@@ -417,7 +413,6 @@ export default {
     },
     mounted() {
         this.joinSession()
-        this.image()
     }
 }
 
