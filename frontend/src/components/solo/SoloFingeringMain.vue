@@ -2,7 +2,6 @@
     <el-row class="game-content-container">
         <el-col :span="15" class="game-content-my-cam">
         <div id="webcam-container"></div>
-        <!-- <div id="label-container"></div> -->
         </el-col>
         <el-col :span="8" class="game-content-info">
             <div class="game-content-title">운지법</div>
@@ -29,10 +28,9 @@
 import '@tensorflow/tfjs'
 import { OpenVidu } from "openvidu-browser";
 import axios from "axios";
-//import UserVideo from "@/components/video/soloUserVideo.vue"
 
 import { mapActions } from 'vuex'
-// import * as tmImage from '@teachablemachine/image'
+
 
 let pick_list = ['도', '레', '미', '파', '솔', '라', '시'];
 
@@ -49,8 +47,8 @@ let grade_list = [[], [], [], [], [], [], []];
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
 
-// const APPLICATION_SERVER_URL = "http://localhost:5000/";
-const APPLICATION_SERVER_URL = "https://i8c206.p.ssafy.io/";
+const APPLICATION_SERVER_URL = "http://localhost:5000/";
+// const APPLICATION_SERVER_URL = "https://i8c206.p.ssafy.io/";
 
 // 타이머 텍스트 색상
 let color = 180; 
@@ -299,7 +297,6 @@ export default {
             // Convenience function to setup a webcam
             const flip = true; // whether to flip the webcam
             webcam = new window.tmImage.Webcam(600, 600, flip); // width, height, flip
-            webcam.IMAGE_SIZE = 500;
             await webcam.setup(); // request access to the webcam
             await webcam.play();
             window.requestAnimationFrame(this.loop);
@@ -414,8 +411,8 @@ export default {
 
 <style>
 #webcam-container{
-    width: 600px;
-    height: 600px;
+    width: 100%;
+    height: 100%;
 }
 
 .game-content-container{
