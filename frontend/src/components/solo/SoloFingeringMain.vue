@@ -287,7 +287,7 @@ export default {
             const modelURL = ImageURL + "model.json";
             const metadataURL = ImageURL + "metadata.json";
 
-            // load the model and metadata
+            // load the model and metadatanpm
             // Refer to tmImage.loadFromFiles() in the API to support files from a file picker
             // or files from your local hard drive
             // Note: the pose library adds "tmImage" object to your window (window.tmImage)
