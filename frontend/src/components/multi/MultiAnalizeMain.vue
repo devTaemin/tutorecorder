@@ -1,19 +1,16 @@
 <template>
     <div class="modal" >   
         <div class="overlay">
-
-            
             <!--  -->
             <div id="container">
                 
                 <!-- 랭크 -->
                 <div id="redBoxLeft" >
                     <div class="analize-result-title">분석결과</div>
-                    <p style="visibility:hidden;">11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111</p>
-                    <img id="captureImg" src="../../assets/multi/rankcapture.png" alt="캡쳐" style="left:40%; top: 5%;">
-                    <img id="captureImg" src="../../assets/multi/rankcapture.png" alt="캡쳐" style="left:15%; top: 20%;">
-                    <img id="captureImg" src="../../assets/multi/rankcapture.png" alt="캡쳐" style="left:65%; top: 19%;">
-                    <p style="border:5px solid red; margin-top:50%; z-index:123456;">종합점수</p>
+                    <img id="captureImg" src="../../assets/multi/rankcapture.png" alt="캡쳐" style="left:41%; top: 19%;">
+                    <img id="captureImg" src="../../assets/multi/rankcapture.png" alt="캡쳐" style="left:17%; top: 32%;">
+                    <img id="captureImg" src="../../assets/multi/rankcapture.png" alt="캡쳐" style="left:63%; top: 33%;">
+                    <p id="totalScore">종합점수 : {{ totalgrade }}</p>
                 </div>
                 <!-- 랭크 끝 -->
 
@@ -64,7 +61,7 @@
                 <!-- 게임 분석 그래프 -->
             </div>
             <div>
-                <el-button class="solo-out-button" @click="$emit('close-modal')" style="margin-top:1%;">나가기</el-button>
+                <el-button class="solo-out-button" @click="closeAnal" style="margin-top:0%;">나가기</el-button>
             </div>
             
         </div>
@@ -218,11 +215,22 @@ export default {
             gameResult: [],
             analizeResultText: '',
             gradeImg: ['', '', '', '', '', '', ''],
+            totalgrade: 0
         }
+    },
+    props: {
+        isOwner: Boolean,
     },
     methods: {
         goSoloSound() {
             this.$router.push({ name: 'soloSound' })
+        },
+        closeAnal() {
+            if (this.isOwner === true) {
+                this.$emit('closeAnal')
+            } else {
+                this.$emit('closeAnalAlone')
+            }
         }
     }
 }
@@ -234,58 +242,78 @@ export default {
 <style scoped>
 
 .modal{
-    width: 90%;
-    height: 90%;
+    width: 97%;
+    height: 99%;
     position: fixed;
-    z-index: 123;
-    left:7%;
-    /*  border-radius는 어디에 들어가지? */
+    z-index:1234;
+
 }
 .overlay{
+    border: 5px solid black;
     margin-top:2%;
     background-color: #F2E6E6;
     border-radius: 40px;
-    border: 5px solid black;
     /* opacity:0.5 */
 }
 
 
-
 #container{
+    border: 5px solid  gray;    
+    width: 99%;
+    height: 83vh;
     display: flex;
     justify-content: space-evenly;
-    /* border: 5px solid  gray;     */
 }
+
+
+
+
+/* 왼쪽 */
 #redBoxLeft{
-    /* border: 5px solid red; */
+    border: 5px solid red;
     border-radius: 40px;
+    width: 50%;
+    height: 80vh;
     background-image: url("../../assets/multi/rank.png");
     background-repeat: no-repeat;
     background-size: 60% 40%;
-    background-position: center center;
-    
+    background-position: 50% 73%;
     position: relative;
 }
 .analize-result-title{
-    font-size: 2.5rem;
+    border: 5px solid gold;
+    font-size: 2vw;    
     text-align: start;
-    margin-left: 5%;
-    /* border: 5px solid gold; */
+    padding-top: 5%;
+    font-family: 'JUA', serif;
+    text-align: center;
 }
 
 #captureImg{
-    /* border: 5px solid brown; */
+    border: 5px solid brown;
     width:20%;
     position: absolute;
+    /* 위치 조정은 인라인으로 여백 조정 */
 }
+#totalScore{
+    border:5px solid red; 
+    width:98%;
+    height:8%;
+    font-family: 'JUA', serif;
+    font-size: 2vw;
+    margin-top: 55vh;
+}
+/* 왼쪽 끝 */
+
+/* 오른쪽  */
 
 #analize-container{
-    /* border: 5px solid blue; */
-
+    border: 5px solid blue;
+    
     background-color: rgba(0, 0, 0, 0.374);
     height: 80vh;
     width: 45vw;
-
+    
     border-radius: 20px;
     display: flex;
     flex-direction: column;
@@ -306,6 +334,7 @@ export default {
 .pitch{
     font-size: 5vh;
     margin-right: 2vw;
+    font-family: 'JUA', serif;
 }
 
 .pitch-container{
@@ -320,6 +349,7 @@ export default {
     border-radius: 20px;
     background-color: #DFE4F6;
     margin-top: 2%;
+    font-family: 'JUA', serif;
 }
 
 .grade-img{
