@@ -1,6 +1,5 @@
 <template>
     <div id="pink-container">
-
         <!-- 소리내기 게임 컴포넌트 -->
         <MultiSoundMain v-if="isPlaySound" @soundGameStop="soundGameStop" @emitGameStart="emitGameStart" @goMultiAnalize="goMultiAnalize" @goRoom="goRoom" @goRoomAlone="goRoomAlone" :isOwner="isOwner" :difficulty="difficulty" :publisher="publisher" :subscribers="subscribers" :soundGame="soundGame"/>
         <!-- 소리내기 게임 컴포넌트 끝-->
@@ -12,7 +11,8 @@
         <!-- 연주하기 게임 컴포넌트 -->
         <MultiSongMain v-if="isPlaySong" @goMultiAnalize="goMultiAnalize" @goRoom="goRoom" @goRoomAlone="goRoomAlone" :isOwner="isOwner" :publisher="publisher" :subscribers="subscribers"/>
         <!-- 연주하기 게임 컴포넌트 끝 -->
-        
+        <!-- 대기화면 내부 -->
+
         <!-- 왼쪽 박스 -->
         <div id="LeftBox" v-if="!isPlayGame">
 
@@ -29,13 +29,13 @@
 
             <div style="display:flex; flex-direction:row; ">
                 <!-- 대기방 채팅창 -->
-                <div style="display:flex; flex-direction:column;  width:100%; margin: 0; padding: 0;">
+                <div style="display:flex; flex-direction:column;  width:100%; margin: 0; padding: 0; background-color: rgb(142, 140, 140); border: 5px solid rgba(191, 180, 180, 0.6);">
                     <div id="GreenBoxChat" class="scroll" style="text-align:left;">
                         <p v-for="message in messageList" :key="message"  style="margin-left:0; margin-right:0;">
                             {{ message }}
                         </p>
                     </div>
-                    <input v-model="chatMessage" clearable @keyup.enter="this.sendMessage" style="width:98.5%; height:10%; margin-top:3px;
+                    <input v-model="chatMessage" clearable @keyup.enter="this.sendMessage" style="width:99.3%; height:10%; margin-top:3px;
                         background-color:rgb(219,206,206); color:rgb(0,0,0);" />
                 </div>
                 <!-- 대기방 채팅창 끝-->
@@ -43,7 +43,7 @@
                 <!-- 게임 시작/준비 전환 버튼 -->
                 <div id="OrangeBoxStart"> 
                     <div v-if="isOwner">
-                        <el-button id="fontValue" :type="startButton" :disabled="!startButtonEnabled" @click="startButtonConfirm" :class="{ 'can-push-button': startButtonEnabled, 'cannot-push-button': !startButtonEnabled }">시작하기</el-button>
+                        <el-button id="fontValue" :type="startButton" :disabled="!startButtonEnabled" @click="startButtonConfirm" :class="{ 'can-push-button': startButtonEnabled, 'cannot-push-button': !startButtonEnabled,}">시작하기</el-button>
                     </div>
                     <div v-if="!isOwner && !readyButtonOn">
                         <el-button id="fontValue" class="button-flicker can-push-button" type="warning" @click="this.readyButtonConfirm(); ">준비하기</el-button>
@@ -66,21 +66,21 @@
             <div id="PurpleBoxGameSetting">
                 <!-- 방장인 경우 게임 정보를 세팅할 수 있도록 한다 -->
                 <img v-if="isOwner" 
-                     src="../assets/gamesetting.png" 
-                     alt="game setting img" 
-                     style="width:100%; cursor:pointer;" 
-                     @click="gameSettingVisible=true"
-                     class="can-push-button"
+                    src="../assets/gamesetting.png" 
+                    alt="game setting img" 
+                    style="width:100%; cursor:pointer;" 
+                    @click="gameSettingVisible=true"
+                    class="can-push-button"
                 >
                 <!-- 방장이 아닌 경우 게임 정보를 볼 수 있도록 한다-->
-                <div  v-if="!isOwner" style="background-color: rgb(134,132,255); width:100%; height: 25vh; border-radius:20px">
-                    <div >
-                        <h1 id="fontValue" style="margin:0;"> 게임 정보 </h1>
-                        <div id="fontValue" v-if='gameMode=="play"'>
+                <div  v-if="!isOwner" style="background-color: rgb(134,132,255); width:100%; height: 20vh; border-radius:20px">
+                    <div style="padding-top: 1.5vh">
+                        <h1 id="fontValue" style="color: white; margin: 0; "> 게임 정보 </h1>
+                        <div class="gameMode" id="fontValue" v-if='gameMode=="play"'>
                             게임 모드: {{ gameMode }} <br/>
                             곡 이름: {{ basicSong }}
                         </div>
-                        <div id="fontValue" v-if='gameMode=="sound"'>
+                        <div class="gameMode" id="fontValue" v-if='gameMode=="sound"'>
                             게임 모드: {{ gameMode }} <br/>
                             난이도: {{ difficulty }}
                         </div>
@@ -129,20 +129,21 @@
                     alt="game setting img" 
                     @click="leaveSession" 
                     style="cursor:pointer; 
-                    width: 45px;"
+                    width: 30%;"
                     class="can-push-button"
                 >
                 <img src="../assets/share.png" 
                     alt="share img" 
                     style="cursor:pointer; 
-                    width: 45px; height: 45px;"
+                    width: 30%;"
                     class="can-push-button"
                     @click="shareSettingVisible=true"
                 >
                 <img src="../assets/confsetting.png" 
                     alt="configuration setting img" 
                     @click="envSettingVisible=true" 
-                    style="cursor:pointer; width: 45px;"
+                    style="cursor:pointer; 
+                    width: 30%;"
                     class="can-push-button"
                 >
             </div>
@@ -1016,11 +1017,12 @@ export default {
     border-radius: 30px;
     padding:0;
     display: flex;
+    justify-content: center;
+    align-items: center;
     position: relative;
     z-index: 3;
     border-radius: 30px;
   }
-
 
   #BlackBoxLargestBox{
     display: flex;
@@ -1032,10 +1034,11 @@ export default {
   }
 
   #LeftBox{
-    /* border: 5px solid gray; */
+    /* border: 5px solid orange; */
     margin: 0;
     padding: 0;
-    width: 85%;
+    width: 82.5%;
+    height: 95%;
     
   }
   #YellowBoxVideo{
@@ -1049,32 +1052,30 @@ export default {
     padding: 10;
   }
   #GreenBoxChat{
-    /* border: 5px solid green; */
-    border: 5px solid rgba(191, 180, 180, 0.6);
+    /* border: 5px solid rgba(191, 180, 180, 0.6); */
     border-radius: 10px;
     display: inline-block;
-    width: 98.5%; 
+    width: 100%;
     height: 180px;
     margin: 0;      
     padding: 0;
     left: 20%;
-    background-color: rgb(142, 140, 140);
+    /* background-color: rgb(142, 140, 140); */
     color: rgb(219,206,206);
   }
   #OrangeBoxStart{
     /* border: 5px solid orange; */
     display: inline-block;
     width: 35%; 
-    height: 22%;
-    padding-top: 0.5%;
-
+    height: 80%;
   }
 
   #RightBox{
     /* border: 5px solid hotpink; */
     margin: 0;
     padding: 0;
-    width: 15%;
+    width: 12.5%;
+    height: 95%;
   }
   #PurpleBoxGameSetting{
     /* border : 5px solid purple; */
@@ -1084,12 +1085,16 @@ export default {
     /* background-color: rgb(134,132,255); */
     /* border-radius: 10px; */
   }
+  .gameMode{
+    margin-top: 3.5vh;
+    color: white
+  }
   #BlueBoxUserList{
     margin: 0;
     margin-bottom: 4%;
     padding: 0;
     /* border: 5px solid blue; */
-    height: 61%;
+    height: 63%;
     background-color: rgb(142, 140, 140);
     border-radius: 10px;
   }
