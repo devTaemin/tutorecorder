@@ -17,7 +17,7 @@
                     <el-button class="solo-out-button" @click="goSolo">나가기</el-button>
                 </div>
                 <div class="solo-start-button-container">
-                    <el-button :class="{ 'solo-start-button': !playGame, 'solo-start-button-playgame': playGame }" :disabled="playGame" @click="gameStart();">{{ gameState }}</el-button>
+                    <el-button :class="{ 'solo-start-button': !playGame, 'solo-start-button-playgame': playGame }" :disabled="playGame" @click="gameStart(); init()">{{ gameState }}</el-button>
                 </div>
             </div>
         </el-col>
