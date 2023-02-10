@@ -1273,7 +1273,7 @@ button {
     border: 5px solid rgb(230, 113, 24);
     height: 25vh;
     border-radius: 10px;
-    margin: 2%;
+    margin: 2%; 
     margin-top: 0.75%;
     margin-bottom: 0.75%;
     padding: 0;  

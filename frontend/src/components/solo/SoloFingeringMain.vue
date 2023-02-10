@@ -1,8 +1,9 @@
 <template>
     <el-row class="game-content-container">
         <el-col :span="15" class="game-content-my-cam">
-        <div id="webcam-container" width=100% height=100%></div>
+        <div id="webcam-container"></div>
         <!-- <div id="label-container"></div> -->
+
         </el-col>
         <el-col :span="8" class="game-content-info">
             <div class="game-content-title">운지법</div>
@@ -29,10 +30,9 @@
 import '@tensorflow/tfjs'
 import { OpenVidu } from "openvidu-browser";
 import axios from "axios";
-//import UserVideo from "@/components/video/soloUserVideo.vue"
 
 import { mapActions } from 'vuex'
-// import * as tmImage from '@teachablemachine/image'
+
 
 let pick_list = ['도', '레', '미', '파', '솔', '라', '시'];
 
@@ -89,6 +89,17 @@ export default {
             playGame: false,
             problem: '',
             playGameAnalize: true,
+
+            // //webcam 사이즈
+            // webcam : {
+            //     width: '',
+            //     heigth: ''
+            // },
+            // webcamContainer: {
+            //     offsetWidth: webcamContainer.offsetWidth,
+            //     offsetHeight: webcamContainer.offsetHeight
+            // }
+
         }
     },
     methods: {
@@ -298,29 +309,30 @@ export default {
 
             // Convenience function to setup a webcam
             const flip = true; // whether to flip the webcam
-            // const Vwidth = window.innerWidth;
-            // const Vheight = window.innerHeight;
-            webcam = new window.tmImage.Webcam(600, 600, flip); // width, height, flip
-            await webcam.setup(); // request access to the webcam
+
+            //webcam-container의 사이즈의 값을 가져옴
+            const webcamContainer = document.getElementById("webcam-container");
+            const vwidth = webcamContainer.offsetWidth; 
+            const vheight = webcamContainer.offsetHeight;
+            
+            //가져온 사이즈 값으로 webcam 사이즈를 지정
+            webcam = new window.tmImage.Webcam(vwidth, vheight, flip); // width, height, flip
+            await webcam.setup(); // request access to the webcam   
             await webcam.play();
+
             window.requestAnimationFrame(this.loop);
 
+            console.log(webcam.width);
+            console.log(webcam.height);
+
             // append elements to the DOM
-            document.getElementById("webcam-container").appendChild(webcam.canvas);
-            
-            
+           webcamContainer.appendChild(webcam.canvas);     
             
             console.log("Asdfdsafsda");
             console.log(webcam.canvas.width);
             console.log(webcam)
             
-            
-
-
-            // labelContainer = document.getElementById("label-container");
-            // for (let i = 0; i < maxPredictions; i++) { // and class labels
-            //     labelContainer.appendChild(document.createElement("div"));
-            // }
+   
         },
         async loop() {
             webcam.update(); // update the webcam frame
@@ -414,10 +426,10 @@ export default {
 </script>
 
 <style>
-/* #webcam-container{
+#webcam-container{
     width: 100%;
     height: 100%;
-} */
+}
 
 .game-content-container{
     height: 100%;
