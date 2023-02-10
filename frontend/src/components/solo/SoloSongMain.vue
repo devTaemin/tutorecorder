@@ -772,7 +772,7 @@ class x extends _ {
     btnStop;
     chkMelody;
     inVolume;
-    // element;
+    vol_label;
     settingVolume;
     buttons;
     constructor() {
@@ -783,11 +783,13 @@ class x extends _ {
       //버튼 생성하는 곳
       (this.btnPlay = w("곡을 선택해주세요")),
       (this.chkMelody = makeSwitch()),
-      (this.inVolume = v("input", { type: "range", min: 0, max: 100, value: 30, step: 1 })),
+      (this.inVolume = v("input", { class:"volume-input", type: "range", min: 0, max: 100, value: 30, step: 1 })),
+      (this.vol_label = v("div", {class: "vol-label"}, "소리 조절")),
       (this.buttons = v("div", { class: "song-editor" }, [
         this.btnPlay,
       ])),
       (this.settingVolume = v("div", {class : "setting-volume"},[
+        this.vol_label,
         this.chkMelody,
         this.inVolume,
       ])),
@@ -1229,6 +1231,27 @@ class x extends _ {
 }
 .setting-volume {
   margin-bottom: 3vh;
+  background-color: rgba(0, 0, 0, 0.374);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.vol-label{
+  font-family: 'JUA', serif;
+  color: white;
+  margin-top: 1.5vh;
+  margin-bottom: 1.5vh;
+}
+#outside-div{
+  margin-bottom: 1.5vh;
+}
+.volume-input {
+  cursor: url(../../assets/cursor_click.png), auto !important;
+  margin-bottom: 1.5vh;
+  margin-left: 1.5vw;
+  margin-right: 1.5vw;
 }
 .song-list{
   display: flex;
