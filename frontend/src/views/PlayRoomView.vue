@@ -29,14 +29,14 @@
 
             <div style="display:flex; flex-direction:row; ">
                 <!-- 대기방 채팅창 -->
-                <div style="display:flex; flex-direction:column;  width:100%; margin: 0; padding: 0; background-color: rgb(142, 140, 140); border: 5px solid rgba(191, 180, 180, 0.6);">
+                <div style="display:flex; flex-direction:column;  width:100%; height: 100%; margin: 0; padding: 0; background-color: rgba(0, 0, 0, 0.374); box-shadow: 0 0 5px #333;">
                     <div id="GreenBoxChat" class="scroll" style="text-align:left;">
                         <p v-for="message in messageList" :key="message"  style="margin-left:0; margin-right:0;">
                             {{ message }}
                         </p>
                     </div>
                     <input v-model="chatMessage" clearable @keyup.enter="this.sendMessage" style="width:99.3%; height:10%; margin-top:3px;
-                        background-color:rgb(219,206,206); color:rgb(0,0,0);" />
+                        background-color:rgba(0, 0, 0, 0.374); color: white;" />
                 </div>
                 <!-- 대기방 채팅창 끝-->
                 
@@ -46,10 +46,10 @@
                         <el-button id="fontValue" :type="startButton" :disabled="!startButtonEnabled" @click="startButtonConfirm" :class="{ 'can-push-button': startButtonEnabled, 'cannot-push-button': !startButtonEnabled,}">시작하기</el-button>
                     </div>
                     <div v-if="!isOwner && !readyButtonOn">
-                        <el-button id="fontValue" class="button-flicker can-push-button" type="warning" @click="this.readyButtonConfirm(); ">준비하기</el-button>
+                        <el-button class="button-flicker can-push-button ready-button" type="warning" @click="this.readyButtonConfirm(); ">준비하기</el-button>
                     </div>
                     <div v-if="!isOwner && readyButtonOn">
-                        <el-button id="fontValue" type="success" @click="this.readyButtonConfirm" class="can-push-button">준비완료</el-button>
+                        <el-button type="success" @click="this.readyButtonConfirm" class="ready-button can-push-button">준비완료</el-button>
                     </div>
                 </div>
                 <!-- 게임 시작/준비 전환 버튼 끝 -->
@@ -65,17 +65,20 @@
             <!-- 게임 세팅 창 -->
             <div id="PurpleBoxGameSetting">
                 <!-- 방장인 경우 게임 정보를 세팅할 수 있도록 한다 -->
-                <img v-if="isOwner" 
-                    src="../assets/gamesetting.png" 
-                    alt="game setting img" 
-                    style="width:100%; cursor:pointer;" 
-                    @click="gameSettingVisible=true"
-                    class="can-push-button"
-                >
+                <div v-if="isOwner" style="width:100%; height: 20vh">
+                    <img  
+                        src="../assets/gamesetting.png" 
+                        alt="game setting img" 
+                        style="width: 100%; height: 100%" 
+                        @click="gameSettingVisible=true"
+                        class="can-push-button"
+                    >
+                </div>
+                
                 <!-- 방장이 아닌 경우 게임 정보를 볼 수 있도록 한다-->
                 <div  v-if="!isOwner" style="background-color: rgb(134,132,255); width:100%; height: 20vh; border-radius:20px">
                     <div style="padding-top: 1.5vh">
-                        <h1 id="fontValue" style="color: white; margin: 0; "> 게임 정보 </h1>
+                        <p id="fontValue" style="color: white; margin: 0; font-size:2.4vw;"> 게임 정보 </p>
                         <div class="gameMode" id="fontValue" v-if='gameMode=="play"'>
                             게임 모드: {{ gameMode }} <br/>
                             곡 이름: {{ basicSong }}
@@ -93,7 +96,7 @@
 
             <!-- 사용자 목록 -->
             <div id="BlueBoxUserList">
-                <h1 id="fontValue" >사용자 목록</h1>
+                <p id="fontValue" style="margin-top: 1.5vh; margin-bottom: 0; color: white; font-size: 2.4vw;">사용자 목록</p>
 
                 <!-- 방장인 경우 참가자 확인 및 추방 기능을 추가한다 -->
                 <div id="fontValue" v-if="this.isOwner">
@@ -129,13 +132,15 @@
                     alt="game setting img" 
                     @click="leaveSession" 
                     style="cursor:pointer; 
-                    width: 30%;"
+                    width: 30%;
+                    height: 100%;"
                     class="can-push-button"
                 >
                 <img src="../assets/share.png" 
                     alt="share img" 
                     style="cursor:pointer; 
-                    width: 30%;"
+                    width: 30%;
+                    height: 100%;"
                     class="can-push-button"
                     @click="shareSettingVisible=true"
                 >
@@ -143,7 +148,8 @@
                     alt="configuration setting img" 
                     @click="envSettingVisible=true" 
                     style="cursor:pointer; 
-                    width: 30%;"
+                    width: 30%;
+                    height: 100%;"
                     class="can-push-button"
                 >
             </div>
@@ -1056,7 +1062,7 @@ export default {
     border-radius: 10px;
     display: inline-block;
     width: 100%;
-    height: 180px;
+    height: 25vh;
     margin: 0;      
     padding: 0;
     left: 20%;
@@ -1068,6 +1074,11 @@ export default {
     display: inline-block;
     width: 35%; 
     height: 80%;
+  }
+  .ready-button{
+    height: 22vh;
+    font-family: 'JUA', serif;  
+    font-size: 3vw;
   }
 
   #RightBox{
@@ -1081,21 +1092,19 @@ export default {
     /* border : 5px solid purple; */
     padding: 0;
     margin: auto;
-    /* height: 25%; */
-    /* background-color: rgb(134,132,255); */
-    /* border-radius: 10px; */
   }
   .gameMode{
     margin-top: 3.5vh;
-    color: white
+    color: white;
+    font-size: 1.8vw;
   }
   #BlueBoxUserList{
-    margin: 0;
-    margin-bottom: 4%;
+    margin-top: 1.5vh;
+    margin-bottom: 1.5vh;
     padding: 0;
     /* border: 5px solid blue; */
     height: 63%;
-    background-color: rgb(142, 140, 140);
+    background-color: rgba(0, 0, 0, 0.374);
     border-radius: 10px;
   }
   #RedBoxRightBottom{
@@ -1104,6 +1113,7 @@ export default {
     /* border: 5px solid red; */
     display: flex;
     justify-content: space-between;
+    height: 7%;
   }
 
   #fontValue{
@@ -1130,8 +1140,10 @@ export default {
     margin: 10px;
     text-align: center;
     border-radius: 4px;
-    background: rgba(255, 255, 255, 0.6);
+    background: rgba(0, 0, 0, 0.374);
     box-shadow: 0 0 5px #333;
+    color: white;
+    font-family: 'JUA', serif;  ;
   }
 
   /* chat-scollbar-item */
