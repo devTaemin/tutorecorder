@@ -2,7 +2,7 @@
     <el-row class="game-content-container">
         <el-col :span="15" class="game-content-my-cam">
             <user-video :stream-manager="mainStreamManager"/>
-        </el-col>
+        </el-col>       
         <el-col :span="8" class="game-content-info">
             <div class="game-content-title">소리내기</div>
             <div class="game-content-target">
@@ -32,29 +32,19 @@ import UserVideo from "@/components/video/soloUserVideo.vue"
 import * as speechCommands from '@tensorflow-models/speech-commands'
 import { mapActions } from 'vuex'
 
-const pitch_list = ['도', '레', '미', '파', '솔', '라', '시'];
+
+let pitch_list = ['도', '레', '미', '파', '솔', '라', '시'];
 const pitch_list2 = ['도', '레', '미', '파', '솔', '라', '시'];
 
 
-// pick_list에 나올 음계 저장
-// 최소 한 번씩 나오게 하는 구간
-let pick_list = ['시작!']
-for (let i=0; i<7; i++) {
-    const pick_index = Math.floor(Math.random() * pitch_list.length);
-    pick_list.push(pitch_list[pick_index]);
-    pitch_list.splice(pick_index, 1);
-}
-// 최소 한 번씩 나오게 하는 구간 끝
 
 const problem = 3
-// 랜덤으로 problem개 더 출력
-for (let i=0; i<problem; i++) {
-    pick_list.push(pitch_list2[Math.floor(Math.random() * 7)]);
-}
 
-pick_list.push('참 잘했어요')
 const total_problem = problem + 9;
 const URL = "https://teachablemachine.withgoogle.com/models/eptQYA8MT/";
+
+
+
 
 // 음계 측정값 넣을 리스트 - 현재 7개의 음과 배경소음만 있고 나중에 삑사리 추가
 let grade_list = [[], [], [], [], [], [], []];
@@ -62,8 +52,8 @@ let grade_list = [[], [], [], [], [], [], []];
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
 
-// const APPLICATION_SERVER_URL = "http://localhost:5000/";
-const APPLICATION_SERVER_URL = "https://i8c206.p.ssafy.io/";
+const APPLICATION_SERVER_URL = "http://localhost:5000/";
+// const APPLICATION_SERVER_URL = "https://i8c206.p.ssafy.io/";
 
 // 타이머 텍스트 색상
 let color = 180; 
@@ -105,7 +95,7 @@ export default {
         }
     },
     methods: {
-        ...mapActions(['saveGameResult', 'initMySessionId']),
+        ...mapActions(['saveGameResult', 'initMySessionId', 'initGameResult']),
 
         goSoloAnalize() {
             this.$router.push({ name: 'soloAnalize' })
@@ -135,11 +125,7 @@ export default {
         async init () {
             const recognizer = await this.createModel() // 모델 생성
             const classLabels = recognizer.wordLabels() // get class labels, 학습 시킨 클래스들
-            // 실시간으로 점수 표시해주는 역할(필요없어서 지움)
-            // const labelContainer = document.getElementById('label-container') // 데이터 라벨 생성
-            // for (let i = 0; i < classLabels.length; i++) {
-            //     labelContainer.appendChild(document.createElement('div'))
-            // }
+
 
             // listen() takes two arguments:
             // 1. A callback function that is invoked anytime a word is recognized.
@@ -148,10 +134,6 @@ export default {
                 const scores = result.scores // eslint-disable-line no-unused-vars
                 // render the probability scores per class
                 for (let i = 0; i < classLabels.length; i++) {
-                    // const classPrediction = classLabels[i] + ': ' + result.scores[i].toFixed(2) // 소숫점까지 표기(2자리)
-                    //   console.log('음계' + classLabels[i])
-                    //   console.log('점수' + result.scores[i])
-                    // 도, 레, 미, 파, 솔, 라, 시, 음이탈, 바람빠지는소리, 배경소음
                     const index = result.scores.indexOf(Math.max(...result.scores));
                     switch(this.pitch_target) {
                         case '도':
@@ -207,8 +189,6 @@ export default {
                             // code block for default case
                     }
 
-                    // 실시간 점수 표시해주는 역할(필요없어서 지움)
-                    // labelContainer.childNodes[i].innerHTML = classPrediction
                 }
             }, {
                 includeSpectrogram: true, // in case listen should return result.spectrogram
@@ -217,10 +197,27 @@ export default {
                 overlapFactor: 0.50 // probably want between 0.5 and 0.75. More info in README
             })
 
-            // Stop the recognition in 5 seconds.
-            // setTimeout(() => recognizer.stopListening(), 5000);
         },
         gameStart() {
+            this.initGameResult()
+            pitch_list = ['도', '레', '미', '파', '솔', '라', '시'];
+            // pick_list에 나올 음계 저장
+            // 최소 한 번씩 나오게 하는 구간
+            let pick_list = ['시작!']
+            for (let i=0; i<7; i++) {
+                const pick_index = Math.floor(Math.random() * pitch_list.length);
+                pick_list.push(pitch_list[pick_index]);
+                pitch_list.splice(pick_index, 1);
+            }
+            // 최소 한 번씩 나오게 하는 구간 끝
+            // 랜덤으로 problem개 더 출력
+            for (let i=0; i<problem; i++) {
+                pick_list.push(pitch_list2[Math.floor(Math.random() * 7)]);
+            }
+
+            pick_list.push('참 잘했어요')
+
+            this.playGameAnalize = true
             this.gameState = '게임 진행중...'
             this.playGame = true
             this.pitch_target = '준비하세요';
@@ -248,6 +245,7 @@ export default {
                             this.gameState = '게임 시작!'
                             this.playGameAnalize = false
                             this.playGame = false
+                            console.log(grade_list)
                         }
                     }, 5000)
                 } 
@@ -385,6 +383,7 @@ export default {
             });
             return response.data;
         }
+
     },
     mounted() {
         this.joinSession()
@@ -401,6 +400,7 @@ export default {
 
 .game-content-my-cam{
     margin: auto;
+    margin-left: 10px;
     height: 90%;
     background-color: rgba(0, 0, 0, 0.374);
     border-radius: 20px;
@@ -473,5 +473,26 @@ export default {
     top: 15%;
     font-size: 5vh;
     color: white;
+}
+
+.solo-start-button{
+  background-color: #DDB13E !important;
+  color: white !important;
+  font-family: 'JUA', serif !important;
+  font-size: 2vw !important;
+  width: 80% !important;
+  height: 6vh !important;
+  margin-left: 0 !important;
+  cursor: url(../../assets/cursor_click.png), auto !important;
+  -webkit-animation: flickerAnimation 1s infinite;
+  -moz-animation: flickerAnimation 1s infinite;
+  -o-animation: flickerAnimation 1s infinite;
+  animation: flickerAnimation 1s infinite;
+}
+.solo-start-button:hover {
+  -webkit-animation: false;
+  -moz-animation: false;
+  -o-animation: false;
+  animation: false;
 }
 </style>

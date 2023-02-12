@@ -89,6 +89,9 @@ export default createStore({
     },
     SAVE_GAME_RESULT: (state, payload) => {
       state.gameResult = payload
+    },
+    INIT_GAME_RESULT: (state) => {
+      state.gameResult = ''
     }
   },
   actions: {
@@ -106,6 +109,9 @@ export default createStore({
     },
     saveGameResult: ({ commit }, payload) => {
       commit('SAVE_GAME_RESULT', payload)
+    },
+    initGameResult: ({ commit }) => {
+      commit('INIT_GAME_RESULT')
     }
     
   },
