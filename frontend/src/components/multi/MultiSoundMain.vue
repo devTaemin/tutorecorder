@@ -100,7 +100,7 @@ export default {
             problem: '',
             functionTimer: '',
             
-            playGameAnalize: true,
+            playGameAnalize: false,
         }
     },
     computed: {
@@ -114,7 +114,6 @@ export default {
     },
     watch: {
         soundGame() {
-            console.log(this.soundGame);
             if(this.soundGame) {
                 this.init();
                 this.gameStart();
@@ -287,6 +286,7 @@ export default {
                             this.playGame = false
                             
                             this.$emit('soundGameStop');
+                            this.$emit('gameGrade')
                         }
                     }, (this.difficulty * 1000))
                 } 

@@ -16,14 +16,14 @@
                         <!-- 이미지 삽입 구간 끝 -->
 
                         <!-- 텍스트 삽입 구간 -->
-                        <p style="width:30%; padding-top:15%; z-index:4321;">{{ n1 }}</p>
-                        <p style="width:30%; padding-bottom:12%; z-index:4321;">{{ n2 }}</p>
+                        <p style="width:30%; padding-top:15%; z-index:4321;">{{ n2 }}</p>
+                        <p style="width:30%; padding-bottom:12%; z-index:4321;">{{ n1 }}</p>
                         <p style="width:30%; padding-top:15%; z-index:4321;">{{ n3 }}</p>
                         <!-- 텍스트 삽입 구간 끝 -->
                        
                         <img src="../../assets/multi/rank.png" alt="랭크" 
                         style="width:80%; margin-top: -17%;">
-                        <p id="totalScore">종합점수 : {{ totalgrade }}</p>
+                        <p id="totalScore">종합점수 : {{ myTotalScore }}점</p>
                     </div>
 
                 </div>
@@ -86,6 +86,7 @@
 <script>
 
 
+
 const pitchText = ['도', '레', '미', '파', '솔', '라', '시'];
 const badTextForm = '는 연습이 많이 필요해 보여요. \n'
 const goodTextForm = '는 아주 잘하고 있어요. \n'
@@ -109,6 +110,10 @@ export default {
                 this.gameResult.push(((gameResult[i].reduce((a, b) => a + b, 0) / gameResult[i].length)*100).toFixed(0));
             }
         }
+
+        this.myTotalScore = this.gameResult.reduce((acc, curr) => acc + Number(curr), 0);
+        this.$emit('sendMyTotalScore', this.myTotalScore);
+
 
         for (let i=0; i<7; i++) {
             switch (true) {
@@ -230,6 +235,7 @@ export default {
             gameResult: [],
             analizeResultText: '',
             gradeImg: ['', '', '', '', '', '', ''],
+            myTotalScore: '',
 
 
 
@@ -242,6 +248,23 @@ export default {
     },
     props: {
         isOwner: Boolean,
+        ranker: Object,
+    },
+    watch: {
+        ranker() {
+            this.n1 = Object.values(this.ranker)[0][0]
+            if (Object.values(this.ranker).length >= 2) {
+                this.n2 = Object.values(this.ranker)[1][0]
+            } else {
+                this.n2 = ''
+            }
+            if (Object.values(this.ranker)[1] >= 3) {
+                this.n3 = Object.values(this.ranker)[2][0]
+            } else {
+                this.n3 = ''
+            }
+
+        }
     },
     methods: {
         goSoloSound() {
