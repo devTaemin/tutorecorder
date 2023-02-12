@@ -6,7 +6,7 @@
         <!-- 소리내기 게임 컴포넌트 끝-->
 
         <!-- 소리내기 게임 분석 -->
-        <MultiAnalizeMain v-if="analizeVisible" @closeAnal="closeAnal" @closeAnalAlone="closeAnalAlone" :isOwner="isOwner"/>
+        <MultiAnalizeMain v-if="analizeVisible" @closeAnal="closeAnal" @closeAnalAlone="closeAnalAlone" :isOwner="isOwner" @sendMyTotalScore="sendMyTotalScore" :ranker="ranker"/>
         <!-- 소리내기 게임 분석 끝 -->
 
         <!-- 연주하기 게임 컴포넌트 -->
@@ -72,7 +72,7 @@
                      @click="gameSettingVisible=true"
                      class="can-push-button"
                 >
-                <!-- 방장이 아닌 경우 게임 정보를 볼 수 있도록 한다-->
+                <!-- 방장이 아닌 경우 게임 정보를 볼 수 있도록 한다 -->
                 <div  v-if="!isOwner" style="background-color: rgb(134,132,255); width:100%; height: 25vh; border-radius:20px">
                     <div >
                         <h1 id="fontValue" style="margin:0;"> 게임 정보 </h1>
@@ -311,6 +311,7 @@ export default {
             soundGame: false,
             shareSettingVisible:false,
             copyStatus:false,
+            ranker: {},
         }   
     },
     watch: {
@@ -324,6 +325,7 @@ export default {
         // Check if the URL already has a room
         // (+) Furthermore, Use database/backend to check if the room code is valid or not
         this.checkMounted();
+       
     },
     
     beforeUnmount() {
@@ -368,6 +370,7 @@ export default {
                 })
         },
         startButtonConfirm: function() {
+            this.ranker = {};
             this.publisher.session.signal({
                     data: "",
                     to: [],
@@ -468,6 +471,12 @@ export default {
         },
         jsonNameRendering: function(data) {
             const { clientData } = JSON.parse(data);
+            const isExistName = this.subscribers.some(function(element) {
+                return JSON.parse(element.stream.connection.data)['clientData'] === clientData;
+            });
+            if (this.isOwner && isExistName) {
+                return clientData + '(' + Math.floor(Math.random() * 10000) + ')';
+            }
             return clientData;
         },
         checkMounted: function() {
@@ -514,11 +523,10 @@ export default {
            
             window.location.href = window.location.origin + '/mode';
         },
-        outUser(memberId) {
-            const { connection } = memberId.stream;
-            const { clientData } = JSON.parse(connection.data);
+        outUser(member) {
+            const memberId = member.stream.connection.connectionId
             this.publisher.session.signal({
-                data: clientData,
+                data: memberId,
                 to: [],
                 type: "out"
             });
@@ -627,6 +635,20 @@ export default {
         closeAnalAlone() {
             this.analizeVisible = false
         },
+        sendMyTotalScore(data) {
+            const memberName = JSON.parse(this.publisher.stream['connection']['data'])['clientData']
+            this.ranker[this.publisher.stream.connection.connectionId] = [memberName, data];
+            this.publisher.session.signal({
+                data: JSON.stringify(this.ranker),
+                to: [],
+                type: 'everyone-data'
+            })
+            .then(() => {
+            })
+            .catch(error => {
+                console.error(error);
+            })
+        },
         createRoom: function() {
 
             // 1) Get an OpenVidu Object
@@ -671,7 +693,7 @@ export default {
             this.session.on("signal:out", async (event) => {
                 let id = event.data;
 
-                if (id == this.myUserName) {
+                if (id == this.publisher.stream.connection.connectionId) {
                     alert("세션에서 추방당하셨습니다.");
                     this.leaveSession();
                     return;
@@ -706,7 +728,9 @@ export default {
                     this.startButton = "primary";
                 }
                 const targetDiv = document.getElementById(targetId)
-                targetDiv.setAttribute('class', 'ready')
+                if (targetDiv !== null) {
+                    targetDiv.setAttribute('class', 'ready')
+                }
             })
             
 
@@ -717,7 +741,9 @@ export default {
                 this.startButtonEnabled = false;
                 this.startButton = "danger";
                 const targetDiv = document.getElementById(targetId)
-                targetDiv.setAttribute('class', 'no-ready')
+                if (targetDiv !== null) {
+                    targetDiv.setAttribute('class', 'no-ready')
+                }
             })
 
             // 3-9) start game
@@ -760,6 +786,18 @@ export default {
                 }
             })
 
+            // 3-15) everyone data
+            this.session.on('signal:everyone-data', (event) => {
+                const result = JSON.parse(event.data)
+                this.ranker[Object.keys(result)[0]] = Object.values(result)[0]
+                if (Object.keys(this.ranker).length === this.subscribers.length + 1) {
+                    let sortedObject = Object.fromEntries(
+                        Object.entries(this.ranker).sort(([, [, a]], [, [, b]]) => b - a)
+                    );
+                    this.ranker = sortedObject
+                }
+            })
+
 
             // 4) Get a token from the OpenVidu deployment
             this.getToken(this.roomCode).then((token) => {
@@ -785,7 +823,6 @@ export default {
 
                         this.session.publish(this.publisher);
 
-
                         // 최대 정원 설정 가능
 
                         // Owner 설정
@@ -796,6 +833,7 @@ export default {
                         this.gameMode = "play";
                         this.basicSong = "airplane";
                         this.difficulty = undefined;
+                       
                     })
                     .catch((error) => {
                         console.log("There was an error connecting to the session: ", 
@@ -841,7 +879,7 @@ export default {
             this.session.on("signal:out", async (event) => {
                 let id = event.data;
 
-                if (id == this.myUserName) {
+                if (id == this.publisher.stream.connection.connectionId) {
                     this.leaveSession();
                     alert("방에서 추방당하셨습니다.");
                 }
@@ -922,7 +960,9 @@ export default {
              this.session.on('signal:ready-plus', (event) => {
                 const targetId = event.data
                 const targetDiv = document.getElementById(targetId)
-                targetDiv.setAttribute('class', 'ready')
+                if (targetDiv !== null) {
+                    targetDiv.setAttribute('class', 'ready')
+                }
             })
             
 
@@ -930,7 +970,9 @@ export default {
             this.session.on('signal:ready-minus', (event) => {
                 const targetId = event.data
                 const targetDiv = document.getElementById(targetId)
-                targetDiv.setAttribute('class', 'no-ready')
+                if (targetDiv !== null) {
+                    targetDiv.setAttribute('class', 'no-ready')
+                }
             })
 
             // 3-16) i-am-host
@@ -938,6 +980,18 @@ export default {
                 const targetId = event.data
                 const targetDiv = document.getElementById(targetId)
                 targetDiv.setAttribute('class', 'host')
+            })
+
+            // 3-17) everyone data
+            this.session.on('signal:everyone-data', (event) => {
+                const result = JSON.parse(event.data)
+                this.ranker[Object.keys(result)[0]] = Object.values(result)[0]
+                if (Object.keys(this.ranker).length === this.subscribers.length + 1) {
+                    let sortedObject = Object.fromEntries(
+                        Object.entries(this.ranker).sort(([, [, a]], [, [, b]]) => b - a)
+                    );
+                    this.ranker = sortedObject
+                }
             })
         
 
@@ -969,6 +1023,18 @@ export default {
                         }
 
                         this.findHost()
+
+                        // 실험
+                        console.log(this.subscribers.some(function(element) {
+                            return element.stream.connection.connectionId === this.myUserName;
+                        })
+                        )
+
+                        console.log(this.subscribers.stream)
+                        // console.log(JSON.parse(this.publisher.stream['connection']['data'])['clientData'])
+
+                        // const { connection } = this.publisher.stream
+                        //     const { clientData } = JSON.parse(connection.data)
                     })
                     .catch((error) => {
                         console.log("There was an error connecting to the session: ", 
