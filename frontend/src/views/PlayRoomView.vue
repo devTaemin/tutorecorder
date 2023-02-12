@@ -76,14 +76,14 @@
                 <div  v-if="!isOwner" style="background-color: rgb(134,132,255); width:100%; height: 20vh; border-radius:20px">
                     <div style="padding-top: 1.5vh">
                         <h1 id="fontValue" style="color: white; margin: 0; "> 게임 정보 </h1>
-                        <div class="gameMode" id="fontValue" v-if='gameMode=="play"'>
+                        <!-- <div class="gameMode" id="fontValue" v-if='gameMode=="play"'> -->
                             게임 모드: {{ gameMode }} <br/>
                             곡 이름: {{ basicSong }}
-                        </div>
-                        <div class="gameMode" id="fontValue" v-if='gameMode=="sound"'>
+                        <!-- </div> -->
+                        <!-- <div class="gameMode" id="fontValue" v-if='gameMode=="sound"'> -->
                             게임 모드: {{ gameMode }} <br/>
                             난이도: {{ difficulty }}
-                        </div>
+                        <!-- </div> -->
                     </div>
                 </div>
 
