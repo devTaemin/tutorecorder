@@ -1076,12 +1076,12 @@ export default {
     height: 80%;
   }
   .ready-button{
-    height: 22vh;
+    height: 19.5vh;
     font-family: 'JUA', serif;  
     font-size: 3vw;
   }
   #ready-button{
-    height: 22vh;
+    height: 20vh;
     font-family: 'JUA', serif;  
     font-size: 3vw;
   }
@@ -1141,14 +1141,15 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 25px;
-    margin: 10px;
+    height: 10%;
+    margin: 1vh;
     text-align: center;
     border-radius: 4px;
     background: rgba(0, 0, 0, 0.374);
     box-shadow: 0 0 5px #333;
     color: white;
-    font-family: 'JUA', serif;  ;
+    font-family: 'JUA', serif;
+    font-size: 1.2vw;
   }
 
   /* chat-scollbar-item */
