@@ -31,7 +31,6 @@
 
 <script type="text/javascript">
 import '@tensorflow/tfjs'
-import { OpenVidu } from "openvidu-browser";
 import axios from "axios";
 
 import { mapActions } from 'vuex'
@@ -52,8 +51,6 @@ let grade_list = [[], [], [], [], [], [], []];
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
 
-const APPLICATION_SERVER_URL = "http://localhost:5000/";
-// const APPLICATION_SERVER_URL = "https://i8c206.p.ssafy.io/";
 
 // 타이머 텍스트 색상
 let color = 180; 
@@ -61,30 +58,9 @@ let color = 180;
 export default {
     name: 'SoloSoundMain',
     components: {
-        //UserVideo,
-    },
-    computed: {
-        isSession() {
-            if (this.$store.state.mySessionId !== '') {
-                return this.$store.state.mySessionId
-            } else {
-                return 'SessionA'
-            }
-        }
     },
     data() {
         return {
-            // OpenVidu Object
-            OV: undefined,
-            session: undefined,
-            mainStreamManager: undefined,
-            publisher: undefined,
-            subscribers: [],
-
-            // Join form
-            mySessionId: "SessionA",
-            myUserName: "Participant" + Math.floor(Math.random() * 100),
-
             //게임에 필요
             pitch_target: '',
             timer: '',
@@ -93,15 +69,6 @@ export default {
             problem: '',
             playGameAnalize: true,
 
-            // //webcam 사이즈
-            // webcam : {
-            //     width: '',
-            //     heigth: ''
-            // },
-            // webcamContainer: {
-            //     offsetWidth: webcamContainer.offsetWidth,
-            //     offsetHeight: webcamContainer.offsetHeight
-            // }
 
         }
     },
@@ -123,11 +90,6 @@ export default {
             pick_list = ['시작!','도', '레', '미', '파', '솔', '라', '시']
             
             // 최소 한 번씩 나오게 하는 구간 끝
-
-            // 랜덤으로 problem개 더 출력
-            // for (let i=0; i<problem; i++) {
-            //     pick_list.push(pitch_list2[Math.floor(Math.random() * 7)]);
-            // }
 
             pick_list.push('참 잘했어요')
 
@@ -197,107 +159,7 @@ export default {
             }
             }, 100);
         },
-        joinSession() {
-            // 1. OpenVidu 객체 가져오기
-            this.OV = new OpenVidu();
-            
-            // 2. 세션 시작
-            this.session = this.OV.initSession();
-
-            // 3. 세션에서 일어나는 이벤트 
-            // 3-1. 새로운 스트림 생성시 사용자 등록
-            this.session.on("streamCreated", ({ stream }) => {
-                const subscriber = this.session.subscribe(stream);
-                this.subscribers.push(subscriber);
-            });
-
-            // 3-2. 스트림 말소시 사용자 제외
-            this.session.on("streamDestroyed", ({ stream }) => {
-                const index = this.subscribers.indexOf(stream.streamManager, 0);
-                if (index >= 0) {
-                this.subscribers.splice(index, 1);
-                }
-            })
-
-            // 3-3. 예외 발생 시
-            this.session.on("exception", ({ exception }) => {
-                console.warn(exception);
-            })
-
-            // 4. 유효한 사용자 토큰과 세션에 접속하기
-            this.getToken(this.$store.state.mySessionId).then((token) => {
-                this.session.connect(token, { clientData: this.$store.state.myUserName })
-                .then(() => {
-
-                    // 5. 카메라 설정
-                    let publisher = this.OV.initPublisher(undefined, {
-                    audioSource: undefined,
-                    videoSource: undefined,
-                    publishAudio: true,
-                    publishVideo: true,
-                    // ratio: 16/9,
-                    resolution: "240x160",
-
-                    framerate: 30,
-                    insertMode: "Append",
-                    mirror: false,
-                    });
-
-                    this.mainStreamManager = publisher;
-                    this.publisher = publisher;
-
-                    // 6. 스트림 퍼블리시
-                    this.session.publish(this.publisher);
-                })
-                .catch((error) => {
-                    console.log("ERROR: ", error.code, error.message);
-                });
-            });
-
-            window.addEventListener("beforeunload", this.leaveSession);
-        }, //joinSession 함수 끝
-
-        leaveSession() {
-            // 세션 종료
-            if (this.session) this.session.disconnect();
-
-            // 모든 요소 초기화
-            this.session = undefined;
-            this.mainStreamManager = undefined;
-            this.publisher = undefined;
-            this.subscribers = [];
-            this.OV = undefined;
-
-            this.initMySessionId(); // 세션 초기화, 닉네임은 유지
-            window.removeEventListener("beforeunload", this.leaveSession);
-            this.$router.push({ name: 'mode' }) // 모드 선택으로 이동
-        },
-
-        updateMainVideoStreamManager(stream) {
-            // 메인 비디오 적용
-            if (this.mainStreamManager === stream) return;
-            this.mainStreamManager = stream;
-        },
-
-        async getToken(mySessionId) {
-            const sessionId = await this.createSession(mySessionId);
-            return await this.createToken(sessionId);
-        },
-
-        async createSession(sessionId) {
-            const response = await axios.post(APPLICATION_SERVER_URL + 'api/sessions', { customSessionId: sessionId },{
-                headers: { 'Content-Type': 'application/json', },
-            });
-            return response.data;
-        },
-
-
-        async createToken(sessionId) {
-            const response = await axios.post(APPLICATION_SERVER_URL + 'api/sessions/' + sessionId + '/connections', {}, {
-                headers: { 'Content-Type': 'application/json' }
-            });
-            return response.data;
-        },//image 인식 시작
+        //image 인식 시작
         async image() {
             console.log('시작')
             const modelURL = ImageURL + "model.json";
@@ -421,7 +283,6 @@ export default {
 
     },
     mounted() {
-        this.joinSession()
         this.image()
     }
 }
