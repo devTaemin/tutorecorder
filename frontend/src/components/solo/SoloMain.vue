@@ -4,6 +4,29 @@
             <img id='logo' src="@/assets/logo_nocircle.png" alt="logo img" >
         </div>
 
+        <!-- <div id="blueBoxContainer">
+            <div id="redBoxComponent" @click="moveSoloTutorial">
+                <img id="iconImg" src="@/assets/soloSelect-tutorial.png" alt="튜토리얼 img">
+                <img id="textImg" src="@/assets/text/solo_tutorial.png" alt="튜토리얼">
+
+            </div>
+            <div id="redBoxComponent" @click="moveSoloSound">
+                <img id="iconImg" src="@/assets/soloSelect-sound.png" alt="소리내기 img">
+                <img id="textImg" src="@/assets/text/solo_sound.png" alt="소리내기">
+            </div>
+        </div>
+        <div id="blueBoxContainer">
+            <div id="redBoxComponent" @click="moveSoloSong">
+                <img id="iconImg" src="@/assets/soloSelect-song.png" alt="연주하기 img">
+                <img id="textImg" src="@/assets/text/solo_song.png" alt="연주하기">
+            </div>
+            <div id="redBoxComponent" @click="moveSoloFingering">
+                <img id="iconImg" src="@/assets/soloSelect-fingering.png" alt="운지법 img">
+                <img id="textImg" src="@/assets/text/solo_fingering.png" alt="운지법">
+            </div>
+        </div> -->
+
+
         <div id="blueBoxContainer">
             <div id="redBoxComponent" @click="moveSoloTutorial">
                 <img id="iconImg" src="@/assets/soloSelect-tutorial.png" alt="튜토리얼 img">
@@ -19,6 +42,9 @@
                 <img id="textImg" src="@/assets/text/solo_song.png" alt="연주하기">
             </div>
         </div>
+
+
+
 
         
         <!-- 뒤로가기, 홈버튼 -->
@@ -51,14 +77,15 @@ export default {
         moveSoloSong: function() {
             this.$router.push({ name: 'soloSong' })
         },
+        moveSoloFingering: function() {
+            this.$router.push({ name :'soloFinger' })
+        },
         goback() {  
-            console.log('go mode select')
             this.$router.push({ name: 'mode' })
         },
         goHome() {
-            console.log('go home')
             this.$router.push({ name: 'home' })
-        }
+        },
 
     },  
 
@@ -92,33 +119,65 @@ export default {
     #blueBoxContainer{
         /* border: 5px solid blue; */
         display: flex;
+        justify-content: space-between;
+        align-items: center;
+        /* width: 80%; */
+        /* height: 30%; */
+        
+        display: flex;
         width: 80%;
         height: 60%;
+        
+         
     }
     #redBoxComponent{
         /* border: 5px solid red; */
-        width: 40%;
+        /* width: 45%;
+        height: 60%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #F2E6E6;   
+        border-radius: 20px;
+        margin-left: 2%;
+        margin-right: 2%;
+        cursor: url(../../assets/cursor_click.png), auto !important; */
+
+
+        
+                width: 40%;
         height: 99%;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-
-        background-color: #F2E6E6;   
+        background-color: #F2E6E6;
         border-radius: 20px;
         margin-left: 2%;
         margin-right: 2%;
         cursor: url(../../assets/cursor_click.png), auto !important;
+ 
+       
     }
 
     #iconImg{
         /* border: 5px solid violet; */
+        /* width: 20%; */
+        
+        
         width: 60%;
+        margin-top: 10%;
+       
     } 
     #textImg{
         /* border: 5px solid gold; */
+        /* width: 45%; */
+        height: 10vh;
+        margin-left: 4% ;
+
         width: 60%;
         margin-top: 10%;
+
     }
 
 
