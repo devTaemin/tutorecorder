@@ -59,7 +59,6 @@ export default {
             // icon
             ArrowUpBold: ArrowUpBold,
             ArrowDownBold: ArrowDownBold,
-
             // openvidu object
             OV: undefined,
             session: undefined,
@@ -151,6 +150,12 @@ c8.'대' c8'롱' e8'대' g8'롱' c.'풀' a8'잎' g8'마' g8'다' a'총' a.'총'r
 e8'방' g8'긋' g8.'웃' f8'는' e8'꽃' g8'잎' g8'마' f8'다' e8'송' d8'송' c8.'송'r`,
       },
     ]
+var count = 0;
+var time = 0;
+var index = 0;
+var temp = 0;
+var arr;
+var before = 0;
 
 // ------------------------- function --------------------------
 function A(a) {
@@ -438,9 +443,11 @@ class H {
       
   }
   start(e) {
+    this.playerScore = 0;
     (this._playScore = e.slice()), (this._elapsed = -1e3);
   }
   stop() {
+    this.playerScore = 0;
     this._playScore = [];
   }
   get currentTime() {
@@ -509,6 +516,8 @@ class H {
       e.lineTo(this._screenWidth / 2, 300), // stroke 선 위 좌표
       e.stroke(),
       e.restore();
+      (e.font = "30px monospace"),
+      e.fillText(this.playerScore.toString(), this._canvas.width - 50, 30);
   }
   // 소리
   _renderVoice(e) {
@@ -516,8 +525,40 @@ class H {
       this._notes.forEach((t, r) => {
         if (t !== -1) {
           let i = Math.floor(t / 12) - 4,
-            c = t % 12;
-          e.fillRect(r , B[c] * 5 + 150 + i * 35 - 2.5, 1, 5);
+          c = t % 12,
+            // 리코더 소리
+          y = B[c] * 5+ 80 + i * 35 - 2.5;
+          // B[c] * 5 + 150 + i * 35 - 2.5
+          e.fillRect(r, y, 1, 5);
+          // // o + n -> x, m -> y, 길이 -> p
+          let num = 1e3 / 60; // t 변경
+          this._playScore.forEach((d) => {
+            let p = d.length / num - 1;
+            let m = B[d.note] * 5 + (d.octav - 3) * 35 + 150 + this._oct * 5 - 2.5;
+            if(d.start <= this._elapsed && d.start + d.length - num >= this._elapsed) {
+              if(!arr[index]) {
+                if(this._elapsed >= p * 16) {
+                  temp = p * 16;
+                  if(y == m) {
+                    arr[index] = true;
+                    index++;
+                    if(before != m) {
+                      this.playerScore++;
+                      console.log(this.playerScore);
+                      before = m;
+                    }
+                    // console.log(this.playerScore);
+                  }
+                }
+              }else {
+                  if(time < temp) {
+                    time += temp;
+                  }
+                }
+            }
+            this.countArr = arr;
+          })
+
         }
       });
   }
@@ -987,6 +1028,8 @@ class x extends _ {
     });
   }
   playSong(e) {
+    count = e.length;
+    arr = new Array(count).fill(false);
     this.drawer.start(e);
   }
   stopSong() {
