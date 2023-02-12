@@ -1,10 +1,12 @@
 <template>
     <el-row class="game-content-container">
         <el-col :span="15" class="game-content-my-cam">
-            <user-video :stream-manager="mainStreamManager"/>
-        </el-col>       
+        <div id="webcam-container"></div>
+        <!-- <div id="label-container"></div> -->
+
+        </el-col>
         <el-col :span="8" class="game-content-info">
-            <div class="game-content-title">소리내기</div>
+            <div class="game-content-title">운지법</div>
             <div class="game-content-target">
                 <img id="board-image" src="../../assets/board.png">
                 <span class="pitch-target" style="margin-top:">{{ pitch_target }}</span>
@@ -17,34 +19,32 @@
                     <el-button class="solo-out-button" @click="goSolo">나가기</el-button>
                 </div>
                 <div class="solo-start-button-container">
-                    <el-button :class="{ 'solo-start-button': !playGame, 'solo-start-button-playgame': playGame }" :disabled="playGame" @click="gameStart(); init()">{{ gameState }}</el-button>
+                    <el-button :class="{ 'solo-start-button': !playGame, 'solo-start-button-playgame': playGame }" :disabled="playGame" @click="gameStart();">{{ gameState }}</el-button>
                 </div>
             </div>
         </el-col>
     </el-row>
 </template>
 
+
+
+
 <script type="text/javascript">
 import '@tensorflow/tfjs'
 import { OpenVidu } from "openvidu-browser";
 import axios from "axios";
-import UserVideo from "@/components/video/soloUserVideo.vue"
-import * as speechCommands from '@tensorflow-models/speech-commands'
+
 import { mapActions } from 'vuex'
 
 
-let pitch_list = ['도', '레', '미', '파', '솔', '라', '시'];
-const pitch_list2 = ['도', '레', '미', '파', '솔', '라', '시'];
+let pick_list = ['도', '레', '미', '파', '솔', '라', '시'];
 
 
+const total_problem = 9; //총 문제 수
 
-const problem = 3
+let model, webcam,  maxPredictions; //teachable에서 사용할 변수 labelContainer,
 
-const total_problem = problem + 9;
-const URL = "https://teachablemachine.withgoogle.com/models/eptQYA8MT/";
-
-
-
+const ImageURL = "https://teachablemachine.withgoogle.com/models/ic2Rvnu7Z/"; //image 데이터
 
 // 음계 측정값 넣을 리스트 - 현재 7개의 음과 배경소음만 있고 나중에 삑사리 추가
 let grade_list = [[], [], [], [], [], [], []];
@@ -61,7 +61,7 @@ let color = 180;
 export default {
     name: 'SoloSoundMain',
     components: {
-        UserVideo,
+        //UserVideo,
     },
     computed: {
         isSession() {
@@ -92,6 +92,17 @@ export default {
             playGame: false,
             problem: '',
             playGameAnalize: true,
+
+            // //webcam 사이즈
+            // webcam : {
+            //     width: '',
+            //     heigth: ''
+            // },
+            // webcamContainer: {
+            //     offsetWidth: webcamContainer.offsetWidth,
+            //     offsetHeight: webcamContainer.offsetHeight
+            // }
+
         }
     },
     methods: {
@@ -104,127 +115,30 @@ export default {
             this.$router.push({ name: 'solo' })
         },
         
-        async createModel () {
-
-            
-            const checkpointURL = URL + 'model.json' // model topology
-            const metadataURL = URL + 'metadata.json' // model metadata
-
-            const recognizer = speechCommands.create(
-                'BROWSER_FFT', // fourier transform type, not useful to change
-                undefined, // speech commands vocabulary feature, not useful for your models
-                checkpointURL,
-                metadataURL
-            )
-
-            // check that model and metadata are loaded via HTTPS requests.
-            await recognizer.ensureModelLoaded()
-
-            return recognizer
-        },
-        async init () {
-            const recognizer = await this.createModel() // 모델 생성
-            const classLabels = recognizer.wordLabels() // get class labels, 학습 시킨 클래스들
-
-
-            // listen() takes two arguments:
-            // 1. A callback function that is invoked anytime a word is recognized.
-            // 2. A configuration object with adjustable fields
-            recognizer.listen(result => {
-                const scores = result.scores // eslint-disable-line no-unused-vars
-                // render the probability scores per class
-                for (let i = 0; i < classLabels.length; i++) {
-                    const index = result.scores.indexOf(Math.max(...result.scores));
-                    switch(this.pitch_target) {
-                        case '도':
-                            if (index === 0) {
-                                grade_list[0].push(result.scores[index])
-                            } else if (index !== 9){
-                                grade_list[0].push(0)
-                            }
-                            break;
-                        case '레':
-                            if (index === 1) {
-                                grade_list[1].push(result.scores[index])
-                            } else if (index !== 9){
-                                grade_list[1].push(0)
-                            }
-                            break;
-                        case '미':
-                            if (index === 2) {
-                                grade_list[2].push(result.scores[index])
-                            } else if (index !== 9){
-                                grade_list[2].push(0)
-                            }
-                            break;
-                        case '파':
-                            if (index === 3) {
-                                grade_list[3].push(result.scores[index])
-                            } else if (index !== 9){
-                                grade_list[3].push(0)
-                            }
-                            break;
-                        case '솔':
-                            if (index === 4) {
-                                grade_list[4].push(result.scores[index])
-                            } else if (index !== 9){
-                                grade_list[4].push(0)
-                            }
-                            break;
-                        case '라':
-                            if (index === 5) {
-                                grade_list[5].push(result.scores[index])
-                            } else if (index !== 9){
-                                grade_list[5].push(0)
-                            }
-                            break;
-                        case '시':
-                            if (index === 6) {
-                                grade_list[6].push(result.scores[index])
-                            } else if (index !== 9){
-                                grade_list[6].push(0)
-                            }
-                            break;
-                        default:
-                            // code block for default case
-                    }
-
-                }
-            }, {
-                includeSpectrogram: true, // in case listen should return result.spectrogram
-                probabilityThreshold: 0.75,
-                invokeCallbackOnNoiseAndUnknown: true,
-                overlapFactor: 0.50 // probably want between 0.5 and 0.75. More info in README
-            })
-
-        },
         gameStart() {
             this.initGameResult()
-            pitch_list = ['도', '레', '미', '파', '솔', '라', '시'];
+            
             // pick_list에 나올 음계 저장
             // 최소 한 번씩 나오게 하는 구간
-            let pick_list = ['시작!']
-            for (let i=0; i<7; i++) {
-                const pick_index = Math.floor(Math.random() * pitch_list.length);
-                pick_list.push(pitch_list[pick_index]);
-                pitch_list.splice(pick_index, 1);
-            }
+            pick_list = ['시작!','도', '레', '미', '파', '솔', '라', '시']
+            
             // 최소 한 번씩 나오게 하는 구간 끝
+
             // 랜덤으로 problem개 더 출력
-            for (let i=0; i<problem; i++) {
-                pick_list.push(pitch_list2[Math.floor(Math.random() * 7)]);
-            }
+            // for (let i=0; i<problem; i++) {
+            //     pick_list.push(pitch_list2[Math.floor(Math.random() * 7)]);
+            // }
 
             pick_list.push('참 잘했어요')
 
             this.playGameAnalize = true
             this.gameState = '게임 진행중...'
             this.playGame = true
-            this.pitch_target = '준비하세요';
+            this.pitch_target = '준비하세요'; //칠판에 초기값으로 먼저 들어가 있는 값
             let index = 0;
             grade_list = [[], [], [], [], [], [], []];
             let game = setInterval(() => {
-                this.pitch_target = pick_list[index];
+                this.pitch_target = pick_list[index]; //게임시작하면 pick_list의 값이 하나씩 추가
                 // index에 몇 가지 나올지 저장
                 index = (index + 1) % total_problem;
                 if (index === 2) {
@@ -234,7 +148,7 @@ export default {
                     this.problem = '1' + '/' + (total_problem - 2)
                     game = setInterval(() => {
                         this.problem = index + '/' + (total_problem - 2)
-                        if (index > 10) {
+                        if (index > 7) {
                             this.problem = ''
                         }
                         this.pitch_target = pick_list[index];
@@ -245,7 +159,7 @@ export default {
                             this.gameState = '게임 시작!'
                             this.playGameAnalize = false
                             this.playGame = false
-                            console.log(grade_list)
+                            console.log((grade_list[0].reduce((a,b) => a+b, 0)/grade_list[0].length)*100)
                         }
                     }, 5000)
                 } 
@@ -323,6 +237,7 @@ export default {
                     publishVideo: true,
                     // ratio: 16/9,
                     resolution: "240x160",
+
                     framerate: 30,
                     insertMode: "Append",
                     mirror: false,
@@ -382,17 +297,142 @@ export default {
                 headers: { 'Content-Type': 'application/json' }
             });
             return response.data;
-        }
+        },//image 인식 시작
+        async image() {
+            console.log('시작')
+            const modelURL = ImageURL + "model.json";
+            const metadataURL = ImageURL + "metadata.json";
+
+            // load the model and metadatanpm
+            // Refer to tmImage.loadFromFiles() in the API to support files from a file picker
+            // or files from your local hard drive
+            // Note: the pose library adds "tmImage" object to your window (window.tmImage)
+            model = await window.tmImage.load(modelURL, metadataURL);
+            maxPredictions = model.getTotalClasses();
+
+            // Convenience function to setup a webcam
+            const flip = true; // whether to flip the webcam
+
+            //webcam-container의 사이즈의 값을 가져옴
+            const webcamContainer = document.getElementById("webcam-container");
+            const vwidth = webcamContainer.offsetWidth; 
+            const vheight = webcamContainer.offsetHeight;
+            
+            //가져온 사이즈 값으로 webcam 사이즈를 지정
+            webcam = new window.tmImage.Webcam(vwidth, vheight, flip); // width, height, flip
+            await webcam.setup(); // request access to the webcam   
+            await webcam.play();
+
+            window.requestAnimationFrame(this.loop);
+
+            console.log(webcam.width);
+            console.log(webcam.height);
+
+            // append elements to the DOM
+           webcamContainer.appendChild(webcam.canvas);     
+            
+            console.log("Asdfdsafsda");
+            console.log(webcam.canvas.width);
+            console.log(webcam)
+            
+   
+        },
+        async loop() {
+            webcam.update(); // update the webcam frame
+            await this.predict();
+            window.requestAnimationFrame(this.loop);
+        },
+        // run the webcam image through the image model
+        async predict() {
+            // predict can take in an image, video or canvas html element
+            const prediction = await model.predict(webcam.canvas);
+            let Array = [0,0,0,0,0,0,0,0];
+            for (let i = 0; i < maxPredictions; i++) {
+                // const classPrediction =
+                //     prediction[i].className + ": " + prediction[i].probability.toFixed(2);
+                //  labelContainer.childNodes[i].innerHTML = classPrediction;
+
+                //console.log(prediction)
+
+                Array[i] = prediction[i].probability;
+
+                const index = Array.indexOf(Math.max(...Array));
+                switch(this.pitch_target) {
+                            case '도':
+                                if (index === 0) {
+                                    grade_list[0].push(1)
+                                } else if(index !== 4){
+                                    grade_list[0].push(0)
+                                }
+                                break;
+                            case '레':
+                                if (index === 1) {
+                                    grade_list[1].push(1)
+                                } else if(index !== 4) {
+                                    grade_list[1].push(0)
+                                }
+                                break;
+                            case '미':
+                                if (index === 2) {
+                                    grade_list[2].push(1)
+                                } else if(index !== 4) {
+                                    grade_list[2].push(0)
+                                }
+                                break;
+                            case '파':
+                                if (index === 3) {
+                                    grade_list[3].push(1)
+                                } else if(index !== 4){
+                                    grade_list[3].push(0)
+                                }
+                                break;
+                            case '솔':
+                                if (index === 5) {
+                                    grade_list[4].push(1)
+                                } else if(index !== 4){
+                                    grade_list[4].push(0)
+                                }
+                                break;
+                            case '라':
+                                if (index === 6) {
+                                    grade_list[5].push(1)
+                                } else if(index !== 4) {
+                                    grade_list[5].push(0)
+                                }
+                                break;
+                            case '시':
+                                if (index === 7) {
+                                    grade_list[6].push(1)
+                                } else if(index !== 4){
+                                    grade_list[6].push(0)
+                                }
+                                break;
+                            default:
+                                // code block for default case
+                        }
+                // console.log('음계 : ' + prediction[i].className);
+                // console.log('예측치 : ' + prediction[i].probability.toFixed(2)); 
+            }
+            //console.log(grade_list)
+
+
+    }
+
 
     },
     mounted() {
         this.joinSession()
+        this.image()
     }
 }
 
 </script>
 
 <style>
+#webcam-container{
+    width: 100%;
+    height: 100%;
+}
 
 .game-content-container{
     height: 100%;
@@ -400,7 +440,6 @@ export default {
 
 .game-content-my-cam{
     margin: auto;
-    margin-left: 10px;
     height: 90%;
     background-color: rgba(0, 0, 0, 0.374);
     border-radius: 20px;
@@ -473,26 +512,5 @@ export default {
     top: 15%;
     font-size: 5vh;
     color: white;
-}
-
-.solo-start-button{
-  background-color: #DDB13E !important;
-  color: white !important;
-  font-family: 'JUA', serif !important;
-  font-size: 2vw !important;
-  width: 80% !important;
-  height: 6vh !important;
-  margin-left: 0 !important;
-  cursor: url(../../assets/cursor_click.png), auto !important;
-  -webkit-animation: flickerAnimation 1s infinite;
-  -moz-animation: flickerAnimation 1s infinite;
-  -o-animation: flickerAnimation 1s infinite;
-  animation: flickerAnimation 1s infinite;
-}
-.solo-start-button:hover {
-  -webkit-animation: false;
-  -moz-animation: false;
-  -o-animation: false;
-  animation: false;
 }
 </style>

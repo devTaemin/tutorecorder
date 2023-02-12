@@ -100,7 +100,7 @@ export default {
             problem: '',
             functionTimer: '',
             
-            playGameAnalize: true,
+            playGameAnalize: false,
         }
     },
     computed: {
@@ -114,7 +114,6 @@ export default {
     },
     watch: {
         soundGame() {
-            console.log(this.soundGame);
             if(this.soundGame) {
                 this.init();
                 this.gameStart();
@@ -287,6 +286,7 @@ export default {
                             this.playGame = false
                             
                             this.$emit('soundGameStop');
+                            this.$emit('gameGrade')
                         }
                     }, (this.difficulty * 1000))
                 } 
@@ -349,8 +349,6 @@ export default {
 .game-content-others-cam{
     margin: auto;
     height: 100%;
-    border: 1px solid orange;
-    border-radius: 20px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -359,8 +357,6 @@ export default {
 .game-content-my-cam {
     margin: auto;
     height: 100%;
-    border: 1px solid orange;
-    border-radius: 20px;
 }
 
 .game-content-info{

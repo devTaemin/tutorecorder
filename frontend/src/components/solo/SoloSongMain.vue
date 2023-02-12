@@ -1,10 +1,10 @@
 <template>
 <div class="container">
     <el-row class="game-main-container">
-        <div class="start" id="img-ready">
+        <div class="song-game-start" id="img-ready">
           <img class="ready-img" src="../../assets/game/song/prev_msg.png" alt="">
         </div>
-        <el-col :span="22" class="game-main-note ready" id="game-part">
+        <el-col :span="22" class="game-main-note song-game-ready" id="game-part">
             <!-- 문제 나오는 부분 -->
         </el-col>
     </el-row>
@@ -348,7 +348,8 @@ function v(a, e, t) {
 function w(a) {
   let span = v("span", {id: "innerSpan", style: "display: inline-flex; align-items: center;"}, a)
   let button = v("button", {class: "el-button", type: "button",id: "startBtn"}, span)
-  button.classList.add("solo-start-button")
+  button.classList.add("solo-start-button-disable")
+  button.disabled = true
   return button
 }
 
@@ -473,6 +474,10 @@ function makeSwitch() {
   let inner_core = v("div", {class: "el-switch__action", id: "inner-core"})
   let exSpan_on = v("span", {class: ["el-switch__label", "el-switch__label--right", "is-active"], id: "ex-span-on"})
   let inSpan_on = v("span", {"aria-hidden": "false", id: "in-span-on"}, "ON")
+
+  exter_core.classList.add("can-click")
+  exSpan_on.classList.add("can-click")
+  exSpan_off.classList.add("can-click")
 
   exSpan_off.appendChild(inSpan_off)
   exter_core.appendChild(inner_core)
@@ -695,17 +700,36 @@ class x extends _ {
       this.songTitle = document.getElementById("song-title")
       this.songBGI = document.getElementById("game-BG")
       this.songTitle.innerHTML = r.title;
+      const startButton = document.getElementById("startBtn")
       if (r.title === "애국가") {
+        if (document.getElementById("innerSpan").innerHTML === '곡을 선택해주세요') {
+          document.getElementById("innerSpan").innerHTML = "시작하기"
+        }
+        startButton.disabled = false
+        startButton.classList.remove("solo-start-button-disable")
+        startButton.classList.add("solo-start-button")
         this.songBGI.classList.remove("no-image")
         this.songBGI.classList.remove("airplane")
         this.songBGI.classList.remove("beadrain")
         this.songBGI.classList.add("nationalflag")
       } else if (r.title === "비행기"){
+        if (document.getElementById("innerSpan").innerHTML === '곡을 선택해주세요') {
+          document.getElementById("innerSpan").innerHTML = "시작하기"
+        }
+        startButton.disabled = false
+        startButton.classList.remove("solo-start-button-disable")
+        startButton.classList.add("solo-start-button")
         this.songBGI.classList.remove("no-image")
         this.songBGI.classList.remove("nationalflag")
         this.songBGI.classList.remove("beadrain")
         this.songBGI.classList.add("airplane")
       } else if (r.title === "구슬비") {
+        if (document.getElementById("innerSpan").innerHTML === '곡을 선택해주세요') {
+          document.getElementById("innerSpan").innerHTML = "시작하기"
+        }
+        startButton.disabled = false
+        startButton.classList.remove("solo-start-button-disable")
+        startButton.classList.add("solo-start-button")
         this.songBGI.classList.remove("no-image")
         this.songBGI.classList.remove("nationalflag")
         this.songBGI.classList.remove("airplane")
@@ -728,6 +752,7 @@ class x extends _ {
           .map((e, t) => {
             let r = document.createElement("div");
             r.classList.add("list-item")
+            r.classList.add("can-click")
             
             return (
               (r.dataset.index = t.toString()),
@@ -784,7 +809,7 @@ class x extends _ {
     btnStop;
     chkMelody;
     inVolume;
-    // element;
+    vol_label;
     settingVolume;
     buttons;
     constructor() {
@@ -793,13 +818,15 @@ class x extends _ {
     }
     initElements() {
       //버튼 생성하는 곳
-      (this.btnPlay = w("시작하기")),
+      (this.btnPlay = w("곡을 선택해주세요")),
       (this.chkMelody = makeSwitch()),
-      (this.inVolume = v("input", { type: "range", min: 0, max: 100, value: 30, step: 1 })),
+      (this.inVolume = v("input", { class:"volume-input", type: "range", min: 0, max: 100, value: 30, step: 1 })),
+      (this.vol_label = v("div", {class: "vol-label"}, "소리 조절")),
       (this.buttons = v("div", { class: "song-editor" }, [
         this.btnPlay,
       ])),
       (this.settingVolume = v("div", {class : "setting-volume"},[
+        this.vol_label,
         this.chkMelody,
         this.inVolume,
       ])),
@@ -810,21 +837,21 @@ class x extends _ {
       this.btnPlay.addEventListener("click", () => {
         if (this.btnPlay.classList.contains("solo-start-button-playgame")){
           this.btnPlay.classList.remove("solo-start-button-playgame")
-          this.gamePart.classList.remove("start")
-          this.imgPart.classList.remove("ready")
+          this.gamePart.classList.remove("song-game-start")
+          this.imgPart.classList.remove("song-game-ready")
           this.btnPlay.classList.add("solo-start-button")
-          this.gamePart.classList.add("ready")
-          this.imgPart.classList.add("start")
+          this.gamePart.classList.add("song-game-ready")
+          this.imgPart.classList.add("song-game-start")
           document.getElementById("innerSpan").innerHTML = "시작하기"
           this._clickHandler("stop");
           
         } else {
           this.btnPlay.classList.remove("solo-start-button")
-          this.gamePart.classList.remove("ready")
-          this.imgPart.classList.remove("start")
+          this.gamePart.classList.remove("song-game-ready")
+          this.imgPart.classList.remove("song-game-start")
           this.btnPlay.classList.add("solo-start-button-playgame")
-          this.gamePart.classList.add("start")
-          this.imgPart.classList.add("ready")
+          this.gamePart.classList.add("song-game-start")
+          this.imgPart.classList.add("song-game-ready")
           document.getElementById("innerSpan").innerHTML = "그만하기"
           this._clickHandler("play");
         }
@@ -1160,10 +1187,10 @@ class x extends _ {
     margin-bottom: 10px;
     border-radius: 3%;
 }
-.ready {
+.song-game-ready {
   display: none;
 }
-.start {
+.song-game-start {
   display: block;
 }
 #img-ready{
@@ -1244,6 +1271,27 @@ class x extends _ {
 }
 .setting-volume {
   margin-bottom: 3vh;
+  background-color: rgba(0, 0, 0, 0.374);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.vol-label{
+  font-family: 'JUA', serif;
+  color: white;
+  margin-top: 1.5vh;
+  margin-bottom: 1.5vh;
+}
+#outside-div{
+  margin-bottom: 1.5vh;
+}
+.volume-input {
+  cursor: url(../../assets/cursor_click.png), auto !important;
+  margin-bottom: 1.5vh;
+  margin-left: 1.5vw;
+  margin-right: 1.5vw;
 }
 .song-list{
   display: flex;
@@ -1298,6 +1346,26 @@ class x extends _ {
   height: 6vh !important;
   margin-left: 0 !important;
   margin-top: 1.5vh;
+  cursor: url(../../assets/cursor_click.png), auto !important;
+}
+
+.solo-start-button-disable{
+  background-color: #DD5A3E !important;
+  color: white !important;
+  font-family: 'JUA', serif !important;
+  font-size: 2vw !important;
+  width: 80% !important;
+  height: 6vh !important;
+  margin-left: 0 !important;
+  margin-top: 1.5vh;
+  cursor: url(../../assets/cursor_disable.png), auto !important;
+  -webkit-animation: flickerAnimation 1s infinite;
+  -moz-animation: flickerAnimation 1s infinite;
+  -o-animation: flickerAnimation 1s infinite;
+  animation: flickerAnimation 1s infinite;
+}
+
+.can-click{
   cursor: url(../../assets/cursor_click.png), auto !important;
 }
 

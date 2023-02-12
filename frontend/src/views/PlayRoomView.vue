@@ -1,18 +1,18 @@
 <template>
     <div id="pink-container">
-
         <!-- 소리내기 게임 컴포넌트 -->
         <MultiSoundMain v-if="isPlaySound" @soundGameStop="soundGameStop" @emitGameStart="emitGameStart" @goMultiAnalize="goMultiAnalize" @goRoom="goRoom" @goRoomAlone="goRoomAlone" :isOwner="isOwner" :difficulty="difficulty" :publisher="publisher" :subscribers="subscribers" :soundGame="soundGame"/>
         <!-- 소리내기 게임 컴포넌트 끝-->
 
         <!-- 소리내기 게임 분석 -->
-        <MultiAnalizeMain v-if="analizeVisible" @closeAnal="closeAnal" @closeAnalAlone="closeAnalAlone" :isOwner="isOwner"/>
+        <MultiAnalizeMain v-if="analizeVisible" @closeAnal="closeAnal" @closeAnalAlone="closeAnalAlone" :isOwner="isOwner" @sendMyTotalScore="sendMyTotalScore" :ranker="ranker"/>
         <!-- 소리내기 게임 분석 끝 -->
 
         <!-- 연주하기 게임 컴포넌트 -->
         <MultiSongMain v-if="isPlaySong" @goMultiAnalize="goMultiAnalize" @goRoom="goRoom" @goRoomAlone="goRoomAlone" :isOwner="isOwner" :publisher="publisher" :subscribers="subscribers"/>
         <!-- 연주하기 게임 컴포넌트 끝 -->
-        
+        <!-- 대기화면 내부 -->
+
         <!-- 왼쪽 박스 -->
         <div id="LeftBox" v-if="!isPlayGame">
 
@@ -29,27 +29,27 @@
 
             <div style="display:flex; flex-direction:row; ">
                 <!-- 대기방 채팅창 -->
-                <div style="display:flex; flex-direction:column;  width:100%; margin: 0; padding: 0;">
+                <div style="display:flex; flex-direction:column;  width:100%; height: 100%; margin: 0; padding: 0; background-color: rgba(0, 0, 0, 0.374); box-shadow: 0 0 5px #333;">
                     <div id="GreenBoxChat" class="scroll" style="text-align:left;">
                         <p v-for="message in messageList" :key="message"  style="margin-left:0; margin-right:0;">
                             {{ message }}
                         </p>
                     </div>
-                    <input v-model="chatMessage" clearable @keyup.enter="this.sendMessage" style="width:98.5%; height:10%; margin-top:3px;
-                        background-color:rgb(219,206,206); color:rgb(0,0,0);" />
+                    <input v-model="chatMessage" clearable @keyup.enter="this.sendMessage" style="width:99.3%; height:10%; margin-top:3px;
+                        background-color:rgba(0, 0, 0, 0.374); color: white;" />
                 </div>
                 <!-- 대기방 채팅창 끝-->
                 
                 <!-- 게임 시작/준비 전환 버튼 -->
                 <div id="OrangeBoxStart"> 
                     <div v-if="isOwner">
-                        <el-button id="fontValue" :type="startButton" :disabled="!startButtonEnabled" @click="startButtonConfirm" :class="{ 'can-push-button': startButtonEnabled, 'cannot-push-button': !startButtonEnabled }">시작하기</el-button>
+                        <el-button id="ready-button" :type="startButton" :disabled="!startButtonEnabled" @click="startButtonConfirm" :class="{ 'can-push-button': startButtonEnabled, 'cannot-push-button': !startButtonEnabled,}">시작하기</el-button>
                     </div>
                     <div v-if="!isOwner && !readyButtonOn">
-                        <el-button id="fontValue" class="button-flicker can-push-button" type="warning" @click="this.readyButtonConfirm(); ">준비하기</el-button>
+                        <el-button class="button-flicker can-push-button ready-button" type="warning" @click="this.readyButtonConfirm(); ">준비하기</el-button>
                     </div>
                     <div v-if="!isOwner && readyButtonOn">
-                        <el-button id="fontValue" type="success" @click="this.readyButtonConfirm" class="can-push-button">준비완료</el-button>
+                        <el-button type="success" @click="this.readyButtonConfirm" class="ready-button can-push-button">준비완료</el-button>
                     </div>
                 </div>
                 <!-- 게임 시작/준비 전환 버튼 끝 -->
@@ -65,22 +65,25 @@
             <!-- 게임 세팅 창 -->
             <div id="PurpleBoxGameSetting">
                 <!-- 방장인 경우 게임 정보를 세팅할 수 있도록 한다 -->
-                <img v-if="isOwner" 
-                     src="../assets/gamesetting.png" 
-                     alt="game setting img" 
-                     style="width:100%; cursor:pointer;" 
-                     @click="gameSettingVisible=true"
-                     class="can-push-button"
-                >
+                <div v-if="isOwner" style="width:100%; height: 20vh">
+                    <img  
+                        src="../assets/gamesetting.png" 
+                        alt="game setting img" 
+                        style="width: 100%; height: 100%" 
+                        @click="gameSettingVisible=true"
+                        class="can-push-button"
+                    >
+                </div>
+                
                 <!-- 방장이 아닌 경우 게임 정보를 볼 수 있도록 한다-->
-                <div  v-if="!isOwner" style="background-color: rgb(134,132,255); width:100%; height: 25vh; border-radius:20px">
-                    <div >
-                        <h1 id="fontValue" style="margin:0;"> 게임 정보 </h1>
-                        <div id="fontValue" v-if='gameMode=="play"'>
+                <div  v-if="!isOwner" style="background-color: rgb(134,132,255); width:100%; height: 20vh; border-radius:20px">
+                    <div style="padding-top: 1.5vh">
+                        <p id="fontValue" style="color: white; margin: 0; font-size:2.4vw;"> 게임 정보 </p>
+                        <div class="gameMode" id="fontValue" v-if='gameMode=="play"'>
                             게임 모드: {{ gameMode }} <br/>
                             곡 이름: {{ basicSong }}
                         </div>
-                        <div id="fontValue" v-if='gameMode=="sound"'>
+                        <div class="gameMode" id="fontValue" v-if='gameMode=="sound"'>
                             게임 모드: {{ gameMode }} <br/>
                             난이도: {{ difficulty }}
                         </div>
@@ -93,7 +96,7 @@
 
             <!-- 사용자 목록 -->
             <div id="BlueBoxUserList">
-                <h1 id="fontValue" >사용자 목록</h1>
+                <p id="fontValue" style="margin-top: 1.5vh; margin-bottom: 0; color: white; font-size: 2.4vw;">사용자 목록</p>
 
                 <!-- 방장인 경우 참가자 확인 및 추방 기능을 추가한다 -->
                 <div id="fontValue" v-if="this.isOwner">
@@ -129,20 +132,24 @@
                     alt="game setting img" 
                     @click="leaveSession" 
                     style="cursor:pointer; 
-                    width: 45px;"
+                    width: 30%;
+                    height: 100%;"
                     class="can-push-button"
                 >
                 <img src="../assets/share.png" 
                     alt="share img" 
                     style="cursor:pointer; 
-                    width: 45px; height: 45px;"
+                    width: 30%;
+                    height: 100%;"
                     class="can-push-button"
                     @click="shareSettingVisible=true"
                 >
                 <img src="../assets/confsetting.png" 
                     alt="configuration setting img" 
                     @click="envSettingVisible=true" 
-                    style="cursor:pointer; width: 45px;"
+                    style="cursor:pointer; 
+                    width: 30%;
+                    height: 100%;"
                     class="can-push-button"
                 >
             </div>
@@ -155,26 +162,31 @@
             v-model="shareSettingVisible"
             width="35%"
             align-center
+            style="border-radius: 10px; background-color: #DFE4F6;"
         >
             <template #default>
                 <div id="share-modal-header">
                     <h2>코드 공유하기</h2>
                 </div>
-                <el-input class="code-input" v-model="roomCode" readonly />
-                <el-button class="copy-button" v-if="!copyStatus" type="primary" @click="copyRoomCode">복사하기</el-button>
-                <el-button class="copy-button" v-if="copyStatus" type="success" @click="copyRoomCode">복사완료</el-button>
+                <input class="code-input" v-model="roomCode" readonly/>
 
-                <div>
-                    <a id="kakaotalk-sharing-btn" href="javascript:;" @click="kakaoButton">
-                    <img src="https://developers.kakao.com/assets/img/about/logos/kakaotalksharing/kakaotalk_sharing_btn_medium.png"
-                        alt="카카오톡 공유 보내기 버튼" />
-                    </a>
+                <div style="display: flex; justify-content: center; margin-bottom: 10%;">
+                    <div style="width: 40%;">
+                        <a id="kakaotalk-sharing-btn" href="javascript:;" @click="kakaoButton">
+                            <img src="https://developers.kakao.com/assets/img/about/logos/kakaotalksharing/kakaotalk_sharing_btn_medium.png"
+                            alt="카카오톡 공유 보내기 버튼" />
+                        </a>    
+                    </div>
+    
+                    <div style="display:flex; flex-direction:column; align-items: center; width:40%;">
+                        <!-- <img src="../assets/URL.png" alt="URL 공유하기" style="width:30%;"> -->
+                        <el-button class="copy-button" v-if="!copyStatus" type="primary" @click="copyRoomCode">코드복사</el-button>
+                        <el-button class="copy-button" v-if="copyStatus" type="success" @click="copyRoomCode">복사완료</el-button>
+                    </div>
                 </div>
+                
+            </template>
 
-            </template>
-            <template #footer>
-                <el-button type="danger" id="share-modal-button" @click="shareSettingVisible=false">나가기</el-button>
-            </template>
         </el-dialog>
         <!-- 쉐어 모달 창 끝 -->
 
@@ -311,6 +323,7 @@ export default {
             soundGame: false,
             shareSettingVisible:false,
             copyStatus:false,
+            ranker: {},
         }   
     },
     watch: {
@@ -318,12 +331,13 @@ export default {
             if (this.shareSettingVisible == false) {
                 this.copyStatus = false;
             }
-        }
+        },
     },
     mounted() {
         // Check if the URL already has a room
         // (+) Furthermore, Use database/backend to check if the room code is valid or not
         this.checkMounted();
+       
     },
     
     beforeUnmount() {
@@ -353,6 +367,7 @@ export default {
         },
         soundGameStop: function() {
             this.soundGame = false;
+            this.findHost();
         },
         emitGameStart: function() {
             this.publisher.session.signal({
@@ -367,6 +382,7 @@ export default {
                 })
         },
         startButtonConfirm: function() {
+            this.ranker = {};
             this.publisher.session.signal({
                     data: "",
                     to: [],
@@ -467,6 +483,12 @@ export default {
         },
         jsonNameRendering: function(data) {
             const { clientData } = JSON.parse(data);
+            const isExistName = this.subscribers.some(function(element) {
+                return JSON.parse(element.stream.connection.data)['clientData'] === clientData;
+            });
+            if (this.isOwner && isExistName) {
+                return clientData + '(' + Math.floor(Math.random() * 10000) + ')';
+            }
             return clientData;
         },
         checkMounted: function() {
@@ -513,11 +535,10 @@ export default {
            
             window.location.href = window.location.origin + '/mode';
         },
-        outUser(memberId) {
-            const { connection } = memberId.stream;
-            const { clientData } = JSON.parse(connection.data);
+        outUser(member) {
+            const memberId = member.stream.connection.connectionId
             this.publisher.session.signal({
-                data: clientData,
+                data: memberId,
                 to: [],
                 type: "out"
             });
@@ -555,6 +576,7 @@ export default {
             }
         },
         goRoom() {
+            this.findHost();
             this.publisher.session.signal({
                 data: '',
                 to: [],
@@ -573,6 +595,7 @@ export default {
             this.publisher.publishAudio(true);
         },
         goMultiAnalize() {
+            this.findHost();
             this.publisher.session.signal({
                 data: '',
                 to: [],
@@ -585,6 +608,7 @@ export default {
             })
         },
         closeAnal() {
+            this.findHost();
             this.publisher.session.signal({
                 data: '',
                 to: [],
@@ -622,6 +646,20 @@ export default {
         },
         closeAnalAlone() {
             this.analizeVisible = false
+        },
+        sendMyTotalScore(data) {
+            const memberName = JSON.parse(this.publisher.stream['connection']['data'])['clientData']
+            this.ranker[this.publisher.stream.connection.connectionId] = [memberName, data];
+            this.publisher.session.signal({
+                data: JSON.stringify(this.ranker),
+                to: [],
+                type: 'everyone-data'
+            })
+            .then(() => {
+            })
+            .catch(error => {
+                console.error(error);
+            })
         },
         createRoom: function() {
 
@@ -667,7 +705,7 @@ export default {
             this.session.on("signal:out", async (event) => {
                 let id = event.data;
 
-                if (id == this.myUserName) {
+                if (id == this.publisher.stream.connection.connectionId) {
                     alert("세션에서 추방당하셨습니다.");
                     this.leaveSession();
                     return;
@@ -702,7 +740,9 @@ export default {
                     this.startButton = "primary";
                 }
                 const targetDiv = document.getElementById(targetId)
-                targetDiv.setAttribute('class', 'ready')
+                if (targetDiv !== null) {
+                    targetDiv.setAttribute('class', 'ready')
+                }
             })
             
 
@@ -713,7 +753,9 @@ export default {
                 this.startButtonEnabled = false;
                 this.startButton = "danger";
                 const targetDiv = document.getElementById(targetId)
-                targetDiv.setAttribute('class', 'no-ready')
+                if (targetDiv !== null) {
+                    targetDiv.setAttribute('class', 'no-ready')
+                }
             })
 
             // 3-9) start game
@@ -756,6 +798,18 @@ export default {
                 }
             })
 
+            // 3-15) everyone data
+            this.session.on('signal:everyone-data', (event) => {
+                const result = JSON.parse(event.data)
+                this.ranker[Object.keys(result)[0]] = Object.values(result)[0]
+                if (Object.keys(this.ranker).length === this.subscribers.length + 1) {
+                    let sortedObject = Object.fromEntries(
+                        Object.entries(this.ranker).sort(([, [, a]], [, [, b]]) => b - a)
+                    );
+                    this.ranker = sortedObject
+                }
+            })
+
 
             // 4) Get a token from the OpenVidu deployment
             this.getToken(this.roomCode).then((token) => {
@@ -781,7 +835,6 @@ export default {
 
                         this.session.publish(this.publisher);
 
-
                         // 최대 정원 설정 가능
 
                         // Owner 설정
@@ -792,6 +845,7 @@ export default {
                         this.gameMode = "play";
                         this.basicSong = "airplane";
                         this.difficulty = undefined;
+                       
                     })
                     .catch((error) => {
                         console.log("There was an error connecting to the session: ", 
@@ -837,7 +891,7 @@ export default {
             this.session.on("signal:out", async (event) => {
                 let id = event.data;
 
-                if (id == this.myUserName) {
+                if (id == this.publisher.stream.connection.connectionId) {
                     this.leaveSession();
                     alert("방에서 추방당하셨습니다.");
                 }
@@ -883,6 +937,7 @@ export default {
             this.session.on('signal:start-game', () => {
                 this.startGame();
                 this.publisher.publishAudio(false);
+                this.readyButtonConfirm()
             })
 
             // 3-8) start sound game
@@ -917,7 +972,9 @@ export default {
              this.session.on('signal:ready-plus', (event) => {
                 const targetId = event.data
                 const targetDiv = document.getElementById(targetId)
-                targetDiv.setAttribute('class', 'ready')
+                if (targetDiv !== null) {
+                    targetDiv.setAttribute('class', 'ready')
+                }
             })
             
 
@@ -925,7 +982,9 @@ export default {
             this.session.on('signal:ready-minus', (event) => {
                 const targetId = event.data
                 const targetDiv = document.getElementById(targetId)
-                targetDiv.setAttribute('class', 'no-ready')
+                if (targetDiv !== null) {
+                    targetDiv.setAttribute('class', 'no-ready')
+                }
             })
 
             // 3-16) i-am-host
@@ -933,6 +992,18 @@ export default {
                 const targetId = event.data
                 const targetDiv = document.getElementById(targetId)
                 targetDiv.setAttribute('class', 'host')
+            })
+
+            // 3-17) everyone data
+            this.session.on('signal:everyone-data', (event) => {
+                const result = JSON.parse(event.data)
+                this.ranker[Object.keys(result)[0]] = Object.values(result)[0]
+                if (Object.keys(this.ranker).length === this.subscribers.length + 1) {
+                    let sortedObject = Object.fromEntries(
+                        Object.entries(this.ranker).sort(([, [, a]], [, [, b]]) => b - a)
+                    );
+                    this.ranker = sortedObject
+                }
             })
         
 
@@ -964,6 +1035,18 @@ export default {
                         }
 
                         this.findHost()
+
+                        // 실험
+                        console.log(this.subscribers.some(function(element) {
+                            return element.stream.connection.connectionId === this.myUserName;
+                        })
+                        )
+
+                        console.log(this.subscribers.stream)
+                        // console.log(JSON.parse(this.publisher.stream['connection']['data'])['clientData'])
+
+                        // const { connection } = this.publisher.stream
+                        //     const { clientData } = JSON.parse(connection.data)
                     })
                     .catch((error) => {
                         console.log("There was an error connecting to the session: ", 
@@ -1011,11 +1094,12 @@ export default {
     border-radius: 30px;
     padding:0;
     display: flex;
+    justify-content: center;
+    align-items: center;
     position: relative;
     z-index: 3;
     border-radius: 30px;
   }
-
 
   #BlackBoxLargestBox{
     display: flex;
@@ -1027,10 +1111,11 @@ export default {
   }
 
   #LeftBox{
-    /* border: 5px solid gray; */
+    /* border: 5px solid orange; */
     margin: 0;
     padding: 0;
-    width: 85%;
+    width: 82.5%;
+    height: 95%;
     
   }
   #YellowBoxVideo{
@@ -1044,48 +1129,58 @@ export default {
     padding: 10;
   }
   #GreenBoxChat{
-    /* border: 5px solid green; */
-    border: 5px solid rgba(191, 180, 180, 0.6);
+    /* border: 5px solid rgba(191, 180, 180, 0.6); */
     border-radius: 10px;
     display: inline-block;
-    width: 98.5%; 
-    height: 180px;
+    width: 100%;
+    height: 25vh;
     margin: 0;      
     padding: 0;
     left: 20%;
-    background-color: rgb(142, 140, 140);
+    /* background-color: rgb(142, 140, 140); */
     color: rgb(219,206,206);
   }
   #OrangeBoxStart{
     /* border: 5px solid orange; */
     display: inline-block;
     width: 35%; 
-    height: 22%;
-    padding-top: 0.5%;
-
+    height: 80%;
+  }
+  .ready-button{
+    height: 19.5vh;
+    font-family: 'JUA', serif;  
+    font-size: 3vw;
+  }
+  #ready-button{
+    height: 20vh;
+    font-family: 'JUA', serif;  
+    font-size: 3vw;
   }
 
   #RightBox{
     /* border: 5px solid hotpink; */
     margin: 0;
     padding: 0;
-    width: 15%;
+    width: 12.5%;
+    height: 95%;
   }
   #PurpleBoxGameSetting{
     /* border : 5px solid purple; */
     padding: 0;
     margin: auto;
-    /* height: 25%; */
-    /* background-color: rgb(134,132,255); */
-    /* border-radius: 10px; */
+  }
+  .gameMode{
+    margin-top: 2.4vh;
+    color: white;
+    font-size: 1.2vw;
   }
   #BlueBoxUserList{
-    margin: 0;
-    margin-bottom: 4%;
+    margin-top: 1.5vh;
+    margin-bottom: 1.5vh;
     padding: 0;
     /* border: 5px solid blue; */
-    height: 61%;
-    background-color: rgb(142, 140, 140);
+    height: 63%;
+    background-color: rgba(0, 0, 0, 0.374);
     border-radius: 10px;
   }
   #RedBoxRightBottom{
@@ -1094,6 +1189,7 @@ export default {
     /* border: 5px solid red; */
     display: flex;
     justify-content: space-between;
+    height: 7%;
   }
 
   #fontValue{
@@ -1116,12 +1212,15 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 25px;
-    margin: 10px;
+    height: 10%;
+    margin: 1vh;
     text-align: center;
     border-radius: 4px;
-    background: rgba(255, 255, 255, 0.6);
+    background: rgba(0, 0, 0, 0.374);
     box-shadow: 0 0 5px #333;
+    color: white;
+    font-family: 'JUA', serif;
+    font-size: 1.2vw;
   }
 
   /* chat-scollbar-item */
@@ -1259,21 +1358,26 @@ button {
 
 .copy-button {
     display:inline-block;
-    /* justify-items: center; */
-    width: 100px;
-    height: 40px;
+    width: 70px;
+    height: 70px;
     margin: auto;
+    padding: 0;
     font-size: 15px;
-    font-family: 'JUA', serif;  
+    font-family: 'JUA', serif;
+    border-radius: 100px;
 }
 .code-input {
-  width: 20vw !important;
+  width: 17vw !important;
+  text-align: center;
+  font-family: 'JUA', serif;
+  border-radius: 10px;
+  margin-bottom: 10%;
 }
 .host{
     border: 5px solid rgb(230, 113, 24);
     height: 25vh;
     border-radius: 10px;
-    margin: 2%;
+    margin: 2%; 
     margin-top: 0.75%;
     margin-bottom: 0.75%;
     padding: 0;  
