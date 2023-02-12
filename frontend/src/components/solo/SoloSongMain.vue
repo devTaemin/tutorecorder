@@ -238,6 +238,12 @@ c8.'대' c8'롱' e8'대' g8'롱' c.'풀' a8'잎' g8'마' g8'다' a'총' a.'총'r
 e8'방' g8'긋' g8.'웃' f8'는' e8'꽃' g8'잎' g8'마' f8'다' e8'송' d8'송' c8.'송'r`,
       },
     ]
+    var count = 0;
+    var time = 0;
+    var index = 0;
+    var temp = 0;
+    var arr;
+    var before = 0;
 
 // ------------------------- function --------------------------
 function A(a) {
@@ -488,6 +494,7 @@ function makeSwitch() {
 class H {
   _canvas;
   _notes;
+  playerScore = 0;
   _oct = 0;
   _elapsed = 0;
   _lastTime = 0;
@@ -587,7 +594,7 @@ class H {
       (e.textBaseline = "top"), // 단어 배치
       e.clearRect(0, 0, this._canvas.width, 250);
     e.scale(1, -1),
-      e.translate(0, -250),
+      e.translate(0, -230),
       this._renderLines(e),
       (e.globalAlpha = 0.5),
       (e.fillStyle = "blue"),
@@ -601,14 +608,44 @@ class H {
       e.stroke(),
       e.restore();
   }
-  // 소리
   _renderVoice(e) {
     (e.fillStyle = "red"), // 소리입력을 받으면 오선지에 해당 음 부분에 빨간색 노트 생성
       this._notes.forEach((t, r) => {
         if (t !== -1) {
           let i = Math.floor(t / 12) - 4,
-            c = t % 12;
-          e.fillRect(r , B[c] * 5 + 150 + i * 35 - 2.5, 1, 5);
+          c = t % 12,
+            // 리코더 소리
+          y = B[c] * 5 + 80 + i * 35 - 2.5;
+          // B[c] * 5 + 150 + i * 35 - 2.5
+          e.fillRect(r, y, 1, 5);
+          // // o + n -> x, m -> y, 길이 -> p
+          let num = 1e3 / 60; // t 변경
+          this._playScore.forEach((d) => {
+            let p = d.length / num - 1;
+            let m = B[d.note] * 5 + (d.octav - 3) * 35 + 150 + this._oct * 5 - 2.5;
+            if(d.start <= this._elapsed && d.start + d.length - num >= this._elapsed) {
+              if(!arr[index]) {
+                if(this._elapsed >= p * 16) {
+                  temp = p * 16;
+                  if(y == m) {
+                    arr[index] = true;
+                    index++;
+                    if(before != m) {
+                      this.playerScore++;
+                      before = m;
+                      console.log(this.playerScore);
+                    }
+                  }
+                }
+              }else {
+                  if(time < temp) {
+                    time += temp;
+                  }
+                }
+            }
+            this.countArr = arr;
+          })
+
         }
       });
   }
@@ -1014,6 +1051,7 @@ class x extends _ {
     elapsed = 0;
     audio;
     inited = !1;
+    playerScore = 0;
     key = 0;
     playMusic = !0;
     sharer = new C(); // 곡 선택 리스트
@@ -1079,6 +1117,8 @@ class x extends _ {
     });
   }
   playSong(e) {
+    count = e.length;
+    arr = new Array(count).fill(false);
     this.drawer.start(e);
   }
   stopSong() {
