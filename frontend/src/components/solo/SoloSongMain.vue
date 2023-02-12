@@ -243,6 +243,7 @@ e8'방' g8'긋' g8.'웃' f8'는' e8'꽃' g8'잎' g8'마' f8'다' e8'송' d8'송'
     var index = 0;
     var temp = 0;
     var arr;
+    var before = 0;
 
 // ------------------------- function --------------------------
 function A(a) {
@@ -602,17 +603,6 @@ class H {
       e.stroke(),
       e.restore();
   }
-  // 소리
-  // _renderVoice(e) {
-  //   (e.fillStyle = "red"), // 소리입력을 받으면 오선지에 해당 음 부분에 빨간색 노트 생성
-  //     this._notes.forEach((t, r) => {
-  //       if (t !== -1) {
-  //         let i = Math.floor(t / 12) - 4,
-  //           c = t % 12;
-  //         e.fillRect(r , B[c] * 5 + 150 + i * 35 - 2.5, 1, 5);
-  //       }
-  //     });
-  // }
   _renderVoice(e) {
     (e.fillStyle = "red"), // 소리입력을 받으면 오선지에 해당 음 부분에 빨간색 노트 생성
       this._notes.forEach((t, r) => {
@@ -635,8 +625,11 @@ class H {
                   if(y == m) {
                     arr[index] = true;
                     index++;
-                    this.playerScore++;
-                    console.log(this.playerScore);
+                    if(before != m) {
+                      this.playerScore++;
+                      before = m;
+                      console.log(this.playerScore);
+                    }
                   }
                 }
               }else {
