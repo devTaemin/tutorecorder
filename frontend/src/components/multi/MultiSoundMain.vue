@@ -349,8 +349,6 @@ export default {
 .game-content-others-cam{
     margin: auto;
     height: 100%;
-    border: 1px solid orange;
-    border-radius: 20px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -359,8 +357,6 @@ export default {
 .game-content-my-cam {
     margin: auto;
     height: 100%;
-    border: 1px solid orange;
-    border-radius: 20px;
 }
 
 .game-content-info{
