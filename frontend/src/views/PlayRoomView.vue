@@ -43,7 +43,7 @@
                 <!-- 게임 시작/준비 전환 버튼 -->
                 <div id="OrangeBoxStart"> 
                     <div v-if="isOwner">
-                        <el-button id="fontValue" :type="startButton" :disabled="!startButtonEnabled" @click="startButtonConfirm" :class="{ 'can-push-button': startButtonEnabled, 'cannot-push-button': !startButtonEnabled,}">시작하기</el-button>
+                        <el-button id="ready-button" :type="startButton" :disabled="!startButtonEnabled" @click="startButtonConfirm" :class="{ 'can-push-button': startButtonEnabled, 'cannot-push-button': !startButtonEnabled,}">시작하기</el-button>
                     </div>
                     <div v-if="!isOwner && !readyButtonOn">
                         <el-button class="button-flicker can-push-button ready-button" type="warning" @click="this.readyButtonConfirm(); ">준비하기</el-button>
@@ -1080,6 +1080,11 @@ export default {
     font-family: 'JUA', serif;  
     font-size: 3vw;
   }
+  #ready-button{
+    height: 22vh;
+    font-family: 'JUA', serif;  
+    font-size: 3vw;
+  }
 
   #RightBox{
     /* border: 5px solid hotpink; */
@@ -1094,9 +1099,9 @@ export default {
     margin: auto;
   }
   .gameMode{
-    margin-top: 3.5vh;
+    margin-top: 2.4vh;
     color: white;
-    font-size: 1.8vw;
+    font-size: 1.2vw;
   }
   #BlueBoxUserList{
     margin-top: 1.5vh;
