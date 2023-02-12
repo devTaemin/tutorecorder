@@ -400,6 +400,7 @@ export default {
 
 .game-content-my-cam{
     margin: auto;
+    margin-left: 10px;
     height: 90%;
     background-color: rgba(0, 0, 0, 0.374);
     border-radius: 20px;

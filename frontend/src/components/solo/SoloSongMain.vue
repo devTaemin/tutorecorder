@@ -1,10 +1,10 @@
 <template>
 <div class="container">
     <el-row class="game-main-container">
-        <div class="start" id="img-ready">
+        <div class="song-game-start" id="img-ready">
           <img class="ready-img" src="../../assets/game/song/prev_msg.png" alt="">
         </div>
-        <el-col :span="22" class="game-main-note ready" id="game-part">
+        <el-col :span="22" class="game-main-note song-game-ready" id="game-part">
             <!-- 문제 나오는 부분 -->
         </el-col>
     </el-row>
@@ -800,21 +800,21 @@ class x extends _ {
       this.btnPlay.addEventListener("click", () => {
         if (this.btnPlay.classList.contains("solo-start-button-playgame")){
           this.btnPlay.classList.remove("solo-start-button-playgame")
-          this.gamePart.classList.remove("start")
-          this.imgPart.classList.remove("ready")
+          this.gamePart.classList.remove("song-game-start")
+          this.imgPart.classList.remove("song-game-ready")
           this.btnPlay.classList.add("solo-start-button")
-          this.gamePart.classList.add("ready")
-          this.imgPart.classList.add("start")
+          this.gamePart.classList.add("song-game-ready")
+          this.imgPart.classList.add("song-game-start")
           document.getElementById("innerSpan").innerHTML = "시작하기"
           this._clickHandler("stop");
           
         } else {
           this.btnPlay.classList.remove("solo-start-button")
-          this.gamePart.classList.remove("ready")
-          this.imgPart.classList.remove("start")
+          this.gamePart.classList.remove("song-game-ready")
+          this.imgPart.classList.remove("song-game-start")
           this.btnPlay.classList.add("solo-start-button-playgame")
-          this.gamePart.classList.add("start")
-          this.imgPart.classList.add("ready")
+          this.gamePart.classList.add("song-game-start")
+          this.imgPart.classList.add("song-game-ready")
           document.getElementById("innerSpan").innerHTML = "그만하기"
           this._clickHandler("play");
         }
@@ -1147,10 +1147,10 @@ class x extends _ {
     margin-bottom: 10px;
     border-radius: 3%;
 }
-.ready {
+.song-game-ready {
   display: none;
 }
-.start {
+.song-game-start {
   display: block;
 }
 #img-ready{
