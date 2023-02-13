@@ -53,6 +53,7 @@ export default {
         publisher: Object,
         subscribers: Array,
         isOwner: Boolean,
+        songNumber: String,
     },
     data() {
         return {
@@ -73,6 +74,19 @@ export default {
         document.querySelector(".sharer").style.display="none";
         document.getElementById("startBtn").style.display="none";
       }
+
+      document.querySelector('.song-list :nth-child(1)').addEventListener('click', () => {
+        this.$emit("emitSongNumber" , "1");
+      })
+
+      document.querySelector('.song-list :nth-child(2)').addEventListener('click', () => {
+        this.$emit("emitSongNumber" , "2");
+      })
+
+      document.querySelector('.song-list :nth-child(3)').addEventListener('click', () => {
+        this.$emit("emitSongNumber" , "3");
+      })
+
     }, 
     computed: {
         isSession() {
@@ -82,6 +96,19 @@ export default {
                 return 'SessionA'
             }
         }
+    },
+    watch: {
+      songNumber() {
+        if (this.songNumber === "1") {
+          document.querySelector('.song-list :nth-child(1)').click()
+        }
+        else if (this.songNumber === "2") {
+          document.querySelector('.song-list :nth-child(2)').click()
+        }
+        else if (this.songNumber === "3") {
+          document.querySelector('.song-list :nth-child(3)').click()
+        }
+      }
     },
     methods: {
         goMultiAnalize() {

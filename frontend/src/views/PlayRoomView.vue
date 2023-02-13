@@ -9,7 +9,7 @@
         <!-- 소리내기 게임 분석 끝 -->
 
         <!-- 연주하기 게임 컴포넌트 -->
-        <MultiSongMain v-if="isPlaySong" @goMultiAnalize="goMultiAnalize" @goRoom="goRoom" @goRoomAlone="goRoomAlone" :isOwner="isOwner" :publisher="publisher" :subscribers="subscribers"/>
+        <MultiSongMain v-if="isPlaySong" @emitSongNumber="emitSongNumber" @goMultiAnalize="goMultiAnalize" @goRoom="goRoom" @goRoomAlone="goRoomAlone" :isOwner="isOwner" :publisher="publisher" :subscribers="subscribers" :songNumber="songNumber"/>
         <!-- 연주하기 게임 컴포넌트 끝 -->
         <!-- 대기화면 내부 -->
 
@@ -324,6 +324,7 @@ export default {
             shareSettingVisible:false,
             copyStatus:false,
             ranker: {},
+            songNumber: "0",
         }   
     },
     watch: {
@@ -348,6 +349,18 @@ export default {
 
     },
     methods: {
+        emitSongNumber: function(value) {
+            this.publisher.session.signal({
+                    data: value,
+                    to: [],
+                    type: 'emit-song-number'
+                })
+                .then(() => {
+                })  
+                .catch(error => {
+                    console.log(error);
+                })
+        },
         kakaoButton: function() {
             window.Kakao.Share.createDefaultButton({
                 container: '#kakaotalk-sharing-btn',
@@ -810,6 +823,11 @@ export default {
                 }
             })
 
+            // 3-16) emit song number
+            this.session.on('signal:emit-song-number', (event) => {
+                this.songNumber = event.data;
+            })
+
 
             // 4) Get a token from the OpenVidu deployment
             this.getToken(this.roomCode).then((token) => {
@@ -1005,7 +1023,11 @@ export default {
                     this.ranker = sortedObject
                 }
             })
-        
+            
+            // 3-18) emit song number
+            this.session.on('signal:emit-song-number', (event) => {
+                this.songNumber = event.data;
+            })
 
             // 4) Get a token from the OpenVidu deployment
             this.getToken(this.roomCode).then((token) => {
