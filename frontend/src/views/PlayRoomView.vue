@@ -774,6 +774,7 @@ export default {
                 this.isPlayGame = false
                 this.isPlaySong = false
                 this.isPlaySound = false
+                this.soundGame = false
                 this.analizeVisible = true
                 this.publisher.publishAudio(true);
             })
@@ -783,12 +784,14 @@ export default {
                 this.isPlayGame = false
                 this.isPlaySong = false
                 this.isPlaySound = false
+                this.soundGame = false
                 this.publisher.publishAudio(true);
             })
 
             // 3-13) close-anal
             this.session.on('signal:close-anal', () => {
                 this.analizeVisible = false
+                this.soundGame = false
             })
 
             // 3-14) who is host
@@ -952,6 +955,7 @@ export default {
                 this.isPlaySong = false
                 this.isPlaySound = false
                 this.analizeVisible = true
+                this.soundGame = false
                 this.publisher.publishAudio(true);
             })
         
@@ -959,6 +963,7 @@ export default {
             this.session.on('signal:go-room', () => {
                 this.isPlayGame = false
                 this.isPlaySong = false
+                this.soundGame = false
                 this.isPlaySound = false
                 this.publisher.publishAudio(true);
             })
@@ -966,6 +971,7 @@ export default {
             // 3-13) close-anal
             this.session.on('signal:close-anal', () => {
                 this.analizeVisible = false
+                this.soundGame = false
             })
 
              // 3-14) ready plus
@@ -1036,17 +1042,6 @@ export default {
 
                         this.findHost()
 
-                        // 실험
-                        console.log(this.subscribers.some(function(element) {
-                            return element.stream.connection.connectionId === this.myUserName;
-                        })
-                        )
-
-                        console.log(this.subscribers.stream)
-                        // console.log(JSON.parse(this.publisher.stream['connection']['data'])['clientData'])
-
-                        // const { connection } = this.publisher.stream
-                        //     const { clientData } = JSON.parse(connection.data)
                     })
                     .catch((error) => {
                         console.log("There was an error connecting to the session: ", 

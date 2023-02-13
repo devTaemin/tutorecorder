@@ -71,6 +71,7 @@ export default {
     mounted() {    
       if (!this.isOwner) {
         document.querySelector(".sharer").style.display="none";
+        document.getElementById('startBtn').style.display="none";
       }
     }, 
     computed: {

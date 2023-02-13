@@ -100,7 +100,7 @@ export default {
             problem: '',
             functionTimer: '',
             
-            playGameAnalize: false,
+            playGameAnalize: true,
         }
     },
     computed: {
