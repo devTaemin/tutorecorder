@@ -80,12 +80,12 @@
                     <div style="padding-top: 1.5vh">
                         <p id="fontValue" style="color: white; margin: 0; font-size:2.4vw;"> 게임 정보 </p>
                         <div class="gameMode" id="fontValue" v-if='gameMode=="play"'>
-                            게임 모드: {{ gameMode }} <br/>
-                            곡 이름: {{ basicSong }}
+                            게임 모드: 연주하기 <br/>
+                            
                         </div>
                         <div class="gameMode" id="fontValue" v-if='gameMode=="sound"'>
-                            게임 모드: {{ gameMode }} <br/>
-                            난이도: {{ difficulty }}
+                            게임 모드: 소리내기 <br/>
+                            문제 당 시간: {{ difficulty }}초
                         </div>
                     </div>
                 </div>
