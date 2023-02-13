@@ -9,8 +9,11 @@
         <!-- 소리내기 게임 분석 끝 -->
 
         <!-- 연주하기 게임 컴포넌트 -->
-        <MultiSongMain v-if="isPlaySong" @emitSongGameStop="emitSongGameStop" @emitSongGameStart="emitSongGameStart" @emitSongNumber="emitSongNumber" @goMultiAnalize="goMultiAnalize" @goRoom="goRoom" @goRoomAlone="goRoomAlone" :isOwner="isOwner" :publisher="publisher" :subscribers="subscribers" :songNumber="songNumber" :songGameStart="songGameStart"/>
+        <MultiSongMain v-if="isPlaySong" @goMultiSoloAnalizeGest="goMultiSoloAnalizeGest" @emitSongGameStop="emitSongGameStop" @emitSongGameStart="emitSongGameStart" @emitSongNumber="emitSongNumber" @goMultiSoloAnalize="goMultiSoloAnalize" @goRoom="goRoom" @goRoomAlone="goRoomAlone" :isOwner="isOwner" :publisher="publisher" :subscribers="subscribers" :songNumber="songNumber" :songGameStart="songGameStart" :propsSaveGameResult="propsSaveGameResult"/>
         <!-- 연주하기 게임 컴포넌트 끝 -->
+
+        <!-- 연주하기 게임 분석 -->
+        <MultiSoloAnalizeMain v-if="songAnalizeVisible" @closeAnal="closeAnal" @closeAnalAlone="closeAnalAlone" :isOwner="isOwner" @sendMyTotalScore="sendMyTotalScore" :ranker="ranker"/>
         <!-- 대기화면 내부 -->
 
         <!-- 왼쪽 박스 -->
@@ -271,12 +274,13 @@
 </template>
 <script>
 import { OpenVidu } from "openvidu-browser";
-import { mapState } from "vuex"
+import { mapState, mapActions } from "vuex"
 import axios from "axios";
 import UserVideo from "@/components/video/UserVideo.vue"
 import MultiSongMain from "@/components/multi/MultiSongMain.vue";
 import MultiSoundMain from "@/components/multi/MultiSoundMain.vue";
 import MultiAnalizeMain from "@/components/multi/MultiAnalizeMain.vue";
+import MultiSoloAnalizeMain from "@/components/multi/MultiSoloAnalizeMain.vue";
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
 const APPLICATION_SERVER_URL = "http://localhost:5000/";
@@ -289,6 +293,7 @@ export default {
         MultiSongMain,
         MultiSoundMain,
         MultiAnalizeMain,
+        MultiSoloAnalizeMain,
     },
     data() {
         return {
@@ -320,12 +325,14 @@ export default {
             isPlaySong: false,
             isPlayGame: false,
             analizeVisible: false,
+            songAnalizeVisible: false,
             soundGame: false,
             shareSettingVisible:false,
             copyStatus:false,
             ranker: {},
             songNumber: "0",
             songGameStart: false,
+            propsSaveGameResult: false,
         }   
     },
     watch: {
@@ -350,6 +357,7 @@ export default {
 
     },
     methods: {
+        ...mapActions(['saveGameResult', 'initMySessionId', 'initGameResult']),
         emitSongGameStop: function() {
             this.publisher.session.signal({
                     data: "",
@@ -614,6 +622,7 @@ export default {
             }
         },
         goRoom() {
+            this.initGameResult()
             this.findHost();
             this.publisher.session.signal({
                 data: '',
@@ -627,9 +636,13 @@ export default {
             })
         },
         goRoomAlone() {
+            this.initGameResult()
+            this.findHost();
             this.isPlayGame = false
             this.isPlaySong = false
             this.isPlaySound = false
+            this.songAnalizeVisible = false
+            this.analizeVisible = false
             this.publisher.publishAudio(true);
         },
         goMultiAnalize() {
@@ -645,7 +658,21 @@ export default {
                 console.error(error);
             })
         },
+        goMultiSoloAnalize() {
+            this.findHost();
+            this.publisher.session.signal({
+                data: '',
+                to: [],
+                type: 'song-multi-anal'
+            })
+            .then(() => {
+            })
+            .catch(error => {
+                console.error(error)
+            })
+        },
         closeAnal() {
+            this.initGameResult()
             this.findHost();
             this.publisher.session.signal({
                 data: '',
@@ -683,7 +710,9 @@ export default {
             })
         },
         closeAnalAlone() {
+            this.initGameResult()
             this.analizeVisible = false
+            this.songAnalizeVisible = false
         },
         sendMyTotalScore(data) {
             const memberName = JSON.parse(this.publisher.stream['connection']['data'])['clientData']
@@ -692,6 +721,19 @@ export default {
                 data: JSON.stringify(this.ranker),
                 to: [],
                 type: 'everyone-data'
+            })
+            .then(() => {
+            })
+            .catch(error => {
+                console.error(error);
+            })
+        },
+        goMultiSoloAnalizeGest() {
+            this.propsSaveGameResult = false
+            this.publisher.session.signal({
+                data: '',
+                to: [],
+                type: 'song-multi-anal-gest'
             })
             .then(() => {
             })
@@ -814,6 +856,7 @@ export default {
                 this.isPlaySound = false
                 this.soundGame = false
                 this.analizeVisible = true
+                this.songAnalizeVisible = false
                 this.publisher.publishAudio(true);
             })
         
@@ -823,12 +866,15 @@ export default {
                 this.isPlaySong = false
                 this.isPlaySound = false
                 this.soundGame = false
+                this.analizeVisible = false
+                this.songAnalizeVisible = false
                 this.publisher.publishAudio(true);
             })
 
             // 3-13) close-anal
             this.session.on('signal:close-anal', () => {
                 this.analizeVisible = false
+                this.songAnalizeVisible = false
                 this.soundGame = false
             })
 
@@ -865,6 +911,17 @@ export default {
             // this.session.on('signal:emit-song-game-stop', () => {
             //     this.songGameStart = false;
             // })
+
+            // 3-19) song multi anal
+            this.session.on('signal:song-multi-anal', () => {
+                this.isPlayGame = false
+                this.isPlaySong = false
+                this.isPlaySound = false
+                this.soundGame = false
+                this.analizeVisible = false
+                this.songAnalizeVisible = true
+                this.publisher.publishAudio(true);
+            })
 
 
             // 4) Get a token from the OpenVidu deployment
@@ -1008,6 +1065,7 @@ export default {
                 this.isPlaySong = false
                 this.isPlaySound = false
                 this.analizeVisible = true
+                this.songAnalizeVisible = false
                 this.soundGame = false
                 this.publisher.publishAudio(true);
             })
@@ -1018,6 +1076,8 @@ export default {
                 this.isPlaySong = false
                 this.soundGame = false
                 this.isPlaySound = false
+                this.analizeVisible = false
+                this.songAnalizeVisible = false
                 this.publisher.publishAudio(true);
             })
 
@@ -1025,6 +1085,7 @@ export default {
             this.session.on('signal:close-anal', () => {
                 this.analizeVisible = false
                 this.soundGame = false
+                this.songAnalizeVisible = false
             })
 
              // 3-14) ready plus
@@ -1050,7 +1111,9 @@ export default {
             this.session.on('signal:i-am-host', (event) => {
                 const targetId = event.data
                 const targetDiv = document.getElementById(targetId)
-                targetDiv.setAttribute('class', 'host')
+                if (targetDiv !== null) {
+                    targetDiv.setAttribute('class', 'host')
+                }
             })
 
             // 3-17) everyone data
@@ -1078,6 +1141,22 @@ export default {
             // 3-20) emit song game stop
             this.session.on('signal:emit-song-game-stop', () => {
                 this.songGameStart = false;
+            })
+
+            // 3-21) song multi anal
+            this.session.on('signal:song-multi-anal', () => {
+                this.propsSaveGameResult = true
+            })
+
+            // 3-22) song multi anal gest
+            this.session.on('signal:song-multi-anal-gest', () => {
+                this.isPlayGame = false
+                this.isPlaySong = false
+                this.isPlaySound = false
+                this.soundGame = false
+                this.analizeVisible = false
+                this.songAnalizeVisible = true
+                this.publisher.publishAudio(true);
             })
 
             // 4) Get a token from the OpenVidu deployment

@@ -6,6 +6,7 @@
             </div>
             <el-col :span="22" class="game-main-note song-game-ready" id="game-part">
                 <!-- 문제 나오는 부분 -->
+                <div id="player-score" style="display:none;">0</div>
             </el-col>
         </el-row>
         <el-row class="game-sub-container">
@@ -43,6 +44,7 @@
 <script>
 import { ArrowUpBold, ArrowDownBold } from '@element-plus/icons-vue'
 import UserVideo from "@/components/video/soloUserVideo.vue"
+import { mapActions } from 'vuex'
 
 export default {
     name: 'MultiSongMain',
@@ -55,6 +57,7 @@ export default {
         isOwner: Boolean,
         songNumber: String,
         songGameStart: Boolean,
+        propsSaveGameResult: Boolean,
     },
     data() {
         return {
@@ -73,7 +76,7 @@ export default {
     unmounted() {
       this.$emit("emitSongGameStop");
     },
-    mounted() {    
+    mounted() {
       if (!this.isOwner) {
         document.querySelector(".sharer").style.display="none";
         document.getElementById("startBtn").style.display="none";
@@ -126,11 +129,24 @@ export default {
         if (this.songGameStart) {
           document.querySelector('#startBtn').click()
         }
+      },
+      propsSaveGameResult() {
+        console.log('여기까지 와라 제발')
+        if (this.propsSaveGameResult) {
+          this.goMultiAnalize()
+        }
       }
     },
     methods: {
+      ...mapActions(['saveGameResult', 'initMySessionId', 'initGameResult']),
+
         goMultiAnalize() {
-            this.$emit('goMultiAnalize')
+          this.saveGameResult(document.getElementById('player-score').innerHTML)
+          if (this.isOwner) {
+            this.$emit('goMultiSoloAnalize')
+          } else {
+            this.$emit('goMultiSoloAnalizeGest')
+          }
         },
         goRoom() {
             if (this.isOwner === true) {
@@ -138,7 +154,6 @@ export default {
             } else {
                 this.$emit('goRoomAlone')
             }
-
         },
         goNext() {
             let height = document.getElementById('cam-carousel').clientHeight;
@@ -458,7 +473,7 @@ class H {
   _elapsed = 0;
   _lastTime = 0;
   _screenWidth = 600;
-  _screenTime = 600 * (1e3 / 60);
+  _screenTime = 600 * (1e3 / 60); 
   _playScore = [];
   _volumeElem;
   _toneElem;
@@ -499,7 +514,6 @@ class H {
     (this._playScore = e.slice()), (this._elapsed = -1e3);
   }
   stop() {
-    this.playerScore = 0;
     this._playScore = [];
   }
   get currentTime() {
@@ -598,6 +612,7 @@ class H {
                       this.playerScore++;
                       console.log(this.playerScore);
                       before = m;
+                      document.getElementById('player-score').innerHTML = this.playerScore;
                     }
                     // console.log(this.playerScore);
                   }
