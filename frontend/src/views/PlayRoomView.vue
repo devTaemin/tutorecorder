@@ -211,12 +211,12 @@
             </el-radio-group>
             <hr>
 
-            <h2 id="fontValue" >곡 선택 - 곡 연주</h2>
+            <!-- <h2 id="fontValue" >곡 선택 - 곡 연주</h2>
             <el-radio-group v-model="basicSong" class="ml-4">
                 <el-radio id="fontValue"  label="airplane" size="large" border :disabled="optionEnabler">비행기</el-radio>
                 <el-radio id="fontValue" label="anthem" size="large" border :disabled="optionEnabler">애국가</el-radio>
             </el-radio-group>
-            <hr>
+            <hr> -->
 
             <h2 id="fontValue" >난이도 선택 - 소리내기, 운지법</h2>
             <el-radio-group v-model="difficulty" class="ml-4">

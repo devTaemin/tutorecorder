@@ -32,7 +32,7 @@
                     </div>
                 </div>
                 <div class="game-sub-button">
-                    <el-button :class="{'solo-analyze-button': true, 'is-owner': !isOwner}" @click="goMultiAnalize">분석</el-button>
+                    <el-button :class="{'solo-analyze-button': true, 'is-owner': !isOwner}" @click="goMultiAnalize" v-if="isOwner">분석</el-button>
                     <el-button class="solo-out-button" @click="goRoom">방으로</el-button>
                 </div>
             </el-col>
@@ -262,6 +262,7 @@ function w(a) {
   let button = v("button", {class: "el-button", type: "button",id: "startBtn"}, span)
   button.classList.add("solo-start-button-disable")
   button.disabled = true
+
   return button
 }
 
@@ -1323,5 +1324,8 @@ class x extends _ {
 }
 .is-owner{
     display: none;
+}
+.start-button-display{
+  display: none;
 }
 </style>
