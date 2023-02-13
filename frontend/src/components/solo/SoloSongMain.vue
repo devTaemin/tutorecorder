@@ -21,7 +21,7 @@
                 </div>
             </div>
             <div class="game-sub-button">
-                <el-button class="solo-analyze-button" @click="goSoloAnalize">분석</el-button>
+                <!-- <el-button class="solo-analyze-button" @click="goSoloAnalize">분석</el-button> -->
                 <el-button class="solo-out-button" @click="goSolo">나가기</el-button>
             </div>
         </el-col>
