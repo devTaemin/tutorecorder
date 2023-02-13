@@ -54,6 +54,7 @@ export default {
         subscribers: Array,
         isOwner: Boolean,
         songNumber: String,
+        songGameStart: Boolean,
     },
     data() {
         return {
@@ -68,6 +69,9 @@ export default {
             mySessionId: "SessionA",
             myUserName: "Participant" + Math.floor(Math.random() * 100),
         }
+    },
+    unmounted() {
+      this.$emit("emitSongGameStop");
     },
     mounted() {    
       if (!this.isOwner) {
@@ -85,6 +89,10 @@ export default {
 
       document.querySelector('.song-list :nth-child(3)').addEventListener('click', () => {
         this.$emit("emitSongNumber" , "3");
+      })
+
+      document.querySelector('#startBtn').addEventListener('click', () => {
+        this.$emit("emitSongGameStart");
       })
 
     }, 
@@ -107,6 +115,11 @@ export default {
         }
         else if (this.songNumber === "3") {
           document.querySelector('.song-list :nth-child(3)').click()
+        }
+      },
+      songGameStart() {
+        if (this.songGameStart) {
+          document.querySelector('#startBtn').click()
         }
       }
     },

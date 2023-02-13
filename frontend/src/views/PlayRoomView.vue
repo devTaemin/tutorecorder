@@ -9,7 +9,7 @@
         <!-- 소리내기 게임 분석 끝 -->
 
         <!-- 연주하기 게임 컴포넌트 -->
-        <MultiSongMain v-if="isPlaySong" @emitSongNumber="emitSongNumber" @goMultiAnalize="goMultiAnalize" @goRoom="goRoom" @goRoomAlone="goRoomAlone" :isOwner="isOwner" :publisher="publisher" :subscribers="subscribers" :songNumber="songNumber"/>
+        <MultiSongMain v-if="isPlaySong" @emitSongGameStop="emitSongGameStop" @emitSongGameStart="emitSongGameStart" @emitSongNumber="emitSongNumber" @goMultiAnalize="goMultiAnalize" @goRoom="goRoom" @goRoomAlone="goRoomAlone" :isOwner="isOwner" :publisher="publisher" :subscribers="subscribers" :songNumber="songNumber" :songGameStart="songGameStart"/>
         <!-- 연주하기 게임 컴포넌트 끝 -->
         <!-- 대기화면 내부 -->
 
@@ -325,6 +325,7 @@ export default {
             copyStatus:false,
             ranker: {},
             songNumber: "0",
+            songGameStart: false,
         }   
     },
     watch: {
@@ -349,6 +350,30 @@ export default {
 
     },
     methods: {
+        emitSongGameStop: function() {
+            this.publisher.session.signal({
+                    data: "",
+                    to: [],
+                    type: 'emit-song-game-stop'
+                })
+                .then(() => {
+                })  
+                .catch(error => {
+                    console.log(error);
+                })
+        },
+        emitSongGameStart: function() {
+            this.publisher.session.signal({
+                    data: "",
+                    to: [],
+                    type: 'emit-song-game-start'
+                })
+                .then(() => {
+                })  
+                .catch(error => {
+                    console.log(error);
+                })
+        },
         emitSongNumber: function(value) {
             this.publisher.session.signal({
                     data: value,
@@ -828,6 +853,16 @@ export default {
                 this.songNumber = event.data;
             })
 
+            // // 3-17) emit song game start
+            // this.session.on('signal:emit-song-game-start', () => {
+            //     this.songGameStart = true;
+            // })
+
+            // // 3-18) emit song game stop
+            // this.session.on('signal:emit-song-game-stop', () => {
+            //     this.songGameStart = false;
+            // })
+
 
             // 4) Get a token from the OpenVidu deployment
             this.getToken(this.roomCode).then((token) => {
@@ -1027,6 +1062,16 @@ export default {
             // 3-18) emit song number
             this.session.on('signal:emit-song-number', (event) => {
                 this.songNumber = event.data;
+            })
+
+            // 3-19) emit song game start
+            this.session.on('signal:emit-song-game-start', () => {
+                this.songGameStart = true;
+            })
+
+            // 3-20) emit song game stop
+            this.session.on('signal:emit-song-game-stop', () => {
+                this.songGameStart = false;
             })
 
             // 4) Get a token from the OpenVidu deployment
