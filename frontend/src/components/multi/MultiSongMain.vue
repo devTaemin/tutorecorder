@@ -92,7 +92,12 @@ export default {
       })
 
       document.querySelector('#startBtn').addEventListener('click', () => {
-        this.$emit("emitSongGameStart");
+        if (this.songGameStart == false) {
+          this.$emit("emitSongGameStart");
+        }
+        else {
+          this.$emit("emitSongGameStop");
+        }
       })
 
     }, 
