@@ -594,7 +594,7 @@ class H {
       (e.textBaseline = "top"), // 단어 배치
       e.clearRect(0, 0, this._canvas.width, 250);
     e.scale(1, -1),
-      e.translate(0, -230),
+      e.translate(0, -260),
       this._renderLines(e),
       (e.globalAlpha = 0.5),
       (e.fillStyle = "blue"),
@@ -607,6 +607,8 @@ class H {
       e.lineTo(this._screenWidth / 2, 300), // stroke 선 위 좌표
       e.stroke(),
       e.restore();
+      (e.font = "30px monospace"),
+      e.fillText(this.playerScore.toString(), this._canvas.width - 50, 30);
   }
   _renderVoice(e) {
     (e.fillStyle = "red"), // 소리입력을 받으면 오선지에 해당 음 부분에 빨간색 노트 생성
