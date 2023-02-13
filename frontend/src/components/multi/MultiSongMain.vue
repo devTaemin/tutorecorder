@@ -53,6 +53,8 @@ export default {
         publisher: Object,
         subscribers: Array,
         isOwner: Boolean,
+        songNumber: String,
+        songGameStart: Boolean,
     },
     data() {
         return {
@@ -68,11 +70,36 @@ export default {
             myUserName: "Participant" + Math.floor(Math.random() * 100),
         }
     },
+    unmounted() {
+      this.$emit("emitSongGameStop");
+    },
     mounted() {    
       if (!this.isOwner) {
         document.querySelector(".sharer").style.display="none";
-        document.getElementById('startBtn').style.display="none";
+        document.getElementById("startBtn").style.display="none";
       }
+
+      document.querySelector('.song-list :nth-child(1)').addEventListener('click', () => {
+        this.$emit("emitSongNumber" , "1");
+      })
+
+      document.querySelector('.song-list :nth-child(2)').addEventListener('click', () => {
+        this.$emit("emitSongNumber" , "2");
+      })
+
+      document.querySelector('.song-list :nth-child(3)').addEventListener('click', () => {
+        this.$emit("emitSongNumber" , "3");
+      })
+
+      document.querySelector('#startBtn').addEventListener('click', () => {
+        if (this.songGameStart == false) {
+          this.$emit("emitSongGameStart");
+        }
+        else {
+          this.$emit("emitSongGameStop");
+        }
+      })
+
     }, 
     computed: {
         isSession() {
@@ -82,6 +109,24 @@ export default {
                 return 'SessionA'
             }
         }
+    },
+    watch: {
+      songNumber() {
+        if (this.songNumber === "1") {
+          document.querySelector('.song-list :nth-child(1)').click()
+        }
+        else if (this.songNumber === "2") {
+          document.querySelector('.song-list :nth-child(2)').click()
+        }
+        else if (this.songNumber === "3") {
+          document.querySelector('.song-list :nth-child(3)').click()
+        }
+      },
+      songGameStart() {
+        if (this.songGameStart) {
+          document.querySelector('#startBtn').click()
+        }
+      }
     },
     methods: {
         goMultiAnalize() {
@@ -1002,21 +1047,21 @@ class x extends _ {
 
   bindEvents() {
     this.sharer.on("song-select", this.songSelected),
-      this.songEditor.on("play", async () => {
-        !this.inited || this.playSong(V(this.songEditor.score));
-      }),
-      this.songEditor.on("stop", this.stopSong),
-      this.songEditor.on("change", (e, t) => {
-        switch (e) {
-          case "melody":
-            this.toggleSound(t);
-            break;
-          case "volume":
-            this.setVolume(t);
-            break;
-        }
-      });
-      this.init();
+    this.songEditor.on("play", async () => {
+      !this.inited || this.playSong(V(this.songEditor.score));
+    }),
+    this.songEditor.on("stop", this.stopSong),
+    this.songEditor.on("change", (e, t) => {
+      switch (e) {
+        case "melody":
+          this.toggleSound(t);
+          break;
+        case "volume":
+          this.setVolume(t);
+          break;
+      }
+    });
+    this.init();
   }
   songSelected(e) {
     console.log(e);
