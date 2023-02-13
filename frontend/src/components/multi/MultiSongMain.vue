@@ -68,6 +68,11 @@ export default {
             myUserName: "Participant" + Math.floor(Math.random() * 100),
         }
     },
+    mounted() {    
+      if (!this.isOwner) {
+        document.querySelector(".sharer").style.display="none";
+      }
+    }, 
     computed: {
         isSession() {
             if (this.$store.state.mySessionId !== '') {
@@ -599,6 +604,7 @@ class x extends _ {
     constructor() {
       super();
       (this._element = document.createElement("div"));
+      // this._element = document.getElementById("game-sub-setting");
       this._element.classList.add("song-list");
       this._element.addEventListener("click", this._clickHandler);
     }
