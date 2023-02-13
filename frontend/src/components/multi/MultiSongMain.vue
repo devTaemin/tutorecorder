@@ -71,6 +71,7 @@ export default {
     mounted() {    
       if (!this.isOwner) {
         document.querySelector(".sharer").style.display="none";
+        document.getElementById("startBtn").style.display="none";
       }
     }, 
     computed: {
@@ -1001,21 +1002,21 @@ class x extends _ {
 
   bindEvents() {
     this.sharer.on("song-select", this.songSelected),
-      this.songEditor.on("play", async () => {
-        !this.inited || this.playSong(V(this.songEditor.score));
-      }),
-      this.songEditor.on("stop", this.stopSong),
-      this.songEditor.on("change", (e, t) => {
-        switch (e) {
-          case "melody":
-            this.toggleSound(t);
-            break;
-          case "volume":
-            this.setVolume(t);
-            break;
-        }
-      });
-      this.init();
+    this.songEditor.on("play", async () => {
+      !this.inited || this.playSong(V(this.songEditor.score));
+    }),
+    this.songEditor.on("stop", this.stopSong),
+    this.songEditor.on("change", (e, t) => {
+      switch (e) {
+        case "melody":
+          this.toggleSound(t);
+          break;
+        case "volume":
+          this.setVolume(t);
+          break;
+      }
+    });
+    this.init();
   }
   songSelected(e) {
     console.log(e);
