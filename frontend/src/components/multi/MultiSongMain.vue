@@ -131,7 +131,6 @@ export default {
         }
       },
       propsSaveGameResult() {
-        console.log('여기까지 와라 제발')
         if (this.propsSaveGameResult) {
           this.goMultiAnalize()
         }
@@ -340,7 +339,6 @@ function V(a) {
     c = 4,
     s = i,
     n = 0;
-  console.log(a);
   a = a.toUpperCase().replace(/\b/g, "");
   let y = a.length,
     d = 0,
@@ -573,7 +571,6 @@ class H {
       this._renderLines(e),
       (e.globalAlpha = 0.5),
       (e.fillStyle = "blue"),
-      // console.log(e);
       this._renderNotes(e),
       this._renderVoice(e),
       (e.strokeStyle = "yellowgreen"), // 가운데 선
@@ -610,11 +607,9 @@ class H {
                     index++;
                     if(before != m) {
                       this.playerScore++;
-                      console.log(this.playerScore);
                       before = m;
                       document.getElementById('player-score').innerHTML = this.playerScore;
                     }
-                    // console.log(this.playerScore);
                   }
                 }
               }else {
@@ -1079,7 +1074,6 @@ class x extends _ {
     this.init();
   }
   songSelected(e) {
-    console.log(e);
     this.songEditor.score = e.score;
   }
   init() {
