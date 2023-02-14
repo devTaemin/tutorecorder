@@ -10,9 +10,9 @@
                     <div id="leftSubBox">
                         
                         <!-- 텍스트 삽입 구간 -->
-                        <p style="width:30%; padding-top:15%; z-index:4321;" class="ranker-name">{{ n2 }}</p>
-                        <p style="width:30%; padding-bottom:12%; z-index:4321;" class="ranker-name">{{ n1 }}</p>
-                        <p style="width:30%; padding-top:15%; z-index:4321;" class="ranker-name">{{ n3 }}</p>
+                        <p style="width:30%; padding-top:15%; z-index:4321;" class="ranker-name">{{ nth[1] }}</p>
+                        <p style="width:30%; padding-bottom:12%; z-index:4321;" class="ranker-name">{{ nth[0] }}</p>
+                        <p style="width:30%; padding-top:15%; z-index:4321;" class="ranker-name">{{ nth[2] }}</p>
                         <!-- 텍스트 삽입 구간 끝 -->
                        
                         <img src="../../assets/multi/rank.png" alt="랭크" 
@@ -46,36 +46,47 @@ export default {
 
             // 연결 필요
             totalgrade: 0,
-            n1:'player1',
-            n2:'player2',
-            n3:'player3',
+            score1: 0,
+            score2: 0,
+            score3: 0,
         }
     },
     props: {
         isOwner: Boolean,
         ranker: Object,
     },
-    watch: {
-        ranker() {
-            this.n1 = Object.values(this.ranker)[0][0]
-            if (Object.values(this.ranker).length >= 2) {
-                this.n2 = Object.values(this.ranker)[1][0]
-            } else {
-                this.n2 = ''
-            }
-            if (Object.values(this.ranker).length >= 3) {
-                this.n3 = Object.values(this.ranker)[2][0]
-            } else {
-                this.n3 = ''
-            }
-        }
-
-    },
     computed: {
         myTotalScore() {
             return this.$store.state.gameResult;
-        }
+        },
+        nth() {
+            const rankerArray = Object.values(this.ranker)
+            let nth = ['', '', '']
+            let score = [-1, -1, -1]
+            for (let i=0; i<rankerArray.length; i++) {
+                if (rankerArray[i][1] >= score[0]) {
+                    nth[2] = nth[1]
+                    score[2] = score[1]
+                    nth[1] = nth[0]
+                    score[1] = score[0]
+                    nth[0] = rankerArray[i][0]
+                    score[0] = rankerArray[i][1]
+                } else if (rankerArray[i][1] >= score[1]) {
+                    nth[2] = nth[1]
+                    score[2] = score[1]
+                    nth[1] = rankerArray[i][0]
+                    score[1] = rankerArray[i][1]
+                } else if (rankerArray[i][1] >= score[2]) {
+                    nth[2] = rankerArray[i][0]
+                    score[2] = rankerArray[i][1]
+                }
+            }
+            return nth
+        },
     },
+        
+
+
     methods: {
         ...mapActions(['saveGameResult', 'initMySessionId', 'initGameResult']),
         goSoloSound() {
