@@ -4,29 +4,6 @@
             <img id='logo' src="@/assets/logo_nocircle.png" alt="logo img" >
         </div>
 
-        <!-- <div id="blueBoxContainer">
-            <div id="redBoxComponent" @click="moveSoloTutorial">
-                <img id="iconImg" src="@/assets/soloSelect-tutorial.png" alt="튜토리얼 img">
-                <img id="textImg" src="@/assets/text/solo_tutorial.png" alt="튜토리얼">
-
-            </div>
-            <div id="redBoxComponent" @click="moveSoloSound">
-                <img id="iconImg" src="@/assets/soloSelect-sound.png" alt="소리내기 img">
-                <img id="textImg" src="@/assets/text/solo_sound.png" alt="소리내기">
-            </div>
-        </div>
-        <div id="blueBoxContainer">
-            <div id="redBoxComponent" @click="moveSoloSong">
-                <img id="iconImg" src="@/assets/soloSelect-song.png" alt="연주하기 img">
-                <img id="textImg" src="@/assets/text/solo_song.png" alt="연주하기">
-            </div>
-            <div id="redBoxComponent" @click="moveSoloFingering">
-                <img id="iconImg" src="@/assets/soloSelect-fingering.png" alt="운지법 img">
-                <img id="textImg" src="@/assets/text/solo_fingering.png" alt="운지법">
-            </div>
-        </div> -->
-
-
         <div id="blueBoxContainer">
             <div id="redBoxComponent" @click="moveSoloTutorial">
                 <img id="iconImg" src="@/assets/soloSelect-tutorial.png" alt="튜토리얼 img">
@@ -42,10 +19,6 @@
                 <img id="textImg" src="@/assets/text/solo_song.png" alt="연주하기">
             </div>
         </div>
-
-
-
-
         
         <!-- 뒤로가기, 홈버튼 -->
         <!-- 이미지 방향은 놔두기 playroom branch 에서 수정함 -->
@@ -89,7 +62,6 @@ export default {
 
     },  
 
-
 }
 </script>
 
@@ -131,21 +103,7 @@ export default {
          
     }
     #redBoxComponent{
-        /* border: 5px solid red; */
-        /* width: 45%;
-        height: 60%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background-color: #F2E6E6;   
-        border-radius: 20px;
-        margin-left: 2%;
-        margin-right: 2%;
-        cursor: url(../../assets/cursor_click.png), auto !important; */
-
-
-        
-                width: 40%;
+        width: 40%;
         height: 99%;
         display: flex;
         flex-direction: column;
@@ -164,7 +122,6 @@ export default {
         /* border: 5px solid violet; */
         /* width: 20%; */
         
-        
         width: 60%;
         margin-top: 10%;
        
@@ -182,7 +139,6 @@ export default {
 
 
     /* 카드 끝 */
-
 
     /* 하단 아이콘 */
     #iconContainer{

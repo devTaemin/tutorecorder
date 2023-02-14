@@ -16,9 +16,9 @@
                         <!-- 이미지 삽입 구간 끝 -->
 
                         <!-- 텍스트 삽입 구간 -->
-                        <p style="width:30%; padding-top:15%; z-index:4321;">{{ n2 }}</p>
-                        <p style="width:30%; padding-bottom:12%; z-index:4321;">{{ n1 }}</p>
-                        <p style="width:30%; padding-top:15%; z-index:4321;">{{ n3 }}</p>
+                        <p style="width:30%; padding-top:15%; z-index:4321;" class="ranker-name">{{ n2 }}</p>
+                        <p style="width:30%; padding-bottom:12%; z-index:4321;" class="ranker-name">{{ n1 }}</p>
+                        <p style="width:30%; padding-top:15%; z-index:4321;" class="ranker-name">{{ n3 }}</p>
                         <!-- 텍스트 삽입 구간 끝 -->
                        
                         <img src="../../assets/multi/rank.png" alt="랭크" 
@@ -111,7 +111,7 @@ export default {
             }
         }
 
-        this.myTotalScore = this.gameResult.reduce((acc, curr) => acc + Number(curr), 0);
+        this.myTotalScore = (this.gameResult.reduce((acc, curr) => acc + Number(curr), 0))/7;
         this.$emit('sendMyTotalScore', this.myTotalScore);
 
 
@@ -258,7 +258,7 @@ export default {
             } else {
                 this.n2 = ''
             }
-            if (Object.values(this.ranker)[1] >= 3) {
+            if (Object.values(this.ranker).length >= 3) {
                 this.n3 = Object.values(this.ranker)[2][0]
             } else {
                 this.n3 = ''
@@ -411,5 +411,10 @@ export default {
     margin-left: 2%;
     width: 30px;
     height: 30px;
+}
+
+.ranker-name{
+    font-family: 'JUA', serif;
+    font-size: 4vh;
 }
 </style>

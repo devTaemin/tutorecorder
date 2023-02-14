@@ -9,8 +9,11 @@
         <!-- 소리내기 게임 분석 끝 -->
 
         <!-- 연주하기 게임 컴포넌트 -->
-        <MultiSongMain v-if="isPlaySong" @goMultiAnalize="goMultiAnalize" @goRoom="goRoom" @goRoomAlone="goRoomAlone" :isOwner="isOwner" :publisher="publisher" :subscribers="subscribers"/>
+        <MultiSongMain v-if="isPlaySong" @goMultiSoloAnalizeGest="goMultiSoloAnalizeGest" @emitSongGameStop="emitSongGameStop" @emitSongGameStart="emitSongGameStart" @emitSongNumber="emitSongNumber" @goMultiSoloAnalize="goMultiSoloAnalize" @goRoom="goRoom" @goRoomAlone="goRoomAlone" :isOwner="isOwner" :publisher="publisher" :subscribers="subscribers" :songNumber="songNumber" :songGameStart="songGameStart" :propsSaveGameResult="propsSaveGameResult"/>
         <!-- 연주하기 게임 컴포넌트 끝 -->
+
+        <!-- 연주하기 게임 분석 -->
+        <MultiSoloAnalizeMain v-if="songAnalizeVisible" @closeAnal="closeAnal" @closeAnalAlone="closeAnalAlone" :isOwner="isOwner" @sendMyTotalScore="sendMyTotalScore" :ranker="ranker"/>
         <!-- 대기화면 내부 -->
 
         <!-- 왼쪽 박스 -->
@@ -80,12 +83,12 @@
                     <div style="padding-top: 1.5vh">
                         <p id="fontValue" style="color: white; margin: 0; font-size:2.4vw;"> 게임 정보 </p>
                         <div class="gameMode" id="fontValue" v-if='gameMode=="play"'>
-                            게임 모드: {{ gameMode }} <br/>
-                            곡 이름: {{ basicSong }}
+                            게임 모드: 연주하기 <br/>
+                            
                         </div>
                         <div class="gameMode" id="fontValue" v-if='gameMode=="sound"'>
-                            게임 모드: {{ gameMode }} <br/>
-                            난이도: {{ difficulty }}
+                            게임 모드: 소리내기 <br/>
+                            문제 당 시간: {{ difficulty }}초
                         </div>
                     </div>
                 </div>
@@ -211,12 +214,12 @@
             </el-radio-group>
             <hr>
 
-            <h2 id="fontValue" >곡 선택 - 곡 연주</h2>
+            <!-- <h2 id="fontValue" >곡 선택 - 곡 연주</h2>
             <el-radio-group v-model="basicSong" class="ml-4">
                 <el-radio id="fontValue"  label="airplane" size="large" border :disabled="optionEnabler">비행기</el-radio>
                 <el-radio id="fontValue" label="anthem" size="large" border :disabled="optionEnabler">애국가</el-radio>
             </el-radio-group>
-            <hr>
+            <hr> -->
 
             <h2 id="fontValue" >난이도 선택 - 소리내기, 운지법</h2>
             <el-radio-group v-model="difficulty" class="ml-4">
@@ -271,12 +274,13 @@
 </template>
 <script>
 import { OpenVidu } from "openvidu-browser";
-import { mapState } from "vuex"
+import { mapState, mapActions } from "vuex"
 import axios from "axios";
 import UserVideo from "@/components/video/UserVideo.vue"
 import MultiSongMain from "@/components/multi/MultiSongMain.vue";
 import MultiSoundMain from "@/components/multi/MultiSoundMain.vue";
 import MultiAnalizeMain from "@/components/multi/MultiAnalizeMain.vue";
+import MultiSoloAnalizeMain from "@/components/multi/MultiSoloAnalizeMain.vue";
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
 const APPLICATION_SERVER_URL = "http://localhost:5000/";
@@ -289,6 +293,7 @@ export default {
         MultiSongMain,
         MultiSoundMain,
         MultiAnalizeMain,
+        MultiSoloAnalizeMain,
     },
     data() {
         return {
@@ -320,10 +325,14 @@ export default {
             isPlaySong: false,
             isPlayGame: false,
             analizeVisible: false,
+            songAnalizeVisible: false,
             soundGame: false,
             shareSettingVisible:false,
             copyStatus:false,
             ranker: {},
+            songNumber: "0",
+            songGameStart: false,
+            propsSaveGameResult: false,
         }   
     },
     watch: {
@@ -348,6 +357,43 @@ export default {
 
     },
     methods: {
+        ...mapActions(['saveGameResult', 'initMySessionId', 'initGameResult']),
+        emitSongGameStop: function() {
+            this.publisher.session.signal({
+                    data: "",
+                    to: [],
+                    type: 'emit-song-game-stop'
+                })
+                .then(() => {
+                })  
+                .catch(error => {
+                    console.log(error);
+                })
+        },
+        emitSongGameStart: function() {
+            this.publisher.session.signal({
+                    data: "",
+                    to: [],
+                    type: 'emit-song-game-start'
+                })
+                .then(() => {
+                })  
+                .catch(error => {
+                    console.log(error);
+                })
+        },
+        emitSongNumber: function(value) {
+            this.publisher.session.signal({
+                    data: value,
+                    to: [],
+                    type: 'emit-song-number'
+                })
+                .then(() => {
+                })  
+                .catch(error => {
+                    console.log(error);
+                })
+        },
         kakaoButton: function() {
             window.Kakao.Share.createDefaultButton({
                 container: '#kakaotalk-sharing-btn',
@@ -576,7 +622,9 @@ export default {
             }
         },
         goRoom() {
+            this.initGameResult()
             this.findHost();
+            this.whoIsReady()
             this.publisher.session.signal({
                 data: '',
                 to: [],
@@ -589,13 +637,19 @@ export default {
             })
         },
         goRoomAlone() {
+            this.initGameResult()
+            this.findHost();
+            this.whoIsReady()
             this.isPlayGame = false
             this.isPlaySong = false
             this.isPlaySound = false
+            this.songAnalizeVisible = false
+            this.analizeVisible = false
             this.publisher.publishAudio(true);
         },
         goMultiAnalize() {
             this.findHost();
+            this.whoIsReady()
             this.publisher.session.signal({
                 data: '',
                 to: [],
@@ -607,8 +661,24 @@ export default {
                 console.error(error);
             })
         },
-        closeAnal() {
+        goMultiSoloAnalize() {
             this.findHost();
+            this.whoIsReady()
+            this.publisher.session.signal({
+                data: '',
+                to: [],
+                type: 'song-multi-anal'
+            })
+            .then(() => {
+            })
+            .catch(error => {
+                console.error(error)
+            })
+        },
+        closeAnal() {
+            this.initGameResult()
+            this.findHost();
+            this.whoIsReady()
             this.publisher.session.signal({
                 data: '',
                 to: [],
@@ -645,7 +715,11 @@ export default {
             })
         },
         closeAnalAlone() {
+            this.findHost();
+            this.whoIsReady()
+            this.initGameResult()
             this.analizeVisible = false
+            this.songAnalizeVisible = false
         },
         sendMyTotalScore(data) {
             const memberName = JSON.parse(this.publisher.stream['connection']['data'])['clientData']
@@ -660,6 +734,61 @@ export default {
             .catch(error => {
                 console.error(error);
             })
+        },
+        goMultiSoloAnalizeGest() {
+            this.findHost();
+            this.whoIsReady()
+            this.propsSaveGameResult = false
+            this.publisher.session.signal({
+                data: '',
+                to: [],
+                type: 'song-multi-anal-gest'
+            })
+            .then(() => {
+            })
+            .catch(error => {
+                console.error(error);
+            })
+        },
+        whoIsReady: function() {
+            this.publisher.session.signal({
+                data: '',
+                to: [],
+                type: 'who-is-ready'
+            })
+            .then(() => {
+            })
+            .catch(error => {
+                console.log(error);
+            })
+        },
+        thisIsMyReadyStatus: function() {
+            if (this.readyButtonOn) {
+                // 준비 버튼이 활성화가 되어 있는 경우
+                this.publisher.session.signal({
+                    data: this.publisher.stream.connection.connectionId,
+                    to: [],
+                    type: 'i-am-ready'
+                })
+                .then(() => {
+                })
+                .catch(error => {
+                    console.log(error);
+                })
+            }
+            else {
+                // 준비 버튼이 활성화가 되어 있지 않는 경우
+                this.publisher.session.signal({
+                    data: this.publisher.stream.connection.connectionId,
+                    to: [],
+                    type: 'i-am-not-ready'
+                })
+                .then(() => {
+                })
+                .catch(error => {
+                    console.log(error);
+                })
+            }
         },
         createRoom: function() {
 
@@ -774,7 +903,9 @@ export default {
                 this.isPlayGame = false
                 this.isPlaySong = false
                 this.isPlaySound = false
+                this.soundGame = false
                 this.analizeVisible = true
+                this.songAnalizeVisible = false
                 this.publisher.publishAudio(true);
             })
         
@@ -783,12 +914,17 @@ export default {
                 this.isPlayGame = false
                 this.isPlaySong = false
                 this.isPlaySound = false
+                this.soundGame = false
+                this.analizeVisible = false
+                this.songAnalizeVisible = false
                 this.publisher.publishAudio(true);
             })
 
             // 3-13) close-anal
             this.session.on('signal:close-anal', () => {
                 this.analizeVisible = false
+                this.songAnalizeVisible = false
+                this.soundGame = false
             })
 
             // 3-14) who is host
@@ -807,6 +943,50 @@ export default {
                         Object.entries(this.ranker).sort(([, [, a]], [, [, b]]) => b - a)
                     );
                     this.ranker = sortedObject
+                }
+            })
+
+            // 3-16) emit song number
+            this.session.on('signal:emit-song-number', (event) => {
+                this.songNumber = event.data;
+            })
+
+            // // 3-17) emit song game start
+            // this.session.on('signal:emit-song-game-start', () => {
+            //     this.songGameStart = true;
+            // })
+
+            // // 3-18) emit song game stop
+            // this.session.on('signal:emit-song-game-stop', () => {
+            //     this.songGameStart = false;
+            // })
+
+            // 3-19) song multi anal
+            this.session.on('signal:song-multi-anal', () => {
+                this.isPlayGame = false
+                this.isPlaySong = false
+                this.isPlaySound = false
+                this.soundGame = false
+                this.analizeVisible = false
+                this.songAnalizeVisible = true
+                this.publisher.publishAudio(true);
+            })
+
+            // 3-20) i am ready
+            this.session.on('signal:i-am-ready', (event) => {
+                const targetId = event.data
+                const targetDiv = document.getElementById(targetId)
+                if (targetDiv !== null) {
+                    targetDiv.setAttribute('class', 'ready')
+                }
+            })
+
+            // 3-21) i am not ready
+            this.session.on('signal:i-am-not-ready', (event) => {
+                const targetId = event.data
+                const targetDiv = document.getElementById(targetId)
+                if (targetDiv !== null) {
+                    targetDiv.setAttribute('class', 'no-ready')
                 }
             })
 
@@ -952,6 +1132,8 @@ export default {
                 this.isPlaySong = false
                 this.isPlaySound = false
                 this.analizeVisible = true
+                this.songAnalizeVisible = false
+                this.soundGame = false
                 this.publisher.publishAudio(true);
             })
         
@@ -959,13 +1141,18 @@ export default {
             this.session.on('signal:go-room', () => {
                 this.isPlayGame = false
                 this.isPlaySong = false
+                this.soundGame = false
                 this.isPlaySound = false
+                this.analizeVisible = false
+                this.songAnalizeVisible = false
                 this.publisher.publishAudio(true);
             })
 
             // 3-13) close-anal
             this.session.on('signal:close-anal', () => {
                 this.analizeVisible = false
+                this.soundGame = false
+                this.songAnalizeVisible = false
             })
 
              // 3-14) ready plus
@@ -991,7 +1178,9 @@ export default {
             this.session.on('signal:i-am-host', (event) => {
                 const targetId = event.data
                 const targetDiv = document.getElementById(targetId)
-                targetDiv.setAttribute('class', 'host')
+                if (targetDiv !== null) {
+                    targetDiv.setAttribute('class', 'host')
+                }
             })
 
             // 3-17) everyone data
@@ -1005,7 +1194,61 @@ export default {
                     this.ranker = sortedObject
                 }
             })
-        
+            
+            // 3-18) emit song number
+            this.session.on('signal:emit-song-number', (event) => {
+                this.songNumber = event.data;
+            })
+
+            // 3-19) emit song game start
+            this.session.on('signal:emit-song-game-start', () => {
+                this.songGameStart = true;
+            })
+
+            // 3-20) emit song game stop
+            this.session.on('signal:emit-song-game-stop', () => {
+                this.songGameStart = false;
+            })
+
+            // 3-21) song multi anal
+            this.session.on('signal:song-multi-anal', () => {
+                this.propsSaveGameResult = true
+            })
+
+            // 3-22) song multi anal gest
+            this.session.on('signal:song-multi-anal-gest', () => {
+                this.isPlayGame = false
+                this.isPlaySong = false
+                this.isPlaySound = false
+                this.soundGame = false
+                this.analizeVisible = false
+                this.songAnalizeVisible = true
+                this.publisher.publishAudio(true);
+            })
+
+            // 3-23) who is ready
+            this.session.on('signal:who-is-ready', () => {
+                this.thisIsMyReadyStatus()
+            })
+
+            // 3-24) i am ready
+            this.session.on('signal:i-am-ready', (event) => {
+                const targetId = event.data
+                const targetDiv = document.getElementById(targetId)
+                if (targetDiv !== null) {
+                    targetDiv.setAttribute('class', 'ready')
+                }
+            })
+
+            // 3-25) i am not ready
+            this.session.on('signal:i-am-not-ready', (event) => {
+                const targetId = event.data
+                const targetDiv = document.getElementById(targetId)
+                if (targetDiv !== null) {
+                    targetDiv.setAttribute('class', 'no-ready')
+                }
+            })
+
 
             // 4) Get a token from the OpenVidu deployment
             this.getToken(this.roomCode).then((token) => {
@@ -1035,18 +1278,8 @@ export default {
                         }
 
                         this.findHost()
+                        this.whoIsReady()
 
-                        // 실험
-                        console.log(this.subscribers.some(function(element) {
-                            return element.stream.connection.connectionId === this.myUserName;
-                        })
-                        )
-
-                        console.log(this.subscribers.stream)
-                        // console.log(JSON.parse(this.publisher.stream['connection']['data'])['clientData'])
-
-                        // const { connection } = this.publisher.stream
-                        //     const { clientData } = JSON.parse(connection.data)
                     })
                     .catch((error) => {
                         console.log("There was an error connecting to the session: ", 
