@@ -723,7 +723,7 @@ export default {
         },
         sendMyTotalScore(data) {
             const memberName = JSON.parse(this.publisher.stream['connection']['data'])['clientData']
-            this.ranker[this.publisher.stream.connection.connectionId] = [memberName, data];
+            this.ranker[this.publisher.stream.connection.connectionId] = [memberName, data]
             this.publisher.session.signal({
                 data: JSON.stringify(this.ranker),
                 to: [],
@@ -938,12 +938,6 @@ export default {
             this.session.on('signal:everyone-data', (event) => {
                 const result = JSON.parse(event.data)
                 this.ranker[Object.keys(result)[0]] = Object.values(result)[0]
-                if (Object.keys(this.ranker).length === this.subscribers.length + 1) {
-                    let sortedObject = Object.fromEntries(
-                        Object.entries(this.ranker).sort(([, [, a]], [, [, b]]) => b - a)
-                    );
-                    this.ranker = sortedObject
-                }
             })
 
             // 3-16) emit song number
@@ -1187,12 +1181,6 @@ export default {
             this.session.on('signal:everyone-data', (event) => {
                 const result = JSON.parse(event.data)
                 this.ranker[Object.keys(result)[0]] = Object.values(result)[0]
-                if (Object.keys(this.ranker).length === this.subscribers.length + 1) {
-                    let sortedObject = Object.fromEntries(
-                        Object.entries(this.ranker).sort(([, [, a]], [, [, b]]) => b - a)
-                    );
-                    this.ranker = sortedObject
-                }
             })
             
             // 3-18) emit song number
