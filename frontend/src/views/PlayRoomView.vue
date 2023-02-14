@@ -624,6 +624,7 @@ export default {
         goRoom() {
             this.initGameResult()
             this.findHost();
+            this.whoIsReady()
             this.publisher.session.signal({
                 data: '',
                 to: [],
@@ -638,6 +639,7 @@ export default {
         goRoomAlone() {
             this.initGameResult()
             this.findHost();
+            this.whoIsReady()
             this.isPlayGame = false
             this.isPlaySong = false
             this.isPlaySound = false
@@ -647,6 +649,7 @@ export default {
         },
         goMultiAnalize() {
             this.findHost();
+            this.whoIsReady()
             this.publisher.session.signal({
                 data: '',
                 to: [],
@@ -660,6 +663,7 @@ export default {
         },
         goMultiSoloAnalize() {
             this.findHost();
+            this.whoIsReady()
             this.publisher.session.signal({
                 data: '',
                 to: [],
@@ -674,6 +678,7 @@ export default {
         closeAnal() {
             this.initGameResult()
             this.findHost();
+            this.whoIsReady()
             this.publisher.session.signal({
                 data: '',
                 to: [],
@@ -710,6 +715,8 @@ export default {
             })
         },
         closeAnalAlone() {
+            this.findHost();
+            this.whoIsReady()
             this.initGameResult()
             this.analizeVisible = false
             this.songAnalizeVisible = false
@@ -729,6 +736,8 @@ export default {
             })
         },
         goMultiSoloAnalizeGest() {
+            this.findHost();
+            this.whoIsReady()
             this.propsSaveGameResult = false
             this.publisher.session.signal({
                 data: '',
@@ -740,6 +749,46 @@ export default {
             .catch(error => {
                 console.error(error);
             })
+        },
+        whoIsReady: function() {
+            this.publisher.session.signal({
+                data: '',
+                to: [],
+                type: 'who-is-ready'
+            })
+            .then(() => {
+            })
+            .catch(error => {
+                console.log(error);
+            })
+        },
+        thisIsMyReadyStatus: function() {
+            if (this.readyButtonOn) {
+                // 준비 버튼이 활성화가 되어 있는 경우
+                this.publisher.session.signal({
+                    data: this.publisher.stream.connection.connectionId,
+                    to: [],
+                    type: 'i-am-ready'
+                })
+                .then(() => {
+                })
+                .catch(error => {
+                    console.log(error);
+                })
+            }
+            else {
+                // 준비 버튼이 활성화가 되어 있지 않는 경우
+                this.publisher.session.signal({
+                    data: this.publisher.stream.connection.connectionId,
+                    to: [],
+                    type: 'i-am-not-ready'
+                })
+                .then(() => {
+                })
+                .catch(error => {
+                    console.log(error);
+                })
+            }
         },
         createRoom: function() {
 
@@ -921,6 +970,24 @@ export default {
                 this.analizeVisible = false
                 this.songAnalizeVisible = true
                 this.publisher.publishAudio(true);
+            })
+
+            // 3-20) i am ready
+            this.session.on('signal:i-am-ready', (event) => {
+                const targetId = event.data
+                const targetDiv = document.getElementById(targetId)
+                if (targetDiv !== null) {
+                    targetDiv.setAttribute('class', 'ready')
+                }
+            })
+
+            // 3-21) i am not ready
+            this.session.on('signal:i-am-not-ready', (event) => {
+                const targetId = event.data
+                const targetDiv = document.getElementById(targetId)
+                if (targetDiv !== null) {
+                    targetDiv.setAttribute('class', 'no-ready')
+                }
             })
 
 
@@ -1159,6 +1226,30 @@ export default {
                 this.publisher.publishAudio(true);
             })
 
+            // 3-23) who is ready
+            this.session.on('signal:who-is-ready', () => {
+                this.thisIsMyReadyStatus()
+            })
+
+            // 3-24) i am ready
+            this.session.on('signal:i-am-ready', (event) => {
+                const targetId = event.data
+                const targetDiv = document.getElementById(targetId)
+                if (targetDiv !== null) {
+                    targetDiv.setAttribute('class', 'ready')
+                }
+            })
+
+            // 3-25) i am not ready
+            this.session.on('signal:i-am-not-ready', (event) => {
+                const targetId = event.data
+                const targetDiv = document.getElementById(targetId)
+                if (targetDiv !== null) {
+                    targetDiv.setAttribute('class', 'no-ready')
+                }
+            })
+
+
             // 4) Get a token from the OpenVidu deployment
             this.getToken(this.roomCode).then((token) => {
                 this.session.connect(token, { clientData: this.myUserName, isOwner: false })
@@ -1187,6 +1278,7 @@ export default {
                         }
 
                         this.findHost()
+                        this.whoIsReady()
 
                     })
                     .catch((error) => {
