@@ -479,10 +479,10 @@ class H {
   _currentNote = null;
   constructor() {
     (this._canvas = document.createElement("canvas")),
-      (this._canvas.width = this._screenWidth), // 악보 가로
-      (this._canvas.height = 140), // 악보 세로
-      (this._canvas.style.width = "100%"); // 악보 가로 스타일 설정
-      (this._notes = new Array(300).fill(-1)); // fill() 메서드는 배열의 시작 인덱스부터 끝 인덱스의 이전까지 정적인 값 하나로 채웁니다.
+      (this._canvas.width = this._screenWidth), 
+      (this._canvas.height = 140), 
+      (this._canvas.style.width = "100%"); 
+      (this._notes = new Array(300).fill(-1)); 
       new ResizeObserver(this._resizeCallback).observe(this._canvas);
   }
   updateScreentime() {
@@ -501,8 +501,8 @@ class H {
   _fitToContainer() {
     this.updateScreenWidth();
     let e = this._screenWidth;
-    let r = Math.floor(e / 2); // 화면의 너비 2분의 1
-    this._notes.length < r // canvas의 절반의 길이보다 _notes의 길이가 더 크다면
+    let r = Math.floor(e / 2); 
+    this._notes.length < r 
       ? this._notes.unshift(...new Array(r - this._notes.length).fill(-1))
       : this._notes.length > r && this._notes.splice(0, this._notes.length - r);
       
@@ -517,13 +517,13 @@ class H {
   get currentTime() {
     return this._elapsed;
   }
-  // 노트 찍기
+ 
   _renderNotes(e) {
     e.save();
-    let t = 1e3 / 60, // 커지면 노드가 작아지고, 작아지면 노드가 커짐
+    let t = 1e3 / 60, 
       r = this._screenWidth,
       i = r / 2;
-    e.translate(i, 0); // 캔버스를 이동 오른쪽에서 왼쪽으로
+    e.translate(i, 0);
     let n = 40 / t,
       y = null;
     this._playScore.forEach((d) => {
@@ -535,15 +535,15 @@ class H {
       let m = B[d.note] * 5 + (d.octav - 3) * 35 + 150 + this._oct * 5 - 2.5;
       d.start <= this._elapsed && d.start + d.length - t >= this._elapsed
         ? ((y = d), (e.fillStyle = "orange"))
-        : (e.fillStyle = "blue"), // 노드 색깔 설정
+        : (e.fillStyle = "blue"), 
         e.fillRect(o + n, m, p, 5),
         d.lylic &&
-          (e.save(), // canvas 스타일 저장
-          (e.fillStyle = "black"), // 노드 아래 가사 색깔 설정
-          e.translate(o + n, m), // 글씨
-          e.scale(0.1, -0.1), // 글씨 크기, 글씨 위치
-          e.fillText(d.lylic, 0, 5), // canvas 글씨 쓰기, "텍스트", x 위치, y 위치
-          e.restore()); // canvas 스타일 불러오기
+          (e.save(), 
+          (e.fillStyle = "black"), 
+          e.translate(o + n, m), 
+          e.scale(0.1, -0.1), 
+          e.fillText(d.lylic, 0, 5),
+          e.restore());
     }),
       e.restore(),
       (this._currentNote = y);
@@ -561,10 +561,10 @@ class H {
     this.updateScreenWidth();
     this.updateScreentime();
     this._canvas.width = this._screenWidth;
-    let e = this._canvas.getContext("2d"); // 캔버스 생성
+    let e = this._canvas.getContext("2d"); 
     e.save(),
-      (e.font = "14px monospace"), // 캔버스 폰트 설정
-      (e.textBaseline = "top"), // 단어 배치
+      (e.font = "14px monospace"), 
+      (e.textBaseline = "top"),
       e.clearRect(0, 0, this._canvas.width, 250);
     e.scale(1, -1),
       e.translate(0, -250),
@@ -573,28 +573,25 @@ class H {
       (e.fillStyle = "blue"),
       this._renderNotes(e),
       this._renderVoice(e),
-      (e.strokeStyle = "yellowgreen"), // 가운데 선
+      (e.strokeStyle = "yellowgreen"),
       e.beginPath(),
-      e.moveTo(this._screenWidth / 2, 140), // stroke 선 아래 좌표
-      e.lineTo(this._screenWidth / 2, 300), // stroke 선 위 좌표
+      e.moveTo(this._screenWidth / 2, 140), 
+      e.lineTo(this._screenWidth / 2, 300), 
       e.stroke(),
       e.restore();
       (e.font = "30px monospace"),
       e.fillText(this.playerScore.toString(), this._canvas.width - 50, 30);
   }
-  // 소리
+  
   _renderVoice(e) {
-    (e.fillStyle = "red"), // 소리입력을 받으면 오선지에 해당 음 부분에 빨간색 노트 생성
+    (e.fillStyle = "red"), 
       this._notes.forEach((t, r) => {
         if (t !== -1) {
           let i = Math.floor(t / 12) - 4,
           c = t % 12,
-            // 리코더 소리
           y = B[c] * 5+ 80 + i * 35 - 2.5;
-          // B[c] * 5 + 150 + i * 35 - 2.5
           e.fillRect(r, y, 1, 5);
-          // // o + n -> x, m -> y, 길이 -> p
-          let num = 1e3 / 60; // t 변경
+          let num = 1e3 / 60; 
           this._playScore.forEach((d) => {
             let p = d.length / num - 1;
             let m = B[d.note] * 5 + (d.octav - 3) * 35 + 150 + this._oct * 5 - 2.5;
@@ -627,11 +624,11 @@ class H {
   inited() {
     this._inited = !0;
   }
-  // 오선지
+
   _renderLines(e) {
-    (e.strokeStyle = "black"), e.beginPath(); // 오선지 색상
+    (e.strokeStyle = "black"), e.beginPath();
     for (let t = 0; t < 5; t++)
-      e.moveTo(0, t * 10 + 160), e.lineTo(this._screenWidth, t * 10 + 160); // 오선지 줄
+      e.moveTo(0, t * 10 + 160), e.lineTo(this._screenWidth, t * 10 + 160); 
     e.stroke(), (e.strokeStyle = "#ddd"), e.beginPath();
   }
 }
@@ -660,7 +657,6 @@ class x extends _ {
     constructor() {
       super();
       (this._element = document.createElement("div"));
-      // this._element = document.getElementById("game-sub-setting");
       this._element.classList.add("song-list");
       this._element.addEventListener("click", this._clickHandler);
     }
@@ -721,7 +717,7 @@ class x extends _ {
     render() {
       return this._element;
     }
-    // 곡 리스트 생성
+
     _update() {
       (this._element.innerHTML = "");
         this._list
@@ -792,7 +788,6 @@ class x extends _ {
       this.initElements();
     }
     initElements() {
-      //버튼 생성하는 곳
       (this.btnPlay = w("곡을 선택해주세요")),
       (this.chkMelody = makeSwitch()),
       (this.inVolume = v("input", { class: "volume-input", type: "range", min: 0, max: 100, value: 30, step: 1 })),
@@ -806,7 +801,6 @@ class x extends _ {
         this.inVolume,
       ])),
 
-      // 버튼 누르면 일어나는 동작
       (this.gamePart=document.getElementById("game-part")),
       (this.imgPart=document.getElementById("img-ready")),
       this.btnPlay.addEventListener("click", () => {
@@ -832,7 +826,6 @@ class x extends _ {
         }
       }),
 
-      //스위치 누르면 일어나는 동작
       this.chkMelody.addEventListener("click", () => {
         this.outsideDiv = document.getElementById("outside-div")
         this.chkBox = document.getElementById("check-box")
@@ -872,9 +865,7 @@ class x extends _ {
       _clickHandler(e) {
         this.emit(e);
       }
-      // render() {
-      //   return this.element;
-      // }
+
       renderSettingVolume() {
         return this.settingVolume;
       }
@@ -893,11 +884,11 @@ class x extends _ {
       inited = !1;
       constructor(e) {
         super();
-        this.ctx = e; // Audiocontext 생성
+        this.ctx = e; 
       }
       start() {
         if (!this.inited) {
-          let e = this.ctx.createAnalyser(); // 변수 e에 Analysernode 선언
+          let e = this.ctx.createAnalyser(); 
           (this.analyser = e), (this.analyser.fftSize = 2048), this.getUserMedia();
         }
       }
@@ -906,7 +897,7 @@ class x extends _ {
         e.mediaDevices === void 0 && (e.mediaDevices = {}),
           e.mediaDevices.getUserMedia === void 0 &&
             (e.mediaDevices.getUserMedia = function (r) {
-              let i = e.getUserMedia || e.webkitGetUesrmedia || e.mozGetUserMedia || e.msGetUserMedia; // 브라우저 호환
+              let i = e.getUserMedia || e.webkitGetUesrmedia || e.mozGetUserMedia || e.msGetUserMedia;
               return i
                 ? new Promise(function (c, s) {
                     i.call(navigator, r, c, s);
@@ -1028,14 +1019,14 @@ class x extends _ {
     inited = !1;
     key = 0;
     playMusic = !0;
-    sharer = new C(); // 곡 선택 리스트
+    sharer = new C();
     songEditor = new N();
 
     constructor(e) {
       (this.drawer = new H()),
         this.createElements(),
         e.appendChild(this.wrapper),
-        requestAnimationFrame(this.loop); // loop 기능을 통해서 계속 갱신
+        requestAnimationFrame(this.loop); 
   }
   createElements() {
     let a = document.createElement("div");
@@ -1045,7 +1036,6 @@ class x extends _ {
     let e = document.querySelector(".game-sub-img");
     let buttons = document.querySelector(".game-sub-button")
     b.appendChild(r);
-    // c.appendChild(this.songEditor.render());
     c.appendChild(this.songEditor.renderSettingVolume());
     c.appendChild(this.sharer.render());
     buttons.appendChild(this.songEditor.renderButtons());

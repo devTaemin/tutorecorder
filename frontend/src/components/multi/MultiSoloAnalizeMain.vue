@@ -8,13 +8,7 @@
                 <div id="redBoxLeft" >
                     <div class="analize-result-title">순위</div>
                     <div id="leftSubBox">
-                        <!-- 이미지 삽입 구간 -->
-                        <!-- <img id="captureImg" src="../../assets/multi/rankcapture.png" alt="캡쳐" style="padding-top:7%; z-index:4321;">
-                            <img id="captureImg" src="../../assets/multi/rankcapture.png" alt="캡쳐" style="padding-bottom:12%; z-index:4321;">
-                            <img id="captureImg" src="../../assets/multi/rankcapture.png" alt="캡쳐" style="padding-top:7%; z-index:4321;"> -->
-                        <!-- 이미지 사용 안하면 아래 스타일 제거  -->
-                        <!-- 이미지 삽입 구간 끝 -->
-
+                        
                         <!-- 텍스트 삽입 구간 -->
                         <p style="width:30%; padding-top:15%; z-index:4321;" class="ranker-name">{{ n2 }}</p>
                         <p style="width:30%; padding-bottom:12%; z-index:4321;" class="ranker-name">{{ n1 }}</p>

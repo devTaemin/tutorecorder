@@ -35,20 +35,12 @@ import { mapActions } from 'vuex'
 
 let pitch_list = ['도', '레', '미', '파', '솔', '라', '시'];
 const pitch_list2 = ['도', '레', '미', '파', '솔', '라', '시'];
-
-
-
 const problem = 3
-
 const total_problem = problem + 9;
 const URL = "https://teachablemachine.withgoogle.com/models/eptQYA8MT/";
 
-
-
-
 // 음계 측정값 넣을 리스트 - 현재 7개의 음과 배경소음만 있고 나중에 삑사리 추가
 let grade_list = [[], [], [], [], [], [], []];
-
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
 
@@ -106,7 +98,6 @@ export default {
         
         async createModel () {
 
-            
             const checkpointURL = URL + 'model.json' // model topology
             const metadataURL = URL + 'metadata.json' // model metadata
 
@@ -119,13 +110,11 @@ export default {
 
             // check that model and metadata are loaded via HTTPS requests.
             await recognizer.ensureModelLoaded()
-
             return recognizer
         },
         async init () {
             const recognizer = await this.createModel() // 모델 생성
             const classLabels = recognizer.wordLabels() // get class labels, 학습 시킨 클래스들
-
 
             // listen() takes two arguments:
             // 1. A callback function that is invoked anytime a word is recognized.
