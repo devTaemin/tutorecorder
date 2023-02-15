@@ -35,10 +35,13 @@
 <script>
 import { mapActions } from 'vuex'
 
+let nth = ['', '', '']
+let score = [-1, -1, -1]
+
 export default {
     name: 'MultiSoloAnalizeMain',
     mounted() {
-        this.$emit('sendMyTotalScore', this.myTotalScore);
+        this.$emit('sendMyTotalScore', this.$store.state.gameResult);
         },
     data() {
         return{
@@ -61,8 +64,8 @@ export default {
         },
         nth() {
             const rankerArray = Object.values(this.ranker)
-            let nth = ['', '', '']
-            let score = [-1, -1, -1]
+            nth = ['', '', '']
+            score = [-1, -1, -1]
             for (let i=0; i<rankerArray.length; i++) {
                 if (rankerArray[i][1] >= score[0]) {
                     nth[2] = nth[1]
@@ -93,6 +96,8 @@ export default {
             this.$router.push({ name: 'soloSound' })
         },
         closeAnal() {
+            nth = ['', '', '']
+            score = [-1, -1, -1]
             this.initGameResult()
             if (this.isOwner === true) {
                 this.$emit('closeAnal')
