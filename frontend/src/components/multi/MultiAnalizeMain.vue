@@ -85,7 +85,8 @@
 
 <script>
 
-
+let nth = ['', '', '']
+let score = [-1, -1, -1]
 
 const pitchText = ['도', '레', '미', '파', '솔', '라', '시'];
 const badTextForm = '는 연습이 많이 필요해 보여요. \n'
@@ -252,6 +253,8 @@ export default {
             this.$router.push({ name: 'soloSound' })
         },
         closeAnal() {
+            nth = ['', '', '']
+            score = [-1, -1, -1]
             if (this.isOwner === true) {
                 this.$emit('closeAnal')
             } else {
@@ -261,9 +264,9 @@ export default {
     },
     computed: {
         nth() {
+            nth = ['', '', '']
+            score = [-1, -1, -1]
             const rankerArray = Object.values(this.ranker)
-            let nth = ['', '', '']
-            let score = [-1, -1, -1]
             for (let i=0; i<rankerArray.length; i++) {
                 if (rankerArray[i][1] >= score[0]) {
                     nth[2] = nth[1]
