@@ -1,0 +1,69 @@
+.snow-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    overflow: hidden;
+    /* em으로 크기 설정할 때 쓰임 (1em은 1글자 높이) */
+    font-size: 10px;
+    z-index: 1;
+}
+.snow-wrapper > .snow {
+    position: absolute;
+    font-size: 50px;
+    z-index: 1;
+    top: -20%;
+    left: 50%;
+    user-select: none;
+    cursor: url(./assets/cursor_gen.png), default;
+}
+.snow.falling {
+    animation-name: falling;
+    animation-timing-function:linear;
+    animation-iteration-count: infinite;
+  
+    -webkit-animation-name: falling;
+    -webkit-animation-timing-function:linear;
+    -webkit-animation-iteration-count: infinite;
+  
+    -moz-animation-name: falling;
+    -moz-animation-timing-function:linear;
+    -moz-animation-iteration-count: infinite;
+  
+    -o-animation-name: falling;
+    -o-animation-timing-function:linear;
+    -o-animation-iteration-count: infinite;
+}
+@keyframes falling {
+    0% {top: -20%; 
+        transform: rotate(-180deg);
+    }
+    100% {top: 120%;
+        transform: rotate(360deg);
+    }
+}
+@-webkit-keyframes falling {
+    0% {top: -20%; 
+        transform: rotate(-180deg);
+    }
+    100% {top: 120%;
+        transform: rotate(360deg);
+    }
+}
+@-moz-keyframes falling {
+    0% {top: -20%; 
+        transform: rotate(-180deg);
+    }
+    100% {top: 120%;
+        transform: rotate(360deg);
+    }
+}
+@-o-keyframes falling {
+    0% {top: -20%; 
+        transform: rotate(-180deg);
+    }
+    100% {top: 120%;
+        transform: rotate(360deg);
+    }
+}
