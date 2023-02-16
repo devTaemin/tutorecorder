@@ -1,4 +1,4 @@
-# :notes: 튜토리코더 - 원격 악기 교육 플랫폼
+# :musical_score: 튜토리코더 - 원격 악기 교육 플랫폼
 
 ## :computer: 서비스 화면
 
@@ -51,7 +51,7 @@
 <img src=https://user-images.githubusercontent.com/91431779/219276397-292e389e-98bc-4eeb-b64d-ccd4d22b9401.gif width="350" height="200">
 </p>
 
-## teachable machine
+## :bust_in_silhouette: teachable machine
 
 ### 리코더의 각 음계를 학습시켜 소리 인식을 통해 유저가 연주하는 음계를 파악하고 요구하는 음계와 맞는지 틀린지를 구분하게 하였습니다.
 <p align="center">
@@ -61,13 +61,13 @@
 
 ### 학습시킨 모델에서 솔과 라를 각각 연주한 결과입니다. 튜토리코더에서는 음계별로 도출된 값을 이용하여 어떤 음계에 가장 가까운지 판단하였습니다.
 
-# 기획 배경
+# :musical_note: 기획 배경
 코로나이후 많은 활동에 제약사항이 생겼는데 그 중에 하나가 초등학생들의 음악교육입니다.
 음악교육은 아동들의 정서
 
-# 서비스 개요
+# :notes: 서비스 개요
 
-# 주요 기능
+# :sparkles: 주요 기능
 
 ## Gamification 을 적용하여 사용자의 동기를 강화하여 참여를 유도
 ## 연주하기
@@ -94,9 +94,26 @@
 + 실시간으로 변환되는 음 높이를 받아서 큐 형태의 배열에 넣고 해당 배열을 화면 중앙에 표시
 
 
-# 스토리보드
+# :computer: 스토리보드
 
-# 개발환경
+# :clipboard: 개발환경
+## BackEnd
++ SpringBoot 2.5.5
++ Java 11
+
+## FrontEnd
++ Vue.js 3.0.0
++ node 16.18.0
+
+## AI
++ Teachable Machine
++ Tensorflow 1.3.1
+
+## CI / CD
++ AWS EC2
++ Docker
++ NGINX
+
 
 # :speech_balloon: 협업 툴
 + GitLab
