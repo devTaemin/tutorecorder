@@ -72,7 +72,6 @@
 
 # :sparkles: 주요 기능
 
-## Gamification 을 적용하여 사용자의 동기를 강화하여 참여를 유도
 ## 연주하기
 <p align="center">
 <img src=https://user-images.githubusercontent.com/91431779/219360376-5c0037ce-b447-41ad-97b6-1ec77594b528.gif height="200">
