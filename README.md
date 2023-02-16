@@ -4,8 +4,8 @@
 
 ### 메인화면 / 닉네임 설정
 <p align="center">
-<img src=https://user-images.githubusercontent.com/91431779/219237412-26d89183-d024-4c01-96fd-342653bf3e5d.gif width="300" height="150"> 
-<img src=https://user-images.githubusercontent.com/91431779/219241558-97b92121-bc1d-44a6-bd13-ad8dfe51b197.gif width="300" height="150">
+<img src=https://user-images.githubusercontent.com/91431779/219237412-26d89183-d024-4c01-96fd-342653bf3e5d.gif width="350" height="150"> 
+<img src=https://user-images.githubusercontent.com/91431779/219241558-97b92121-bc1d-44a6-bd13-ad8dfe51b197.gif width="350" height="150">
 </p>
 
 ### 모드 설정 화면 / 혼자하기 모드 화면
