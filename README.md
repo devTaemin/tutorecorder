@@ -90,7 +90,8 @@
 <br> ``` story ``` : 
 ## MatterMost
 + 일일 스크럼 회의록 관리
-+ 자료를 
++ GitLab과 연동하여 실시간 GitLab 관리
++ Archiving채널을 통해서 각 종 정보 공유
 
 # 팀원 소개
 
