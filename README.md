@@ -95,6 +95,7 @@
 
 
 # :computer: 스토리보드
+![스토리보드](https://user-images.githubusercontent.com/91431779/219376136-c2264198-8c00-4cb7-8e17-467d95f7dc5e.png)
 
 # :clipboard: 개발환경
 ## BackEnd
