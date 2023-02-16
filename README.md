@@ -59,11 +59,29 @@
 
 # :two_men_holding_hands: 협업 환경
 ## GitLab
+### Git Flow
++ 각자 맡은 기능에 맞게 ``` feature ``` 브랜치를 생성하여 개발
++ 완료된 기능은 ``` develop ``` 에 ``` merge ``` 
++ 매일 오전 9시 스크럼 회의가 끝나면 ``` develop ``` 최신 버전을 ``` pull ```
+> ### Commit convention
+> ``` FEAT ``` : 기능 추가, 프로젝트 생성, 초기 설정 
+<br> ``` FIX ``` : 기능 변경, 기능 수정, 오류 수정
+<br> ``` REFACTOR ``` : 같은 기능을 하는 코드를 리팩토링
 
-+ Notion
-+ JIRA
-    + asdf       
-+ MatterMost
+> # [Git Convention](notion://www.notion.so/Git-Lab-2b8446ef0d594edc915db2a6068f901c)
+
+## Notion
++ 팀 전체가 알아야 할 공지사항이나 프로젝트를 진행하면서 나오는 각종 산출물들의 형상관리
+> # [튜토리코더 Notion](https://roasted-pharaoh-ec9.notion.site/SSAFY-8-2-6060e4d19bbc4a90921adae525acb44d)
+
+## JIRA
++ 협업 및 일정, 업무 관리를 JIRA를 통해 관리하였습니다.
++ 매 주 월요일 한 주동안 진행되어야 할 계획을 수립하여 진행할 이슈들을 스프린트를 만들어 등록
+> ``` Epic ``` : 
+<br> ``` story ``` : 
+## MatterMost
++ 일일 스크럼 회의록 관리
++ 자료를 
 # 팀원 소개
 
 # 회고
