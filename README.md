@@ -124,10 +124,14 @@
 + 협업 및 일정, 업무 관리를 JIRA를 통해 관리하였습니다.
 + 매 주 월요일 한 주동안 진행되어야 할 계획을 수립하여 진행할 이슈들을 스프린트를 만들어 등록
 
->
-<br>``` Epic ``` : BackEnd, FrontEnd, 기획, 설계
+>``` Epic ``` : BackEnd, FrontEnd, 기획, 설계
 <br> ``` story ``` : 기획, 설계, 산출물 제작 등 개발외의 업무에 관한 업무 관리
 <br> ``` task ``` : 코드 작성과 관련된 개발업무에 관한 업무 관리
+
+<p align="center">
+<img src=https://user-images.githubusercontent.com/91431779/219372056-b1257d25-3a76-4020-9628-1a98ca425077.png height="300">
+</p>
+
 ## MatterMost
 + 일일 스크럼 회의록 관리
 + GitLab과 연동하여 실시간 GitLab 관리
