@@ -86,6 +86,8 @@ SSAFY 8기 2학기 공통프로젝트 - 튜토리코더
 <p align="center">
 <img src=https://user-images.githubusercontent.com/91431779/219276397-292e389e-98bc-4eeb-b64d-ccd4d22b9401.gif width="350" height="200">
 </p>
+<br/>
+<br/>
 
 ## :bust_in_silhouette: teachable machine
 
@@ -105,6 +107,8 @@ SSAFY 8기 2학기 공통프로젝트 - 튜토리코더
 
 + 사용자가 내는 소리가 학습된 데이터중 어느 것에 가장 가까운지 판정
 + 도부터 시까지 7개 음계 외에도 배경소음, 음이탈 등의 틀린 경우 3가지를 추가로 학습시켜 정확도 향상
+<br/>
+<br/>
 
 ## 연주하기
 <p align="center">
@@ -128,6 +132,8 @@ SSAFY 8기 2학기 공통프로젝트 - 튜토리코더
 ### ResizeObserver API
 
 + 실시간으로 변환되는 음 높이를 받아서 큐 형태의 배열에 넣고 해당 배열을 화면 중앙에 표시
+<br/>
+<br/>
 
 # :clipboard: 개발환경
 ## BackEnd
