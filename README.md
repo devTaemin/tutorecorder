@@ -166,12 +166,23 @@ frontend
       ├── assets
       ├── components
       │   ├── multi
-              ├── MultiAnalizeMain
-              ├── MultiSoloAnalizeMain
-              ├── MultiSongMain
-              └── MultiSoundMain
+      │   │     ├── MultiAnalizeMain
+      │   │     ├── MultiSoloAnalizeMain
+      │   │     ├── MultiSongMain
+      │   │     └── MultiSoundMain
       │   ├── solo
+      │   │     ├── teachable
+      │   │     ├── SoloAnalizeMain
+      │   │     ├── SoloFingeringMain
+      │   │     ├── SoloMain
+      │   │       ├── SoloSongMain
+      │   │       ├── SoloSoundMain
+      │   │       ├── SoloTutorialMain
+      │   │       └── SoloTutorialSelect
       │   ├── video
+      │   │     ├── OvVideo
+      │   │     ├── soloUserVideo
+      │   │     └── UserVideo
       │   ├── HomeMain
       │   └── ModeMain
       ├── router
