@@ -235,6 +235,14 @@ frontend
 + GitLab과 연동하여 실시간 GitLab 관리
 + Archiving채널을 통해서 각 종 정보 공유
 
+# 산출물
++ [아키텍처 구성도](https://roasted-pharaoh-ec9.notion.site/81d5b85937e54b5fb691ff21fb1f0e2f)
++ [프로세스 다이어그램](https://roasted-pharaoh-ec9.notion.site/90f004abaa244a59bb24b217fbdc4315)
++ [컨벤션](https://roasted-pharaoh-ec9.notion.site/f69682cf770548638fe1c34992629cf6?v=4609e59e686d485491a43ccd319614e9)
++ [회의록](https://roasted-pharaoh-ec9.notion.site/59c3bf9df5c84eaf8f4c3f49432bba46?v=2309d6ea43754b46990150074993f36f)
+
+# 결과물
+
 # 팀원 소개
 ![image](https://user-images.githubusercontent.com/91431779/219308515-293ac4a8-b0b8-4d6c-a1a3-d56faad0b826.png)
 
