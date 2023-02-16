@@ -97,6 +97,7 @@
 + Archiving채널을 통해서 각 종 정보 공유
 
 # 팀원 소개
+![image](https://user-images.githubusercontent.com/91431779/219308515-293ac4a8-b0b8-4d6c-a1a3-d56faad0b826.png)
 
 # 회고
 
