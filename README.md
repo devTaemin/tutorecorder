@@ -20,11 +20,23 @@
 <img src=https://user-images.githubusercontent.com/91431779/219267777-d4aa8ada-7e35-42ab-b558-6651f9870256.gif width="350" height="200">
 </p>
 
-### 혼자하기 연주하기
+### 혼자하기 연주하기 / 같이하기 대기방
 <p align="center">
 <img src=https://user-images.githubusercontent.com/91431779/219270991-b8aa3c95-8c96-4107-ac9c-2b7f5a1d6c3e.gif width="350" height="200">
+<img src=https://user-images.githubusercontent.com/91431779/219365188-2d5ecaa0-ca87-48a8-902b-d0bdc280aec2.gif width="350" height="200">
 </p>
 
+### 같이하기 카카오톡 공유 / 같이하기 방 설정
+<p align="center">
+<img src=https://user-images.githubusercontent.com/91431779/219365213-5c94f7f3-5ae1-4114-9d41-c8ec6af681a4.gif width="350" height="200">
+<img src=https://user-images.githubusercontent.com/91431779/219367747-7c5ffa73-6fba-44c6-917b-11dd345aa6f1.gif width="350" height="200">
+</p>
+
+### 같이하기 소리내기 / 같이하기 연주하기
+<p align="center">
+<img src=https://user-images.githubusercontent.com/91431779/219367778-28fc7002-0041-4265-9077-e080ac4071cb.gif width="350" height="200">
+<img src=https://user-images.githubusercontent.com/91431779/219365246-4d07c5b7-69d7-4b27-942c-bc986602bdae.gif width="350" height="200">
+</p>
 
 # :books: 기술 스텍
 
