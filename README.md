@@ -79,21 +79,19 @@ SSAFY 8기 2학기 공통프로젝트 - 튜토리코더
 
 ## :bust_in_silhouette: teachable machine
 
-### 리코더의 각 음계를 학습시켜 소리 인식을 통해 유저가 연주하는 음계를 파악하고 요구하는 음계와 맞는지 틀린지를 구분하게 하였습니다.
+#### 리코더의 각 음계를 학습시켜 소리 인식을 통해 유저가 연주하는 음계를 파악하고 요구하는 음계와 맞는지 틀린지를 구분하게 하였습니다.
 <p align="center">
 <img src=https://user-images.githubusercontent.com/91431779/219313753-cee19782-2ace-4167-9982-e71a25677db5.gif width="350" height="200">
 <img src=https://user-images.githubusercontent.com/91431779/219312545-91f080bf-3033-4ba6-8e52-8cb729b08501.gif width="350" height="200">
 </p>
 
-### 학습시킨 모델에서 솔과 라를 각각 연주한 결과입니다. 튜토리코더에서는 음계별로 도출된 값을 이용하여 어떤 음계에 가장 가까운지 판단하였습니다.
+#### 학습시킨 모델에서 솔과 라를 각각 연주한 결과입니다. 튜토리코더에서는 음계별로 도출된 값을 이용하여 어떤 음계에 가장 가까운지 판단하였습니다.
 
 
-## 소리내기
+### 소리내기
 <p align="center">
 <img src=https://user-images.githubusercontent.com/91431779/219412040-892580a2-aa93-4698-8362-1fedb6dfe58f.gif width="350" height="200">
 </p>
-
-### Teachable-Machine
 
 + 사용자가 내는 소리가 학습된 데이터중 어느 것에 가장 가까운지 판정
 + 도부터 시까지 7개 음계 외에도 배경소음, 음이탈 등의 틀린 경우 3가지를 추가로 학습시켜 정확도 향상
