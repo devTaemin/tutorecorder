@@ -62,6 +62,9 @@ SSAFY 8기 2학기 공통프로젝트 - 튜토리코더
 
 게임 결과를 분석한 결과를 보여줌으로써 자신의 부족한 부분을 바로 확인할 수 있습니다.
 
+# :computer: 스토리보드
+![스토리보드](https://user-images.githubusercontent.com/91431779/219376136-c2264198-8c00-4cb7-8e17-467d95f7dc5e.png)
+
 # :books: 기술 스텍
 
 ## :movie_camera: OpenVidu
@@ -121,10 +124,6 @@ SSAFY 8기 2학기 공통프로젝트 - 튜토리코더
 
 + 실시간으로 변환되는 음 높이를 받아서 큐 형태의 배열에 넣고 해당 배열을 화면 중앙에 표시
 
-
-# :computer: 스토리보드
-![스토리보드](https://user-images.githubusercontent.com/91431779/219376136-c2264198-8c00-4cb7-8e17-467d95f7dc5e.png)
-
 # :clipboard: 개발환경
 ## BackEnd
 + SpringBoot 2.5.5
@@ -143,6 +142,7 @@ SSAFY 8기 2학기 공통프로젝트 - 튜토리코더
 + Docker
 + NGINX
 
+# :open_file_folder: 프로젝트 파일 구조
 
 # :speech_balloon: 협업 툴
 + GitLab
