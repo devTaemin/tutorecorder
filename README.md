@@ -62,11 +62,17 @@
 <p align="center">
 <img src=https://user-images.githubusercontent.com/91431779/219355238-8f3ef672-e072-4877-9d8e-359fdece03f1.gif width="500" height="200">
 </p>
+
 ### Canvas API
+
 + Canvas API를 이용하여 오선지, 악보와 마이크의 입력 값을 화면에 표시
+
 ### UserMedia API
+
 + 사용자의 마이크 권한 요청
+
 ### Web Audio API 
+
 + AnalyserNode를 사용하여 실시간으로 마이크로 들어오는 주파수 값을 받아온다.
 + 푸리에 변환 소스를 통해서 입력받은 주파수 값을 음 높이로 변환
 
