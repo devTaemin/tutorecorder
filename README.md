@@ -43,7 +43,8 @@
 
 ### 리코더의 각 음계를 학습시켜 소리 인식을 통해 유저가 연주하는 음계를 파악하고 요구하는 음계와 맞는지 틀린지를 구분하게 하였습니다.
 <p align="center">
-<img src=https://user-images.githubusercontent.com/91431779/219276284-bad5e529-705d-49dc-957b-c30312ad2e77.gif width="350" height="200">
+<img src=https://user-images.githubusercontent.com/91431779/219313753-cee19782-2ace-4167-9982-e71a25677db5.gif width="350" height="200">
+<img src=https://user-images.githubusercontent.com/91431779/219312545-91f080bf-3033-4ba6-8e52-8cb729b08501.gif width="350" height="200">
 </p>
 
 ### 학습시킨 모델에서 솔과 라를 각각 연주한 결과입니다. 튜토리코더에서는 음계별로 도출된 값을 이용하여 어떤 음계에 가장 가까운지 판단하였습니다.
@@ -53,12 +54,6 @@
 음악교육은 아동들의 정서
 
 # 서비스 개요
-
-
-# 주요 기능
-
-## Gamification
-
 
 
 # :speech_balloon: 협업 툴
