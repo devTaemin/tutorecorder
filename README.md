@@ -1,5 +1,9 @@
 # :musical_score: 튜토리코더 - 원격 악기 교육 플랫폼
 
+## :calander: 프로젝트 진행 기간
+2023.01.09(월) ~ 2023.02.17(금) (39일간 진행)
+SSAFY 8기 2학기 공통프로젝트 - 튜토리코더
+
 ## :computer: 서비스 화면
 
 ### 메인화면 / 닉네임 설정
@@ -42,7 +46,7 @@
 
 ## :movie_camera: OpenVidu
 <p align="center">
-<img src=https://user-images.githubusercontent.com/91431779/219276627-bb848643-ad9e-4d56-a455-550ef5d29627.PNG width="500" height="200">
+<img src=https://user-images.githubusercontent.com/91431779/219276627-bb848643-ad9e-4d56-a455-550ef5d29627.PNG width="550" height="200">
 </p>
 
 ### OpenVidu는 웹 또는 모바일 애플리케이션에 실시간 커뮤니케이션을 쉽고 빠르게 추가할 수 있는 플랫폼입니다.
