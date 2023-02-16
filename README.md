@@ -65,7 +65,7 @@ SSAFY 8기 2학기 공통프로젝트 - 튜토리코더
 # :computer: 스토리보드
 ![스토리보드](https://user-images.githubusercontent.com/91431779/219376136-c2264198-8c00-4cb7-8e17-467d95f7dc5e.png)
 
-# :books: 기술 스텍
+# :books: 기술 스텍 및 주요 기능
 
 ## :movie_camera: OpenVidu
 <p align="center">
@@ -87,9 +87,6 @@ SSAFY 8기 2학기 공통프로젝트 - 튜토리코더
 
 ### 학습시킨 모델에서 솔과 라를 각각 연주한 결과입니다. 튜토리코더에서는 음계별로 도출된 값을 이용하여 어떤 음계에 가장 가까운지 판단하였습니다.
 
-
-
-# :sparkles: 주요 기능
 
 ## 소리내기
 <p align="center">
