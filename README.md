@@ -42,9 +42,8 @@
 
 ## :movie_camera: OpenVidu
 <p align="center">
-<img src=https://user-images.githubusercontent.com/91431779/219276627-bb848643-ad9e-4d56-a455-550ef5d29627.PNG width="450" height="200">
+<img src=https://user-images.githubusercontent.com/91431779/219276627-bb848643-ad9e-4d56-a455-550ef5d29627.PNG width="500" height="200">
 </p>
-![openvidu](https://user-images.githubusercontent.com/91431779/219276193-d0f9cfec-2f53-4428-af62-f0e07c05d2ca.PNG)
 
 ### OpenVidu는 웹 또는 모바일 애플리케이션에 실시간 커뮤니케이션을 쉽고 빠르게 추가할 수 있는 플랫폼입니다.
 <p align="center">
