@@ -82,6 +82,16 @@
 
 # :sparkles: 주요 기능
 
+## 소리내기
+<p align="center">
+<img src=https://user-images.githubusercontent.com/91431779/219412040-892580a2-aa93-4698-8362-1fedb6dfe58f.gif width="350" height="200">
+</p>
+
+### Teachable-Machine
+
++ 사용자가 내는 소리가 학습된 데이터중 어느 것에 가장 가까운지 판정
++ 도부터 시까지 7개 음계 외에도 배경소음, 음이탈 등의 틀린 경우 3가지를 추가로 학습시켜 정확도 향상
+
 ## 연주하기
 <p align="center">
 <img src=https://user-images.githubusercontent.com/91431779/219360376-5c0037ce-b447-41ad-97b6-1ec77594b528.gif height="200">
