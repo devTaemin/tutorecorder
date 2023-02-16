@@ -143,6 +143,52 @@ SSAFY 8기 2학기 공통프로젝트 - 튜토리코더
 + NGINX
 
 # :open_file_folder: 프로젝트 파일 구조
+---
+### Back
+```
+backend
+  ├── src
+  │   ├── auth
+  │   ├── filter
+  │   ├── interceptor
+  │   └── listener
+  ├── Dockerfile
+  └── pom.xml
+```
+### Front
+```
+frontend
+  ├── node_modules
+  ├── patches
+  │    ├── @tensorflow-models+speech-commands+0.4.2
+  ├── public
+  └── src
+      ├── assets
+      ├── components
+      │   ├── multi
+              ├── MultiAnalizeMain
+              ├── MultiSoloAnalizeMain
+              ├── MultiSongMain
+              └── MultiSoundMain
+      │   ├── solo
+      │   ├── video
+      │   ├── HomeMain
+      │   └── ModeMain
+      ├── router
+      ├── store
+      └── views
+          ├── solo
+          │    ├── SoloAnalizeView
+          │    ├── SoloFingeringView
+          │    ├── SoloSongView
+          │    ├── SoloSoundView
+          │    ├── SoloTutorialSelectView
+          │    ├── SoloTutorialView
+          │    └── SoloView
+          ├── HomeView
+          ├── ModelView
+          └── playroom
+```
 
 # :speech_balloon: 협업 툴
 + GitLab
