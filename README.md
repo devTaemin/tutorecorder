@@ -45,6 +45,7 @@ SSAFY 8기 2학기 공통프로젝트 - 튜토리코더
 <img src=https://user-images.githubusercontent.com/91431779/219365246-4d07c5b7-69d7-4b27-942c-bc986602bdae.gif width="350" height="200">
 </p>
 <br/>
+<br/>
 
 # :musical_note: 기획 배경
 음악적 성장이 가장 급속하게 발달하는 시기는 초등학교 시기이며 이 시기의 음악적 경험은 아이들에게 많은 영향을 미친다.
@@ -145,6 +146,7 @@ SSAFY 8기 2학기 공통프로젝트 - 튜토리코더
 + Docker
 + NGINX
 <br/>
+<br/>
 
 # :open_file_folder: 프로젝트 파일 구조
 ---
@@ -205,12 +207,14 @@ frontend
           └── playroom
 ```
 <br/>
+<br/>
 
 # :speech_balloon: 협업 툴
 + GitLab
 + Notion
 + JIRA
 + MatterMost
+<br/>
 <br/>
 
 # :two_men_holding_hands: 협업 환경
@@ -253,12 +257,15 @@ frontend
 + [컨벤션](https://roasted-pharaoh-ec9.notion.site/f69682cf770548638fe1c34992629cf6?v=4609e59e686d485491a43ccd319614e9)
 + [회의록](https://roasted-pharaoh-ec9.notion.site/59c3bf9df5c84eaf8f4c3f49432bba46?v=2309d6ea43754b46990150074993f36f)
 <br/>
+<br/>
 
 # 결과물
+<br/>
 <br/>
 
 # 팀원 소개
 ![image](https://user-images.githubusercontent.com/91431779/219308515-293ac4a8-b0b8-4d6c-a1a3-d56faad0b826.png)
+<br/>
 <br/>
 
 # 회고
