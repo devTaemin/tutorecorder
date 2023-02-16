@@ -77,11 +77,10 @@
 <br> ``` FIX ``` : 기능 변경, 기능 수정, 오류 수정
 <br> ``` REFACTOR ``` : 같은 기능을 하는 코드를 리팩토링
 
-> # [Git Convention](notion://www.notion.so/Git-Lab-2b8446ef0d594edc915db2a6068f901c)
-
+# [Git Convention](notion://www.notion.so/Git-Lab-2b8446ef0d594edc915db2a6068f901c)
 ## Notion
 + 팀 전체가 알아야 할 공지사항이나 프로젝트를 진행하면서 나오는 각종 산출물들의 형상관리
-> # [튜토리코더 Notion](https://roasted-pharaoh-ec9.notion.site/SSAFY-8-2-6060e4d19bbc4a90921adae525acb44d)
+# [튜토리코더 Notion](https://roasted-pharaoh-ec9.notion.site/SSAFY-8-2-6060e4d19bbc4a90921adae525acb44d)
 
 ## JIRA
 + 협업 및 일정, 업무 관리를 JIRA를 통해 관리하였습니다.
