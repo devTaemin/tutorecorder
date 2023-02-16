@@ -4,6 +4,7 @@
 2023.01.09(월) ~ 2023.02.17(금) (39일간 진행)
 <br/>
 SSAFY 8기 2학기 공통프로젝트 - 튜토리코더
+<br/>
 
 ## :computer: 서비스 화면
 
@@ -42,6 +43,7 @@ SSAFY 8기 2학기 공통프로젝트 - 튜토리코더
 <img src=https://user-images.githubusercontent.com/91431779/219367778-28fc7002-0041-4265-9077-e080ac4071cb.gif width="350" height="200">
 <img src=https://user-images.githubusercontent.com/91431779/219365246-4d07c5b7-69d7-4b27-942c-bc986602bdae.gif width="350" height="200">
 </p>
+<br/>
 
 # :musical_note: 기획 배경
 음악적 성장이 가장 급속하게 발달하는 시기는 초등학교 시기이며 이 시기의 음악적 경험은 아이들에게 많은 영향을 미친다.
@@ -51,6 +53,7 @@ SSAFY 8기 2학기 공통프로젝트 - 튜토리코더
 하지만 현재 코로나로 인해 교실에서 마스크를 착용해야 하기 때문에 음악교육을 하는데 어려움이 있습니다.
 
 이와 같은 어려움을 해소하기 위해서 탄생한 WebRTC기반의 원격 악기 교육 플랫폼 입니다
+<br/>
 
 # :notes: 개요
 ### 원격 악기 교육 플랫폼 - 튜토리코더
@@ -61,9 +64,11 @@ SSAFY 8기 2학기 공통프로젝트 - 튜토리코더
 + 즉각적인 피드백
 
 게임 결과를 분석한 결과를 보여줌으로써 자신의 부족한 부분을 바로 확인할 수 있습니다.
+<br/>
 
 # :computer: 스토리보드
 ![스토리보드](https://user-images.githubusercontent.com/91431779/219376136-c2264198-8c00-4cb7-8e17-467d95f7dc5e.png)
+<br/>
 
 # :books: 기술 스텍 및 주요 기능
 
@@ -136,6 +141,7 @@ SSAFY 8기 2학기 공통프로젝트 - 튜토리코더
 + AWS EC2
 + Docker
 + NGINX
+<br/>
 
 # :open_file_folder: 프로젝트 파일 구조
 ---
@@ -195,12 +201,14 @@ frontend
           ├── ModelView
           └── playroom
 ```
+<br/>
 
 # :speech_balloon: 협업 툴
 + GitLab
 + Notion
 + JIRA
 + MatterMost
+<br/>
 
 # :two_men_holding_hands: 협업 환경
 ## GitLab
@@ -234,17 +242,21 @@ frontend
 + 일일 스크럼 회의록 관리
 + GitLab과 연동하여 실시간 GitLab 관리
 + Archiving채널을 통해서 각 종 정보 공유
+<br/>
 
 # 산출물
 + [아키텍처 구성도](https://roasted-pharaoh-ec9.notion.site/81d5b85937e54b5fb691ff21fb1f0e2f)
 + [프로세스 다이어그램](https://roasted-pharaoh-ec9.notion.site/90f004abaa244a59bb24b217fbdc4315)
 + [컨벤션](https://roasted-pharaoh-ec9.notion.site/f69682cf770548638fe1c34992629cf6?v=4609e59e686d485491a43ccd319614e9)
 + [회의록](https://roasted-pharaoh-ec9.notion.site/59c3bf9df5c84eaf8f4c3f49432bba46?v=2309d6ea43754b46990150074993f36f)
+<br/>
 
 # 결과물
+<br/>
 
 # 팀원 소개
 ![image](https://user-images.githubusercontent.com/91431779/219308515-293ac4a8-b0b8-4d6c-a1a3-d56faad0b826.png)
+<br/>
 
 # 회고
 
