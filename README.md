@@ -73,6 +73,7 @@ SSAFY 8기 2학기 공통프로젝트 - 튜토리코더
 # :computer: 스토리보드
 ![스토리보드](https://user-images.githubusercontent.com/91431779/219376136-c2264198-8c00-4cb7-8e17-467d95f7dc5e.png)
 <br/>
+<br/>
 
 # :books: 기술 스텍 및 주요 기능
 
