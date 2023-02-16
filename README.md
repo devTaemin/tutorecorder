@@ -4,8 +4,8 @@
 
 ### 메인화면 / 닉네임 설정
 <p align="center">
-<img src=https://user-images.githubusercontent.com/91431779/219237412-26d89183-d024-4c01-96fd-342653bf3e5d.gif width="450" height="250"> 
-<img src=https://user-images.githubusercontent.com/91431779/219241558-97b92121-bc1d-44a6-bd13-ad8dfe51b197.gif width="450" height="250">
+<img src=https://user-images.githubusercontent.com/91431779/219237412-26d89183-d024-4c01-96fd-342653bf3e5d.gif width="300" height="150"> 
+<img src=https://user-images.githubusercontent.com/91431779/219241558-97b92121-bc1d-44a6-bd13-ad8dfe51b197.gif width="300" height="150">
 </p>
 
 ### 모드 설정 화면 / 혼자하기 모드 화면
@@ -29,14 +29,18 @@
 # :books: 기술 스텍
 
 ## :movie_camera: OpenVidu
-![openvidu-icon](https://user-images.githubusercontent.com/91431779/219276627-bb848643-ad9e-4d56-a455-550ef5d29627.PNG)
+<p align="center">
+<img src=https://user-images.githubusercontent.com/91431779/219276627-bb848643-ad9e-4d56-a455-550ef5d29627.PNG width="400" height="250">
+</p>
 ![openvidu](https://user-images.githubusercontent.com/91431779/219276193-d0f9cfec-2f53-4428-af62-f0e07c05d2ca.PNG)
+
 ### OpenVidu는 웹 또는 모바일 애플리케이션에 실시간 커뮤니케이션을 쉽고 빠르게 추가할 수 있는 플랫폼입니다.
 <p align="center">
 <img src=https://user-images.githubusercontent.com/91431779/219276397-292e389e-98bc-4eeb-b64d-ccd4d22b9401.gif width="600" height="300">
 </p>
 
 ## teachable machine
+
 ### 리코더의 각 음계를 학습시켜 소리 인식을 통해 유저가 연주하는 음계를 파악하고 요구하는 음계와 맞는지 틀린지를 구분하게 하였습니다.
 <p align="center">
 <img src=https://user-images.githubusercontent.com/91431779/219276284-bad5e529-705d-49dc-957b-c30312ad2e77.gif width="450" height="400">
@@ -49,7 +53,12 @@
 
 # 서비스 개요
 
+
 # 주요 기능
+
+## Gamification
+
+
 
 # :speech_balloon: 협업 툴
 + GitLab
@@ -82,6 +91,7 @@
 ## MatterMost
 + 일일 스크럼 회의록 관리
 + 자료를 
+
 # 팀원 소개
 
 # 회고
