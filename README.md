@@ -276,6 +276,5 @@ frontend
 <br/>
 <br/>
 
-# 회고
 
 
