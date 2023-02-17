@@ -267,6 +267,7 @@ frontend
 <br/>
 
 # 결과물
++ [최종발표자료](https://lab.ssafy.com/s08-webmobile1-sub2/S08P12C206/-/blob/main/ppt/%EA%B4%91%EC%A3%BC_2%EB%B0%98_C206_%EB%B0%9C%ED%91%9C%EC%9E%90%EB%A3%8C.pptx)
 <br/>
 <br/>
 
